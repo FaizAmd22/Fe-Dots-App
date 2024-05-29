@@ -155,7 +155,7 @@ const EditProfileModal = () => {
     }
 
     // console.log("response : ", response);
-    const PostThreadPromise = new Promise((resolve, reject) => {
+    const PostThreadPromise = new Promise((resolve) => {
       setTimeout(() => {
         // fetchCurrentUser();
         // fetchProfile();

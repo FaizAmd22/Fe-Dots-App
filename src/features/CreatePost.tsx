@@ -80,7 +80,7 @@ const CreatePost = (type: IType) => {
   console.log("formDatra :", formData);
 
   const handleSubmit = async () => {
-    const PostThreadPromise = new Promise((resolve, reject) => {
+    const PostThreadPromise = new Promise((resolve) => {
       setTimeout(() => {
         fetchThreadAuth();
         fetchDetailAuth();

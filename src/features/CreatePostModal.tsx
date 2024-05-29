@@ -88,7 +88,7 @@ const CreatePostModal = () => {
         },
       });
 
-      const PostThreadPromise = new Promise((resolve, reject) => {
+      const PostThreadPromise = new Promise((resolve) => {
         setTimeout(() => {
           fetchThreadAuth();
           fetchProfileThreadAuth()
