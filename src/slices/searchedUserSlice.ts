@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -18,6 +19,6 @@ export const searchedUserSlice = createSlice({
 
 export const { setUsers } = searchedUserSlice.actions
 
-export const selectUsers = state => state.search.data;
+export const selectUsers = (state: any) => state.search.data;
 
 export default searchedUserSlice.reducer;

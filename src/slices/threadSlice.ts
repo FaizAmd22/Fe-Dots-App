@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -20,6 +21,6 @@ export const threadSlice = createSlice({
 
 export const { addThread } = threadSlice.actions;
 
-export const selectThread = (state) => state.thread.data;
+export const selectThread = (state: any) => state.thread.data;
 
 export default threadSlice.reducer;

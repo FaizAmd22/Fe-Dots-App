@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -24,7 +25,7 @@ export const followSlice = createSlice({
 
 export const { setFollower, setFollowing } = followSlice.actions
 
-export const selectFollower = state => state.follow.follower;
-export const selectFollowing = state => state.follow.following;
+export const selectFollower = (state: any) => state.follow.follower;
+export const selectFollowing = (state: any) => state.follow.following;
 
 export default followSlice.reducer;

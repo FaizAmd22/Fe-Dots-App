@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -18,6 +19,6 @@ export const suggestionSlice = createSlice({
 
 export const { setSuggestion } = suggestionSlice.actions;
 
-export const selectSuggestion = state => state.suggestion.data;
+export const selectSuggestion = (state: any) => state.suggestion.data;
 
 export default suggestionSlice.reducer;

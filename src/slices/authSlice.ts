@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -25,4 +26,4 @@ export const { addUser } = authSlice.actions
 
 export default authSlice.reducer
 
-export const selectUser = state => state.auth.user
+export const selectUser = (state: any) => state.auth.user

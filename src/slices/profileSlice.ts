@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -23,7 +24,7 @@ export const profileSlice = createSlice({
 
 export const { setProfile } = profileSlice.actions
 
-export const selectProfile = state => state.profile.data;
+export const selectProfile = (state: any) => state.profile.data;
 
 // export const selectIsFetchProfile = state => state.detailThread.isFetchProfile;
 

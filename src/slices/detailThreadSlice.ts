@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -32,8 +33,8 @@ export const detailThreadSlice = createSlice({
 
 export const { addDetailThread, setIsFetchDetail } = detailThreadSlice.actions
 
-export const selectDetailThread = state => state.detailThread.data
+export const selectDetailThread = (state: any) => state.detailThread.data
 
-export const selectIsFetchDetail = state => state.detailThread.isFetchDetail;
+export const selectIsFetchDetail = (state: any) => state.detailThread.isFetchDetail;
 
 export default detailThreadSlice.reducer
