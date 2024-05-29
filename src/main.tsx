@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import store from './store'
 
 const rootElement = document.getElementById('root')
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.createRoot(rootElement!).render(
   <React.StrictMode>
     <Provider store={store}>
         <ChakraProvider>

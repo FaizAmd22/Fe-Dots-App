@@ -27,7 +27,7 @@ import { useDetailThreadHooks } from "../hooks/detailThread";
 import { setIsFetchDetail } from "../slices/detailThreadSlice";
 
 interface IType {
-  id: number;
+  id?: number;
   type: string;
 }
 
@@ -107,7 +107,7 @@ const CreatePost = (type: IType) => {
 
     try {
       if (type.type == "threads") {
-        const response = await API.post("/thread", formData, {
+        await API.post("/thread", formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
@@ -201,7 +201,7 @@ const CreatePost = (type: IType) => {
         <GridItem colSpan={10}>
           <Input
             onChange={handleChange}
-            value={formData.content}
+            value={formData.content ? formData.content : ""}
             type="text"
             border="none"
             name="content"
