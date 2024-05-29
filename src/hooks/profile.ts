@@ -1,14 +1,11 @@
 import { API } from "../libs/axios";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import { setProfile } from "../slices/profileSlice";
 
 export const useProfileHooks = () => {
-    let { username } = useParams();
     const sessionProfile = sessionStorage.getItem("profile")
-    const profile = JSON.parse(sessionProfile)
+    const profile = JSON.parse(sessionProfile!)
     const token = sessionStorage.getItem("token")
-    const test = ''
     // console.log("profile di profile hooks :", profile.username);
     
     // console.log("username :", username);

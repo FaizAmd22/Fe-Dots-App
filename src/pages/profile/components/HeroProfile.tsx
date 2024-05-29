@@ -1,15 +1,12 @@
 import { Flex, Image, Text, Grid, GridItem, Stack, Spacer, Button } from '@chakra-ui/react'
-import { useState } from 'react';
 import { FaCalendarDays } from "react-icons/fa6";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import EditProfileModal from '../../../features/EditProfileModal';
-import { useFollowHooks } from '../../../hooks/follow';
 import { useProfileHooks } from '../../../hooks/profile';
-import { useProfileThreadHooks } from '../../../hooks/profileThread';
 import { useSideProfileHooks } from '../../../hooks/sideProfile';
 import { useSuggestionHooks } from '../../../hooks/suggestion';
 import { API } from '../../../libs/axios';
-import { selectIsFetchProfile, selectProfile } from '../../../slices/profileSlice';
+import { selectProfile } from '../../../slices/profileSlice';
 import { selectUser } from '../../../slices/userSlice';
 
 const HeroProfile = () => {
@@ -21,7 +18,6 @@ const HeroProfile = () => {
     const token = sessionStorage.getItem("token")
     // console.log("currentUser :", currentUser.id);
     console.log("user :", user);
-    const profile = sessionStorage.getItem("profile")
     // console.log("profile :", profile);
     const { fetchProfile } = useProfileHooks();
     const {fetchSuggestion} = useSuggestionHooks()
@@ -29,7 +25,7 @@ const HeroProfile = () => {
     
     const handleFollow = async () => {
         if (!user.isFollow) {
-          const response = await API.post(
+         await API.post(
             "/follow",
             {
               following: user.id,
@@ -43,7 +39,7 @@ const HeroProfile = () => {
     
         //   setFollowed(true);
         } else {
-          const response = await API.post(
+          await API.post(
             "/unfollow",
             {
               following: user.id,

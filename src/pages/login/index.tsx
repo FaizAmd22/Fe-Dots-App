@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Text,
   Stack,
@@ -11,7 +12,6 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../libs/axios";
-import * as Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { BiSolidHide } from "react-icons/bi";
 import { BiSolidShow } from "react-icons/bi";
@@ -27,7 +27,7 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async () => {
     const requestingData = {
       username,
       password,
@@ -58,7 +58,7 @@ const Login = () => {
       navigate("/")
 
       // console.log("error : ", response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.log("error : ", error.response);
       setError(error.response.data.message);
     }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Avatar,
@@ -24,14 +26,14 @@ import { useThreadsHooks } from "../hooks/threads";
 import { useDetailThreadHooks } from "../hooks/detailThread";
 import { setIsFetchDetail } from "../slices/detailThreadSlice";
 
-interface IType  {
-  id: number
-  type: string
+interface IType {
+  id: number;
+  type: string;
 }
 
 interface inputData {
-  content: string | null
-  image: any
+  content: string | null;
+  image: any;
 }
 
 const CreatePost = (type: IType) => {
@@ -39,7 +41,7 @@ const CreatePost = (type: IType) => {
   const toast = useToast();
   const token = sessionStorage.getItem("token");
   const dispatch = useDispatch();
-  const { fetchThreadAuth} = useThreadsHooks();
+  const { fetchThreadAuth } = useThreadsHooks();
   const { fetchDetailAuth } = useDetailThreadHooks();
 
   // console.log("token :", token);
@@ -90,14 +92,17 @@ const CreatePost = (type: IType) => {
       }, 700);
     });
 
-    if ((formData.content == null || !formData.content) && formData.image == null) {
+    if (
+      (formData.content == null || !formData.content) &&
+      formData.image == null
+    ) {
       return toast({
-        position: 'top',
+        position: "top",
         title: "Data can't be empty!",
-        status: 'error',
+        status: "error",
         duration: 1500,
         isClosable: true,
-      })
+      });
     }
 
     try {
@@ -109,30 +114,30 @@ const CreatePost = (type: IType) => {
           },
         });
 
-        toast.promise(
-          PostThreadPromise,
-          {
-            success: {
-              title: "Thread Posted",
-              position: "top",
-              description: "Your thread has been posted successfully!",
-            },
-            error: {
-              title: "Error",
-              position: "top",
-              description: "An error occurred while posting thread",
-            },
-            loading: {
-              title: "Posting Thread",
-              position: "top",
-              description: "Please wait...",
-            },
+        toast.promise(PostThreadPromise, {
+          success: {
+            title: "Thread Posted",
+            position: "top",
+            description: "Your thread has been posted successfully!",
           },
-        );
+          error: {
+            title: "Error",
+            position: "top",
+            description: "An error occurred while posting thread",
+          },
+          loading: {
+            title: "Posting Thread",
+            position: "top",
+            description: "Please wait...",
+          },
+        });
         setFormData({
           content: "",
           image: null,
         });
+        fetchThreadAuth();
+        fetchDetailAuth();
+        dispatch(setIsFetchDetail(true));
         // window.location.reload();
       } else {
         const response = await API.post(`/thread/${type.id}/reply`, formData, {
@@ -142,26 +147,23 @@ const CreatePost = (type: IType) => {
           },
         });
 
-        toast.promise(
-          PostThreadPromise,
-          {
-            success: {
-              title: "Reply Posted",
-              position: "top",
-              description: "Your reply has been posted successfully!",
-            },
-            error: {
-              title: "Error",
-              position: "top",
-              description: "An error occurred while posting reply",
-            },
-            loading: {
-              title: "Posting Reply",
-              position: "top",
-              description: "Please wait...",
-            },
+        toast.promise(PostThreadPromise, {
+          success: {
+            title: "Reply Posted",
+            position: "top",
+            description: "Your reply has been posted successfully!",
           },
-        );
+          error: {
+            title: "Error",
+            position: "top",
+            description: "An error occurred while posting reply",
+          },
+          loading: {
+            title: "Posting Reply",
+            position: "top",
+            description: "Please wait...",
+          },
+        });
         fetchThreadAuth();
         fetchDetailAuth();
         dispatch(setIsFetchDetail(true));
@@ -170,12 +172,12 @@ const CreatePost = (type: IType) => {
       }
     } catch (error) {
       toast({
-        position: 'top',
+        position: "top",
         title: "Something error while post!",
-        status: 'error',
+        status: "error",
         duration: 1500,
         isClosable: true,
-      })
+      });
       console.log(error);
     }
   };
@@ -270,6 +272,7 @@ const CreatePost = (type: IType) => {
                     image: null,
                   }))
                 }
+                aria-label={""}
               />
 
               <Image src={URL.createObjectURL(formData.image)} h="120px" />

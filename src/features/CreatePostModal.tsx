@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Flex,
@@ -7,7 +9,6 @@ import {
   ModalCloseButton,
   ModalBody,
   useDisclosure,
-  Link,
   Input,
   Spacer,
   Avatar,
@@ -80,7 +81,7 @@ const CreatePostModal = () => {
     }
 
     try {
-      const response = await API.post("/thread", formData, {
+      await API.post("/thread", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -227,13 +228,10 @@ const CreatePostModal = () => {
                   color="red.600"
                   fontSize="28px"
                   _hover={{ bg: "none", color: "white" }}
-                  onClick={() =>
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      image: null,
-                    }))
-                  }
-                />
+                  onClick={() => setFormData((prevData) => ({
+                    ...prevData,
+                    image: null,
+                  }))} aria-label={""}                />
 
                 {/* <Image src={URL.createObjectURL(formData.image)} h="120px" /> */}
                 <Avatar src={URL.createObjectURL(formData.image)} size="2xl" />

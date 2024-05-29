@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Text,
   Stack,
@@ -10,46 +11,19 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
-import datas from "../../mocks/users.json";
-import { useState, useEffect } from "react";
-import { IUsers, UsersInterface } from "../../interfaces/UsersInterface";
-import CardUser from "../../component/UserCard";
-import { API } from "../../libs/axios";
-import {
-  FollowerInterface,
-  FollowingInterface,
-} from "../../interfaces/FollowsInterface";
+import { useEffect } from "react";
+import { UsersInterface } from "../../interfaces/UsersInterface";
 import UserCard from "../../component/UserCard";
 import { useSelector } from "react-redux";
 import { selectFollower, selectFollowing } from "../../slices/followSlice";
 import { useFollowHooks } from "../../hooks/follow";
-import { setIsFetchDetail } from "../../slices/detailThreadSlice";
 
 const Follows = () => {
-  // const [data, setData] = useState<UsersInterface[]>([])
-  // const userId = sessionStorage.getItem("id");
-  // const token = sessionStorage.getItem("token");
-  // const [following, setFollowing] = useState<any>([]);
-  // const [follower, setFollower] = useState<any>([]);
   const { fetchFollow } = useFollowHooks();
   const follower = useSelector(selectFollower);
   const following = useSelector(selectFollowing);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const response = await API.get(`/follow/${userId}`, {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   });
-    //   console.log("response :", response.data);
-
-    //   setFollower(response.data.follower);
-    //   setFollowing(response.data.following);
-    // };
-
-    // fetchData();
-    // setData(datas)
     fetchFollow();
   }, []);
 

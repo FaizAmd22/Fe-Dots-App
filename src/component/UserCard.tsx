@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Spacer,
   Button,
@@ -7,35 +8,25 @@ import {
   Avatar,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { UsersInterface } from "../interfaces/UsersInterface";
 import { API } from "../libs/axios";
-import axios from "axios";
 import { useSideProfileHooks } from "../hooks/sideProfile";
 import { useProfileHooks } from "../hooks/profile";
 import { useProfileThreadHooks } from "../hooks/profileThread";
-import { NavLink, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setIsFetchDetail } from "../slices/detailThreadSlice";
+import { Link } from "react-router-dom";
 import { useFollowHooks } from "../hooks/follow";
 import { useSuggestionHooks } from "../hooks/suggestion";
 
-const UserCard = (data: UsersInterface) => {
-  // const [followed, setFollowed] = useState<boolean>(data.data.isFollow);
+const UserCard = (data: any) => {
   const token = sessionStorage.getItem("token");
   const { fetchProfile } = useProfileHooks();
   const { fetchSuggestion } = useSuggestionHooks();
   const { fetchCurrentUser } = useSideProfileHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
-  const { fetchFollow, fetchFollower } = useFollowHooks();
-  const dispatch = useDispatch();
+  const { fetchFollow } = useFollowHooks();
 
   const handleClick = async () => {
-    // dispatch(setIsFetchDetail(true))
     fetchProfile();
-    // fetchProfileThread();
     fetchProfileThreadAuth();
-    // sessionStorage.setItem("profileId", Number(data.data.id));
     console.log("data userCard :", data.data);
     sessionStorage.setItem("profile", JSON.stringify(data.data));
   };
@@ -44,7 +35,7 @@ const UserCard = (data: UsersInterface) => {
 
   const handleFollow = async () => {
     if (!data.data.isFollow) {
-      const response = await API.post(
+      await API.post(
         "/follow",
         {
           following: data.data.id,
@@ -58,7 +49,7 @@ const UserCard = (data: UsersInterface) => {
 
       // setFollowed(true);
     } else {
-      const response = await API.post(
+      await API.post(
         "/unfollow",
         {
           following: data.data.id,
@@ -70,22 +61,12 @@ const UserCard = (data: UsersInterface) => {
         }
       );
 
-      // setFollowed(false);
     }
     fetchCurrentUser();
     fetchFollow()
     fetchProfile()
     fetchSuggestion()
-    // if (data.type == "suggestion" || data.type == "follower") {
-    //   fetchFollow();
-    // }
-    // if (data.type == "following") fetchFollower();
-    // if (data.type == "suggestion") fetchFollow();
-    // if (data.type != "suggestion") fetchSuggestion();
-    // if (data.type == "following" || data.type == "follower") fetchSuggestion();
   };
-
-  // console.log("data.data UserCard :", data.data);
 
   return (
     <Grid templateColumns="repeat(11, 1fr)">
@@ -98,14 +79,14 @@ const UserCard = (data: UsersInterface) => {
                 ? data.data.picture
                 : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
             }
-            alt={data.data.name}
+            // alt={data.data.name}
             w={data.type == "suggestion" ? "45px" : "60px"}
             h={data.type == "suggestion" ? "45px" : "60px"}
           />
         </Link>
       </GridItem>
 
-      <GridItem colSpan="6" my="auto" pl="2">
+      <GridItem colSpan={6} my="auto" pl="2">
         <Flex flexDirection="column">
           <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
             <Text fontSize={data.type == "suggestion" ? "sm" : "md"}>

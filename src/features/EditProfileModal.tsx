@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Modal,
   ModalOverlay,
@@ -116,14 +118,14 @@ const EditProfileModal = () => {
   const handleSubmit = async () => {
     const userId = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
-    const response = await API.patch(`/user/update/${userId}`, inputData, {
+    await API.patch(`/user/update/${userId}`, inputData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (picture != user.picture) {
-      const responsePicture = await API.patch(
+      await API.patch(
         `/user/picture/${userId}`,
         { picture: picture },
         {
@@ -138,7 +140,7 @@ const EditProfileModal = () => {
     }
 
     if (cover != user.cover_photo) {
-      const responseCover = await API.patch(
+      await API.patch(
         `/user/cover/${userId}`,
         { cover_photo: cover },
         {
@@ -307,7 +309,7 @@ const EditProfileModal = () => {
 
               <InputGroup
                 opacity="0"
-                name="picture"
+                // name="picture"
                 w="150px"
                 h="150px"
                 rounded="full"
@@ -356,7 +358,7 @@ const EditProfileModal = () => {
               borderTop="none"
               borderBottom="1px"
               focusBorderColor="#1D1D1D"
-              value={inputData.name}
+              value={`${inputData.name}`}
               placeholder="Name"
               name="name"
               onChange={handleChange}
@@ -368,7 +370,7 @@ const EditProfileModal = () => {
               borderTop="none"
               borderBottom="1px"
               focusBorderColor="#1D1D1D"
-              value={inputData.username}
+              value={`${inputData.username}`}
               placeholder="Username"
               name="username"
               onChange={handleChange}
@@ -381,7 +383,7 @@ const EditProfileModal = () => {
               borderTop="none"
               borderBottom="1px"
               focusBorderColor="#1D1D1D"
-              value={inputData.bio}
+              value={`${inputData.bio}`}
               placeholder="Bio"
               name="bio"
               onChange={handleChange}

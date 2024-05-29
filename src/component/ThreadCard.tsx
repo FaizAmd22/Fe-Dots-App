@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Flex,
@@ -13,16 +14,13 @@ import { BiCommentDetail } from "react-icons/bi";
 import changeFormatDate from "../features/ChangeFormatDate";
 import Dropdown from "../features/Dropdown";
 import Liked from "../features/Liked";
-import { ThreadInterface } from "../interfaces/ThreadInterface";
 import { Link } from "react-router-dom";
 import { useProfileHooks } from "../hooks/profile";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 
-const ThreadCard = (thread: ThreadInterface) => {
+const ThreadCard = (thread: any) => {
   const { fetchProfile } = useProfileHooks();
-  const { fetchProfileThread, fetchProfileThreadAuth } =
-    useProfileThreadHooks();
-  // console.log("thread data :", thread.thread);
+  const { fetchProfileThread, fetchProfileThreadAuth } = useProfileThreadHooks();
 
   const {
     author,
@@ -32,7 +30,6 @@ const ThreadCard = (thread: ThreadInterface) => {
     image,
     isLike,
     likes,
-    posted_at,
     likedPerson,
     replies,
   } = thread.thread;
@@ -61,7 +58,7 @@ const ThreadCard = (thread: ThreadInterface) => {
           </Link>
         </GridItem>
 
-        <GridItem colSpan="12">
+        <GridItem colSpan={12}>
           <Flex alignItems="center" alignContent="center">
             <Box>
               <Flex gap="1" color="white" alignItems="center" h="22px">
@@ -91,7 +88,7 @@ const ThreadCard = (thread: ThreadInterface) => {
             <Dropdown id={id} type="threads" userId={author.id} />
           </Flex>
 
-          <Link to={`/details/${id}`} _hover={{ textDecoration: "none" }}>
+          <Link to={`/details/${id}`}>
             <Box>
               <Text fontSize="sm" my="2" mb="4">
                 {content}
@@ -120,7 +117,7 @@ const ThreadCard = (thread: ThreadInterface) => {
               borderRadius="full"
               _hover={{ color: "gray.200" }}
             >
-              <Link to={`/details/${id}`} _hover={{ textDecoration: "none" }}>
+              <Link to={`/details/${id}`}>
                 <Flex>
                   <Center gap="2" fontSize="2xl">
                     <BiCommentDetail />

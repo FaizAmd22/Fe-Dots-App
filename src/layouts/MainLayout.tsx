@@ -1,4 +1,4 @@
-import { Grid, GridItem, Text } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import MobileNavbar from "../component/navbar/components/MobileNavbar";
 import Navbar from "../component/navbar/index";
@@ -11,7 +11,7 @@ function MainLayout() {
         <GridItem
           zIndex="99"
           bg="#1D1D1D"
-          colSpan={{ base: "10", md: "3", lg: "2" }}
+          colSpan={{ base: 10, md: 3, lg: 2 }}
         >
           <Navbar />
         </GridItem>
@@ -21,7 +21,7 @@ function MainLayout() {
           borderColor="gray.400"
           borderLeft={{ base: "none", md: "2px" }}
           borderRight={{ base: "none", md: "2px" }}
-          colSpan={{ base: "10", md: "7", lg: "5" }}
+          colSpan={{ base: 10, md: 7, lg: 5 }}
         >
           <Outlet />
         </GridItem>

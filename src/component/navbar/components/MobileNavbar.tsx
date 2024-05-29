@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Flex, Center, Link, Text } from "@chakra-ui/react";
 import { RiHome7Line } from "react-icons/ri";
 import { TbUserSearch } from "react-icons/tb";

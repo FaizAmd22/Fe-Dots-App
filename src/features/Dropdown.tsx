@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Menu,
   MenuItem,
@@ -5,15 +6,12 @@ import {
   MenuList,
   IconButton,
 } from "@chakra-ui/react";
-import { API } from "../libs/axios";
-import * as Swal from "sweetalert2";
 import { MdEdit } from "react-icons/md";
 import { IoMdShare } from "react-icons/io";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AlertDelete from "./AlertDelete";
 
 const Dropdown = (data: any) => {
-  const token = sessionStorage.getItem("token");
   const userId = sessionStorage.getItem("id");
 //   console.log("data dropdown :", data);
 
@@ -42,56 +40,6 @@ const Dropdown = (data: any) => {
     );
   };
 
-  //   const handleDelete = () => {
-  //     // console.log("id :", id.id);
-  //     Swal.fire({
-  //       title: "Are you sure wanna delete?",
-  //       background: "#2b2b2b",
-  //       color: "white",
-  //       showCancelButton: true,
-  //       confirmButtonText: "Yes",
-  //       reverseButtons: true,
-  //     }).then(async (result: any) => {
-  //       if (result.isConfirmed) {
-  //         try {
-  //           if (data.type == "threads") {
-  //             await API.delete(`/thread/${data.id}`, {
-  //               headers: {
-  //                 Authorization: `Bearer ${token}`,
-  //               },
-  //             });
-  //           } else {
-  //             await API.delete(`/reply/${data.id}`, {
-  //               headers: {
-  //                 Authorization: `Bearer ${token}`,
-  //               },
-  //             });
-  //           }
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "Deleted!",
-  //             background: "#2b2b2b",
-  //             color: "white",
-  //             showConfirmButton: false,
-  //           });
-  //           // console.log("response :", response);
-
-  //           setTimeout(() => {
-  //             window.location.reload();
-  //           }, 1000);
-  //         } catch (error) {
-  //           // console.log(error.response.data.message)
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "Cannot delete!",
-  //             background: "#2b2b2b",
-  //             color: "white",
-  //             showConfirmButton: false,
-  //           });
-  //         }
-  //       }
-  //     });
-  //   };
 
   return (
     <Menu>

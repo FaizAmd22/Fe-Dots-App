@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Text,
   Stack,
@@ -9,13 +11,12 @@ import {
 import { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { useDispatch } from "react-redux";
-import { UsersInterface } from "../../interfaces/UsersInterface";
 import { API } from "../../libs/axios";
 import { setUsers } from "../../slices/searchedUserSlice";
 import SearchedUser from "./components/SearchedUser";
 
 const Search = () => {
-  const [username, setUsername] = useState<string | null>(null);
+  const [username, setUsername] = useState<any>(null);
   const [dataFilter, setDataFilter] = useState<any>([]);
   const [message, setMessage] = useState<boolean>(false);
   const token = sessionStorage.getItem("token");
@@ -39,8 +40,8 @@ const Search = () => {
       // console.log("search :", data);
 
       if (username?.length > 0) {
-        const filter = data.filter((item) =>
-          item.username.toLowerCase().includes(username.toLowerCase())
+        const filter = data.filter((item: any) =>
+          item.username.toLowerCase().includes(username!.toLowerCase())
         );
         console.log("filter di search :", filter);
         if (filter.length == 0) setMessage(true);

@@ -1,13 +1,13 @@
-import { Box, Button, Flex, Text, Image } from "@chakra-ui/react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Button, Flex, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import DetailThreadCards from "./components/DetailThreadCards";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
 import {
   selectIsFetchDetail,
-  setIsFetchDetail,
 } from "../../slices/detailThreadSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import loading from "../../assets/loading1.gif"
 
 const DetailThread = () => {
@@ -15,7 +15,6 @@ const DetailThread = () => {
   const token = sessionStorage.getItem("token");
   const { fetchDetail, fetchDetailAuth } = useDetailThreadHooks();
   const isFetch = useSelector(selectIsFetchDetail);
-  const dispatch = useDispatch();
   console.log("isFetch :", isFetch);
 
   useEffect(() => {

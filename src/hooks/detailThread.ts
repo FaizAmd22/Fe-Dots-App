@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { ThreadInterface } from "../interfaces/ThreadInterface";
 import { API } from "../libs/axios";
 import { addDetailThread } from "../slices/detailThreadSlice";
 
 export const useDetailThreadHooks = () => {
-    let { id } = useParams();
+    const { id } = useParams();
   const token = sessionStorage.getItem("token");
-  const [data, setData] = useState<ThreadInterface>({});
   const dispatch = useDispatch();
   
   const fetchDetail = async () => {

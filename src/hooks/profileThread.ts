@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IThreads } from "../interfaces/ThreadInterface";
 import { API } from "../libs/axios";
@@ -9,10 +8,9 @@ export const useProfileThreadHooks = () => {
     // const [data, setData] = useState([]);
     const token = sessionStorage.getItem("token");
     const user = useSelector(selectProfile);
-    const userId = sessionStorage.getItem("profileId")
     const dispatch = useDispatch()
     const sessionProfile = sessionStorage.getItem("profile")
-    const profile = JSON.parse(sessionProfile)
+    const profile = JSON.parse(sessionProfile!)
 
 //   console.log("userId di session :", userId);
 

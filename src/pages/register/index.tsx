@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Text, Stack, Input, Button, Link, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { API } from "../../libs/axios";
@@ -49,7 +50,7 @@ const Register = () => {
       navigate("/");
 
       // console.log('response :', response.data)
-    } catch (error) {
+    } catch (error: any) {
       // if (!formData.username && !formData.password && !formData.fullname) {
       //   setError("Data can't be empty!");
       // } else if (!formData.password) {

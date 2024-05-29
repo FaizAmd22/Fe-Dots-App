@@ -1,29 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Flex,
-  Image,
-  Text,
-  Grid,
-  GridItem,
   Stack,
-  Spacer,
-  Button,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import CardItems from "../../../component/ThreadCard";
+import { useSelector } from "react-redux";
 import { useProfileThreadHooks } from "../../../hooks/profileThread";
-import { IThreads, ThreadInterface } from "../../../interfaces/ThreadInterface";
+import { IThreads } from "../../../interfaces/ThreadInterface";
 import { useParams } from "react-router-dom";
-import { API } from "../../../libs/axios";
-import { selectProfile } from "../../../slices/profileSlice";
 import {
-  addProfileThread,
   selectProfileThread,
 } from "../../../slices/profileThreadSlice";
-import {
-  selectIsFetchDetail,
-  setIsFetchDetail,
-} from "../../../slices/detailThreadSlice";
 import ThreadCard from "../../../component/ThreadCard";
 import { LoadingThread } from "../../../component/LoadingCard";
 
@@ -33,22 +19,11 @@ const ThreadProfileCards = () => {
   const token = sessionStorage.getItem("token");
   const { fetchProfileThread, fetchProfileThreadAuth } =
     useProfileThreadHooks();
-  const isFetch = useSelector(selectIsFetchDetail);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const dispatch = useDispatch();
   console.log("filtered :", profileThreads);
 
   useEffect(() => {
-    // if (token) {
-    //   fetchProfileThreadAuth();
-    // } else {
-    //   fetchProfileThread();
-    // }
-
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 500);
     const fetchData = async () => {
       if (token) {
         await fetchProfileThreadAuth()

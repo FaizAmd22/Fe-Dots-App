@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Flex,
@@ -10,12 +11,10 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { BiCommentDetail } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
 import {
   selectDetailThread,
-  setIsFetchDetail,
 } from "../../../slices/detailThreadSlice";
 import { useProfileThreadHooks } from "../../../hooks/profileThread";
 import Dropdown from "../../../features/Dropdown";
@@ -33,7 +32,6 @@ const DetailThreadCards = () => {
   const { fetchProfile } = useProfileHooks();
   const { fetchProfileThread, fetchProfileThreadAuth } =
     useProfileThreadHooks();
-  const dispatch = useDispatch();
 
   const handleClick = () => {
     // dispatch(setIsFetchDetail(true))
@@ -43,22 +41,8 @@ const DetailThreadCards = () => {
   };
 
   console.log("datas di detailThreadCards:", data);
-
-  // useEffect(() => {
-  //   setData(datas);
-
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 1000);
-  // });
-
-  // console.log("data :", data);
-
   return (
     <>
-      {/* {isLoading ? (
-        <Text color="white">Loading ...</Text>
-      ) : ( */}
       <Box w="100%" color="white">
         <Box py="5">
           <Grid templateColumns="repeat(13, 1fr)">
@@ -73,7 +57,7 @@ const DetailThreadCards = () => {
               />
             </GridItem>
 
-            <GridItem colSpan="12">
+            <GridItem colSpan={12}>
               <Flex>
                 <Flex gap="1" color="gray.500" flexDirection="column">
                   <NavLink
@@ -155,17 +139,15 @@ const DetailThreadCards = () => {
         </Box>
 
         {!token
-          ? data.reply.map((replies, index) => {
+          ? data.reply.map((replies: any, index: number) => {
               return (
                 <ReplyCards reply={replies} index={index} type="replies" />
               );
             })
-          : data.reply.data.map((replies, index) => {
+          : data.reply.data.map((replies: any, index: number) => {
               return <ReplyCards reply={replies} index={index} />;
             })}
       </Box>
-      {/* )} */}
-      {/* <Text>testtt</Text> */}
     </>
   );
 };

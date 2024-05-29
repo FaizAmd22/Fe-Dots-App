@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { API } from "../libs/axios";
 import { setFollower, setFollowing } from "../slices/followSlice";

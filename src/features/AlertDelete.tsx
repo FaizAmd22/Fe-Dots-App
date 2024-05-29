@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AlertDialog,
   AlertDialogBody,
@@ -5,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   useDisclosure,
   Button,
   useToast
@@ -13,19 +13,15 @@ import {
 import { useRef } from "react";
 import { API } from "../libs/axios";
 import { MdDeleteForever } from "react-icons/md";
-import { useProfileHooks } from "../hooks/profile";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { useDetailThreadHooks } from "../hooks/detailThread";
-import { useDispatch } from "react-redux";
-import { setIsFetchDetail } from "../slices/detailThreadSlice";
 
 export default function AlertDelete(data: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef();
-  const currentUrl = window.location.href
-  const toast = useToast()
-  const dispatch = useDispatch()
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const currentUrl = window.location.href;
+  const toast = useToast();
   const token = sessionStorage.getItem("token");
   const { fetchDetailAuth } = useDetailThreadHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
@@ -34,25 +30,21 @@ export default function AlertDelete(data: any) {
   console.log("type :", data);
   
   const handleDelete = async () => {
-    // onClose()
     try {
       if (data.type == "threads") {
-        const response = await API.delete(`/thread/${data.id}`, {
+        await API.delete(`/thread/${data.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log("response delete :", response);
       } else {
-        const response = await API.delete(`/reply/${data.id}`, {
+        await API.delete(`/reply/${data.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log("response delete :", response);
       }
 
-      // fetchProfile()
       fetchDetailAuth();
       fetchThreadAuth();
       fetchProfileThreadAuth();
@@ -62,22 +54,21 @@ export default function AlertDelete(data: any) {
         status: 'success',
         duration: 1500,
         isClosable: true,
-      })
+      });
       onClose();
       if (currentUrl.includes("details") && data.type == "threads") {
-        window.history.back()
+        window.history.back();
       }
     } catch (error) {
       toast({
         position: 'top',
-        title: "You don't have permisson!",
+        title: "You don't have permission!",
         status: 'error',
         duration: 1500,
         isClosable: true,
-      })
+      });
       onClose();
     }
-    // window.location.reload()
   };
 
   return (

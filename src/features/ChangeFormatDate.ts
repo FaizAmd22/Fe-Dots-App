@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function changeFormatDate(date: string) {
     const startDate = new Date(date)
     const endDate = Date.now()
     
-    let milliSecStart = startDate.getTime()
+    const milliSecStart = startDate.getTime()
     
     let duration: any = endDate - milliSecStart
     const minutes = Math.floor(duration / 1000 / 60)

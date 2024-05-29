@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Flex,
@@ -16,23 +17,9 @@ import { useProfileHooks } from "../../hooks/profile";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
 
 const ReplyCards = (reply: any, index: number) => {
-  // console.log("replies :", reply.reply);
-  //   const [dataReply, setDataReply] = useState<any>([])
-  //   const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  //   useEffect(() => {
-  //     setIsLoading(true)
-  //     setDataReply(reply)
-
-  //     setTimeout(() => {
-  //       setIsLoading(true)
-  //     }, 1000);
-  // })
   const { fetchProfile } = useProfileHooks();
-  const { fetchProfileThread, fetchProfileThreadAuth } =
-    useProfileThreadHooks();
+  const { fetchProfileThread, fetchProfileThreadAuth } = useProfileThreadHooks();
   const handleClick = () => {
-    // dispatch(setIsFetchDetail(true))
     fetchProfile();
     fetchProfileThread();
     fetchProfileThreadAuth();
@@ -64,7 +51,7 @@ const ReplyCards = (reply: any, index: number) => {
           </GridItem>
         </Link>
 
-        <GridItem colSpan="12">
+        <GridItem colSpan={12}>
           <Flex alignItems="center" alignContent="center">
             <Box>
               <Flex gap="1" color="white" alignItems="center" h="22px">
@@ -93,7 +80,11 @@ const ReplyCards = (reply: any, index: number) => {
                   {changeFormatDate(reply.reply.created_at)}
                 </Text>
 
-                <Dropdown id={reply.reply.id} type="replies" userId={reply.reply.author.id} />
+                <Dropdown
+                  id={reply.reply.id}
+                  type="replies"
+                  userId={reply.reply.author.id}
+                />
               </Flex>
 
               <Text fontSize="sm" mt="2" mb="4">
@@ -116,7 +107,7 @@ const ReplyCards = (reply: any, index: number) => {
             <Image
               src={!reply.reply.image ? "" : reply.reply.image}
               maxW="100%"
-              pt='2'
+              pt="2"
               pr={{ base: "4", md: "2", xl: "7" }}
             />
           </Box>

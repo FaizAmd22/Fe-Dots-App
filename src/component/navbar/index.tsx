@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Text,
   List,
@@ -8,7 +9,6 @@ import {
   Stack,
   Spacer,
   Link,
-  useToast,
 } from "@chakra-ui/react";
 import { RiHome7Line } from "react-icons/ri";
 import { TbUserSearch } from "react-icons/tb";
@@ -31,7 +31,6 @@ import { useProfileThreadHooks } from "../../hooks/profileThread";
 const Navbar = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-  const toast = useToast();
   const token = sessionStorage.getItem("token");
   const [selected, setSelected] = useState<string>("Home");
   const { fetchThread } = useThreadsHooks();
@@ -201,9 +200,9 @@ const Navbar = () => {
                   _hover={{ TextDecoder: "none" }}
                 >
                   <Flex>
-                    <Center axis="both">
+                    <Center>
                       <Text
-                        color={data.path == selected && "white"}
+                        color={data.path == selected ? "white" : "gray.300"}
                         fontSize={{ base: "3xl", lg: "4xl" }}
                         mr="2"
                       >
@@ -211,7 +210,7 @@ const Navbar = () => {
                       </Text>
 
                       <Text
-                        color={data.path == selected && "white"}
+                        color={data.path == selected ? "white" : "gray.300"}
                         fontWeight={
                           data.path == selected ? "semibold" : "normal"
                         }

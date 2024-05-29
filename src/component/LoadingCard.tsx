@@ -1,16 +1,12 @@
 import {
   Stack,
-  Box,
-  Text,
   Skeleton,
   SkeletonCircle,
-  SkeletonText,
   Grid,
   GridItem,
   Flex,
   Spacer,
 } from "@chakra-ui/react";
-import React from "react";
 
 export const LoadingThread = () => {
   return (
@@ -98,13 +94,13 @@ export const LoadingSideProfile = () => {
 
 export const LoadingUserCard = () => {
   return (
-    <Grid templateColumns="repeat(11, 1fr)" >
+    <Grid templateColumns="repeat(11, 1fr)">
       <GridItem display="flex" alignItems="center">
         <SkeletonCircle w="45px" h="45px" />
       </GridItem>
 
-      <GridItem colSpan="6" my="auto" pl="2">
-        <Flex flexDirection="column" gap='3'>
+      <GridItem colSpan={6} my="auto" pl="2">
+        <Flex flexDirection="column" gap="3">
           <Skeleton width="100%" h="15px" rounded="5" />
           <Skeleton width="100%" h="15px" rounded="5" />
         </Flex>
@@ -112,7 +108,7 @@ export const LoadingUserCard = () => {
 
       <Spacer />
 
-      <GridItem colSpan='3'>
+      <GridItem colSpan={3}>
         <Skeleton h="40px" rounded="20" />
       </GridItem>
     </Grid>
