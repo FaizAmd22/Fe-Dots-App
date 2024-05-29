@@ -201,7 +201,7 @@ const CreatePost = (type: IType) => {
         <GridItem colSpan={10}>
           <Input
             onChange={handleChange}
-            value={formData.content ? formData.content : ""}
+            value={formData.content!}
             type="text"
             border="none"
             name="content"
