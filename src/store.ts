@@ -8,7 +8,6 @@ import threadSlice from "./slices/threadSlice";
 import userSlice from "./slices/userSlice";
 import profileThreadSlice from "./slices/profileThreadSlice";
 import followSlice from "./slices/followSlice";
-import likedSlice from "./slices/likedSlice";
 
 export default configureStore({
     reducer: {
