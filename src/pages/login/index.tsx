@@ -13,9 +13,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../libs/axios";
 import { useDispatch } from "react-redux";
-import { BiSolidHide } from "react-icons/bi";
-import { BiSolidShow } from "react-icons/bi";
+ 
 import { addUser } from "../../slices/authSlice";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 const Login = () => {
   const [show, setShow] = useState<boolean>(false);

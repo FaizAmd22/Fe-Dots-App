@@ -1,5 +1,4 @@
-import { Box, Text, Flex, Center, Link, Image } from "@chakra-ui/react";
-import icon from "../../../assets/icon.png";
+import { Box, Text, Flex, Center, Link } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
@@ -58,14 +57,6 @@ const Copyright = () => {
           </Text>
         </Center>
       </Flex>
-
-      <Text color="gray.500">
-        <Flex gap="2">
-          Powered by Dumbways Indonesia
-          <Image src={icon} w="20px" />
-        </Flex>
-        #1CodingBootcamp
-      </Text>
     </Box>
   );
 };
