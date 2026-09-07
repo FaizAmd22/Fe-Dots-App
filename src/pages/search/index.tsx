@@ -16,7 +16,7 @@ import { setUsers } from "../../slices/searchedUserSlice";
 import SearchedUser from "./components/SearchedUser";
 
 const Search = () => {
-  const [username, setUsername] = useState<any>(null);
+  const [keyword, setKeyword] = useState<any>(null);
   const [dataFilter, setDataFilter] = useState<any>([]);
   const [message, setMessage] = useState<boolean>(false);
   const token = sessionStorage.getItem("token");
@@ -26,7 +26,7 @@ const Search = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setUsername(e.target.value);
+    setKeyword(e.target.value);
   };
 
   useEffect(() => {
@@ -39,9 +39,12 @@ const Search = () => {
       const data = response.data;
       // console.log("search :", data);
 
-      if (username?.length > 0) {
-        const filter = data.filter((item: any) =>
-          item.username.toLowerCase().includes(username!.toLowerCase())
+      if (keyword?.length > 0) {
+        const search = keyword.toLowerCase();
+        const filter = data.filter(
+          (item: any) =>
+            item.username?.toLowerCase().includes(search) ||
+            item.name?.toLowerCase().includes(search)
         );
         console.log("filter di search :", filter);
         if (filter.length == 0) setMessage(true);
@@ -54,7 +57,7 @@ const Search = () => {
     };
 
     getData();
-  }, [username]);
+  }, [keyword]);
 
   // console.log("filtered :", dataFilter);
 
@@ -79,7 +82,7 @@ const Search = () => {
           type="text"
           rounded="full"
           name="username"
-          placeholder="search"
+          placeholder="Search here by username or name"
           borderColor="gray.500"
           focusBorderColor="green.500"
         />
