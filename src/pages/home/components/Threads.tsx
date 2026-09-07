@@ -7,7 +7,6 @@ import ThreadCard from "../../../component/ThreadCard";
 import { useThreadsHooks } from "../../../hooks/threads";
 import { ThreadInterface } from "../../../interfaces/ThreadInterface";
 import { selectThread } from "../../../slices/threadSlice";
-import { API } from "../../../libs/axios";
 
 const Threads = () => {
   const { fetchThread, fetchThreadAuth } = useThreadsHooks();
@@ -29,12 +28,6 @@ const Threads = () => {
       setIsLoading(false);
     };
     fetchData();
-
-    const cobaFetch = async () => {
-      const response = await API.get("/thread")
-      console.log("coba fetch :", response);
-    } 
-    cobaFetch()
   }, []);
 
   return (
