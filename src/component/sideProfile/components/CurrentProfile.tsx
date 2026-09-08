@@ -10,7 +10,6 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react";
-import { HiSparkles } from "react-icons/hi2";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
 import EditProfileModal from "../../../features/EditProfileModal";
@@ -61,7 +60,7 @@ const CurrentProfile = () => {
                   ? picture
                   : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
               }
-            //   alt="picture"
+              //   alt="picture"
               w="100px"
               h="100px"
               objectFit="cover"
@@ -76,18 +75,8 @@ const CurrentProfile = () => {
       </Grid>
 
       <Stack gap="1">
-        <Flex color="white">
-          <Center gap="2">
-            <Text color="yellow">
-              <HiSparkles />
-            </Text>
-
-            {name}
-
-            <Text color="yellow">
-              <HiSparkles />
-            </Text>
-          </Center>
+        <Flex color="white" fontSize="large">
+          <Center gap="2">{name}</Center>
         </Flex>
 
         <Text color="gray.500" fontSize="sm">

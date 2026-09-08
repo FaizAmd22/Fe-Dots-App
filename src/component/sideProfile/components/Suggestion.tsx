@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSuggestionHooks } from "../../../hooks/suggestion";
-import { UsersInterface } from "../../../interfaces/UsersInterface";
+import { IUsers } from "../../../interfaces/UsersInterface";
 import { selectSuggestion } from "../../../slices/suggestionSlice";
 import { LoadingUserCard } from "../../LoadingCard";
 import UserCard from "../../UserCard";
@@ -50,9 +50,9 @@ const Suggestion = () => {
             },
           }}
         >
-          {suggestionData.map((data: UsersInterface, index: number) => {
+          {suggestionData.map((data: IUsers) => {
             return (
-              <Box color="white" key={index} py="3">
+              <Box color="white" key={data.id} py="3">
                 <UserCard data={data} type="suggestion" />
               </Box>
             );

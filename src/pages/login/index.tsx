@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
  
 import { addUser } from "../../slices/authSlice";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import GoogleLoginButton from "../../features/GoogleLoginButton";
 
 const Login = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -94,8 +95,8 @@ const Login = () => {
 
         <Stack spacing={3}>
           <Input
-            type="email"
-            placeholder="Username"
+            type="text"
+            placeholder="Username or Email"
             onChange={(e) => setUsername(e.target.value)}
           />
 
@@ -134,6 +135,12 @@ const Login = () => {
         </Button>
 
         {error && <Text color="red.500">{error}</Text>}
+
+        <Text py="2" textAlign="center" color="gray.400" fontSize="sm">
+          or
+        </Text>
+
+        <GoogleLoginButton onError={setError} />
 
         <Text py="2">
           Don't have an account yet?

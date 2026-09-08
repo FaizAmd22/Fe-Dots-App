@@ -12,7 +12,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { UsersInterface } from "../../interfaces/UsersInterface";
+import { IUsers } from "../../interfaces/UsersInterface";
 import UserCard from "../../component/UserCard";
 import { useSelector } from "react-redux";
 import { selectFollower, selectFollowing } from "../../slices/followSlice";
@@ -92,9 +92,9 @@ const Follows = () => {
               },
             }}
           >
-            {follower.map((data: UsersInterface, index: number) => {
+            {follower.map((data: IUsers) => {
               return (
-                <Box color="white" key={index}>
+                <Box color="white" key={data.id}>
                   <UserCard data={data} type="follower" />
                 </Box>
               );
@@ -121,9 +121,9 @@ const Follows = () => {
               },
             }}
           >
-            {following.map((data: UsersInterface, index: number) => {
+            {following.map((data: IUsers) => {
               return (
-                <Box color="white" key={index}>
+                <Box color="white" key={data.id}>
                   <UserCard data={data} type="following" />
                 </Box>
               );

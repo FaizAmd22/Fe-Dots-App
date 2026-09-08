@@ -12,60 +12,70 @@ import { API } from "../libs/axios";
 import { useSideProfileHooks } from "../hooks/sideProfile";
 import { useProfileHooks } from "../hooks/profile";
 import { useProfileThreadHooks } from "../hooks/profileThread";
-import { Link } from "react-router-dom";
-import { useFollowHooks } from "../hooks/follow";
-import { useSuggestionHooks } from "../hooks/suggestion";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useToast } from "@chakra-ui/react";
 
 const UserCard = (data: any) => {
   const token = sessionStorage.getItem("token");
   const { fetchProfile } = useProfileHooks();
-  const { fetchSuggestion } = useSuggestionHooks();
   const { fetchCurrentUser } = useSideProfileHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
-  const { fetchFollow } = useFollowHooks();
+  const { pathname } = useLocation();
+  const toast = useToast();
+
+  // Status tombol dipegang lokal supaya bisa berubah seketika saat diklik,
+  // tanpa menunggu request ke server selesai.
+  const [isFollow, setIsFollow] = useState<boolean>(data.data.isFollow);
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  // Ikuti nilai dari server saat daftarnya dimuat ulang, misalnya ketika
+  // halaman dibuka lagi atau user berpindah halaman.
+  useEffect(() => {
+    setIsFollow(data.data.isFollow);
+  }, [data.data.isFollow]);
 
   const handleClick = async () => {
     fetchProfile();
     fetchProfileThreadAuth();
-    console.log("data userCard :", data.data);
     sessionStorage.setItem("profile", JSON.stringify(data.data));
   };
 
-  // console.log("followed :", followed);
-
   const handleFollow = async () => {
-    if (!data.data.isFollow) {
-      await API.post(
-        "/follow",
-        {
-          following: data.data.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    if (isPending) return;
 
-      // setFollowed(true);
-    } else {
-      await API.post(
-        "/unfollow",
-        {
-          following: data.data.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const nextIsFollow = !isFollow;
+    setIsFollow(nextIsFollow);
+    setIsPending(true);
 
+    try {
+      await API.post(
+        nextIsFollow ? "/follow" : "/unfollow",
+        { following: data.data.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (error: any) {
+      // Gagal di server, kembalikan tombol ke keadaan semula.
+      setIsFollow(!nextIsFollow);
+      setIsPending(false);
+      toast({
+        position: "top",
+        title: error.response?.data?.message || "Gagal memperbarui follow!",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
     }
+
+    setIsPending(false);
+
+    // Sengaja TIDAK me-refetch daftar yang memuat kartu ini (suggestion dan
+    // follows). Kalau di-refetch, user yang baru di-follow langsung hilang dari
+    // daftar dan sisanya bergeser naik. Biarkan daftarnya utuh sampai user
+    // memuat ulang halamannya sendiri.
     fetchCurrentUser();
-    fetchFollow()
-    fetchProfile()
-    fetchSuggestion()
+    if (pathname.startsWith("/profile")) fetchProfile();
   };
 
   return (
@@ -117,12 +127,13 @@ const UserCard = (data: any) => {
         fontSize={data.type == "suggestion" ? "xs" : "sm"}
         margin="auto"
         rounded="full"
-        color={data.data.isFollow ? "gray.500" : "white"}
-        borderColor={data.data.isFollow ? "gray.500" : "white"}
+        color={isFollow ? "gray.500" : "white"}
+        borderColor={isFollow ? "gray.500" : "white"}
         _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
+        isDisabled={isPending}
         onClick={handleFollow}
       >
-        {data.data.isFollow ? "Unfollow" : "Follow"}
+        {isFollow ? "Unfollow" : "Follow"}
       </Button>
       {/* </Flex> */}
     </Grid>

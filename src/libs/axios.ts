@@ -1,6 +1,7 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL as string;
+
 export const API = axios.create({
-    baseURL: "https://be-dots-app.onrender.com/api/v1"
-    // baseURL: "http://localhost:5000/api/v1"
+    baseURL: BASE_URL
 })

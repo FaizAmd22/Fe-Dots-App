@@ -7,6 +7,7 @@ import Login from "./pages/login/index";
 import NotFound from "./pages/notFound/NotFound";
 import Profile from "./pages/profile/index";
 import Register from "./pages/register/index";
+import CompleteProfile from "./pages/completeProfile/index";
 import Search from "./pages/search/index";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/" element={<IsNotLogin />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/complete-profile" element={<CompleteProfile />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

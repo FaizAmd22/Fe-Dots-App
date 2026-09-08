@@ -1,7 +1,6 @@
 import { Box, Text, Flex, Center, Link } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
 import { PiInstagramLogoFill } from "react-icons/pi";
 
 const Copyright = () => {
@@ -33,15 +32,6 @@ const Copyright = () => {
                   _hover={{ color: "green.500" }}
                 >
                   <FaLinkedin />
-                </Link>
-
-                <Link
-                  target="_blank"
-                  href="https://www.facebook.com"
-                  fontSize="lg"
-                  _hover={{ color: "green.500" }}
-                >
-                  <FaFacebook />
                 </Link>
 
                 <Link

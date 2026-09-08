@@ -4,6 +4,7 @@ import { useState } from "react";
 import { API } from "../../libs/axios";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import GoogleLoginButton from "../../features/GoogleLoginButton";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -127,6 +128,12 @@ const Register = () => {
         </Button>
 
         {error && <Text color="red.500">{error}</Text>}
+
+        <Text py="2" textAlign="center" color="gray.400" fontSize="sm">
+          or
+        </Text>
+
+        <GoogleLoginButton text="signup_with" onError={setError} />
 
         <Text py="2">
           Already have account?

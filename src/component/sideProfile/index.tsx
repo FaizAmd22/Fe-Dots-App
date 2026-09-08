@@ -17,7 +17,7 @@ const SideProfile = () => {
     }
 
     // setTimeout(() => {
-      setIsLoading(false);
+    setIsLoading(false);
     // }, 500);
   }, []);
   // console.log("data :", data);

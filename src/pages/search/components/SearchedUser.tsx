@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import UserCard from "../../../component/UserCard";
-import { IUsers, UsersInterface } from "../../../interfaces/UsersInterface";
+import { IUsers } from "../../../interfaces/UsersInterface";
 import { selectUsers } from "../../../slices/searchedUserSlice";
 
 const SearchedUser = () => {
@@ -13,10 +13,10 @@ const SearchedUser = () => {
 
   return (
     <Box>
-      {filter.map((data: UsersInterface, index: number) => {
+      {filter.map((data: IUsers) => {
         return (
-          <Box key={index} py="3" color="white">
-            <UserCard key={index} data={data} type="" />
+          <Box key={data.id} py="3" color="white">
+            <UserCard data={data} type="" />
           </Box>
         );
       })}
