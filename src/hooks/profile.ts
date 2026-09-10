@@ -4,7 +4,15 @@ import { setProfile } from "../slices/profileSlice";
 
 export const useProfileHooks = () => {
     const sessionProfile = sessionStorage.getItem("profile")
-    const profile = JSON.parse(sessionProfile!)
+    // JSON.parse(null) menghasilkan null, bukan galat — galatnya baru muncul
+    // saat profile.username dibaca. Hook ini dipanggil dari banyak tempat yang
+    // belum tentu pernah menyimpan "profile", jadi nilainya dijaga di sini.
+    let profile: { username?: string } | null = null
+    try {
+        profile = sessionProfile ? JSON.parse(sessionProfile) : null
+    } catch (error) {
+        profile = null
+    }
     const token = sessionStorage.getItem("token")
     // console.log("profile di profile hooks :", profile.username);
     
@@ -13,6 +21,11 @@ export const useProfileHooks = () => {
     const dispatch = useDispatch();
     
     const fetchProfile = async () => {
+        // Tanpa username tidak ada yang bisa diambil; memaksakannya hanya
+        // menghasilkan request ke "/users/undefined" yang berakhir 404.
+        if (!profile?.username) return
+
+        try {
         if (token) {
             const response = await API.get(`/users/${profile.username}`, {
                 headers: {
@@ -23,6 +36,9 @@ export const useProfileHooks = () => {
         } else {
             const response = await API.get(`/user/${profile.username}`);
             dispatch(setProfile(response.data.data));
+        }
+        } catch (error) {
+            console.error("Error fetching profile:", error)
         }
         // console.log("userID :", response.data.data.id);
         

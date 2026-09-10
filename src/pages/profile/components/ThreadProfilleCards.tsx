@@ -53,7 +53,7 @@ const ThreadProfileCards = () => {
         profileThreads.map((thread: IThreads, index: number) => {
           return (
             <ThreadCard
-              key={index}
+              key={thread.id}
               thread={thread}
               index={index}
               type="threads"

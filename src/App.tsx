@@ -9,11 +9,23 @@ import Profile from "./pages/profile/index";
 import Register from "./pages/register/index";
 import CompleteProfile from "./pages/completeProfile/index";
 import Search from "./pages/search/index";
+import Chat from "./pages/chat/index";
+import ChatRoom from "./pages/chatRoom/index";
 import { Navigate, Outlet } from "react-router-dom";
 
 function IsNotLogin() {
   if (sessionStorage.token) {
     return <Navigate to={"/"} />;
+  } else {
+    return <Outlet />;
+  }
+}
+
+// Kebalikan dari IsNotLogin. Chat tidak punya versi publik sama sekali, jadi
+// tanpa ini halamannya cuma memicu rentetan 403 dan tampil kosong tanpa sebab.
+function IsLogin() {
+  if (!sessionStorage.token) {
+    return <Navigate to={"/login"} />;
   } else {
     return <Outlet />;
   }
@@ -29,6 +41,11 @@ const App = () => {
           <Route path="/follows" element={<Follows />} />
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/details/:id" element={<DetailThread />} />
+
+          <Route path="/" element={<IsLogin />}>
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/chat/:id" element={<ChatRoom />} />
+          </Route>
         </Route>
 
         <Route path="/" element={<IsNotLogin />}>

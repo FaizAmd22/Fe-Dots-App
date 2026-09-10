@@ -31,9 +31,12 @@ interface IType {
   type: string;
 }
 
+// Batas jumlah gambar; sama dengan MAX_IMAGES di backend.
+const MAX_IMAGES = 4;
+
 interface inputData {
   content: string | null;
-  image: any;
+  images: File[];
 }
 
 const CreatePost = (type: IType) => {
@@ -49,20 +52,33 @@ const CreatePost = (type: IType) => {
 
   const [formData, setFormData] = useState<inputData>({
     content: type.type == "threads" ? null : "",
-    image: null,
+    images: [],
   });
 
   const handleChange = (e: any) => {
     const { name, value, files } = e.target;
 
     if (name === "image" && files && files.length > 0) {
-      const selectedImage = files[0];
-      // console.log("set Image :", selectedImage);
+      const picked = Array.from(files) as File[];
 
-      setFormData((prevData) => ({
-        ...prevData,
-        image: selectedImage,
-      }));
+      setFormData((prevData) => {
+        const merged = [...prevData.images, ...picked].slice(0, MAX_IMAGES);
+
+        if (prevData.images.length + picked.length > MAX_IMAGES) {
+          toast({
+            position: "top",
+            title: `Maksimal ${MAX_IMAGES} gambar.`,
+            status: "warning",
+            duration: 2000,
+            isClosable: true,
+          });
+        }
+
+        return { ...prevData, images: merged };
+      });
+
+      // Input direset supaya memilih berkas yang sama lagi tetap memicu onChange.
+      e.target.value = "";
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -86,7 +102,7 @@ const CreatePost = (type: IType) => {
         fetchDetailAuth();
         setFormData({
           content: "",
-          image: null,
+          images: [],
         });
         resolve(0);
       }, 700);
@@ -94,7 +110,7 @@ const CreatePost = (type: IType) => {
 
     if (
       (formData.content == null || !formData.content) &&
-      formData.image == null
+      !formData.images.length
     ) {
       return toast({
         position: "top",
@@ -105,9 +121,15 @@ const CreatePost = (type: IType) => {
       });
     }
 
+    // Harus FormData sungguhan: beberapa gambar dikirim dengan nama field yang
+    // sama ("image"), dan objek biasa tidak bisa menyatakan hal itu.
+    const body = new FormData();
+    if (formData.content) body.append("content", formData.content);
+    formData.images.forEach((image) => body.append("image", image));
+
     try {
       if (type.type == "threads") {
-        await API.post("/thread", formData, {
+        await API.post("/thread", body, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
@@ -133,14 +155,14 @@ const CreatePost = (type: IType) => {
         });
         setFormData({
           content: "",
-          image: null,
+          images: [],
         });
         fetchThreadAuth();
         fetchDetailAuth();
         dispatch(setIsFetchDetail(true));
         // window.location.reload();
       } else {
-        const response = await API.post(`/thread/${type.id}/reply`, formData, {
+        const response = await API.post(`/thread/${type.id}/reply`, body, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
@@ -233,6 +255,8 @@ const CreatePost = (type: IType) => {
                 opacity="0"
                 type="file"
                 name="image"
+                accept="image/*"
+                multiple
                 onChange={handleChange}
               />
             </InputGroup>
@@ -253,31 +277,41 @@ const CreatePost = (type: IType) => {
 
       <Grid templateColumns="repeat(13, 1fr)">
         <GridItem w="75px" />
-        <GridItem colSpan={5}>
-          {formData.image && (
-            <>
-              <IconButton
-                icon={<IoCloseCircle />}
-                ml="-20px"
-                mb="-20px"
-                bg="none"
-                isRound={true}
-                variant="solid"
-                color="red.600"
-                fontSize="28px"
-                _hover={{ bg: "none", color: "white" }}
-                onClick={() =>
-                  setFormData((prevData) => ({
-                    ...prevData,
-                    image: null,
-                  }))
-                }
-                aria-label={""}
-              />
+        <GridItem colSpan={9}>
+          <Flex gap="3" flexWrap="wrap">
+            {formData.images.map((image, index) => (
+              <Box key={index} position="relative">
+                <IconButton
+                  icon={<IoCloseCircle />}
+                  position="absolute"
+                  top="-10px"
+                  right="-10px"
+                  zIndex="1"
+                  bg="none"
+                  isRound={true}
+                  variant="solid"
+                  color="red.600"
+                  fontSize="24px"
+                  _hover={{ bg: "none", color: "white" }}
+                  aria-label="Hapus gambar"
+                  onClick={() =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      images: prevData.images.filter((_, i) => i !== index),
+                    }))
+                  }
+                />
 
-              <Image src={URL.createObjectURL(formData.image)} h="120px" />
-            </>
-          )}
+                <Image
+                  src={URL.createObjectURL(image)}
+                  h="50px"
+                  w="50px"
+                  objectFit="cover"
+                  rounded="md"
+                />
+              </Box>
+            ))}
+          </Flex>
         </GridItem>
       </Grid>
     </Box>

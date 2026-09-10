@@ -10,7 +10,7 @@ import {
 
 export const LoadingThread = () => {
   return (
-    <Grid templateColumns="repeat(12, 1fr)" w="100%">
+    <Grid templateColumns="repeat(12, 1fr)" w="100%" gap="10px">
       <GridItem>
         <SkeletonCircle w="55px" h="55px" />
       </GridItem>
@@ -110,6 +110,23 @@ export const LoadingUserCard = () => {
 
       <GridItem colSpan={3}>
         <Skeleton h="40px" rounded="20" />
+      </GridItem>
+    </Grid>
+  );
+};
+
+export const LoadingConversationCard = () => {
+  return (
+    <Grid templateColumns="repeat(11, 1fr)">
+      <GridItem display="flex" alignItems="center">
+        <SkeletonCircle w="45px" h="45px" />
+      </GridItem>
+
+      <GridItem colSpan={10} my="auto" pl="2">
+        <Flex flexDirection="column" gap="3">
+          <Skeleton width="100%" h="15px" rounded="5" />
+          <Skeleton width="100%" h="15px" rounded="5" />
+        </Flex>
       </GridItem>
     </Grid>
   );

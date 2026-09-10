@@ -2,7 +2,6 @@
 import {
   Box,
   Flex,
-  Image,
   Text,
   Grid,
   GridItem,
@@ -10,13 +9,36 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { darkenOnHover } from "../../features/HoverStyles";
+import ImageViewer from "../../features/ImageViewer";
+import ImageGrid from "../../features/ImageGrid";
+import { useState } from "react";
+import { useDisclosure } from "@chakra-ui/react";
 import changeFormatDate from "../../features/ChangeFormatDate";
 import Dropdown from "../../features/Dropdown";
 import Liked from "../../features/Liked";
 import { useProfileHooks } from "../../hooks/profile";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
 
-const ReplyCards = (reply: any, index: number) => {
+const ReplyCards = (reply: any) => {
+  const {
+    isOpen: isImageOpen,
+    onOpen: onImageOpen,
+    onClose: onImageClose,
+  } = useDisclosure();
+  const [imageStartIndex, setImageStartIndex] = useState<number>(0);
+
+  const openImageAt = (index: number) => {
+    setImageStartIndex(index);
+    onImageOpen();
+  };
+
+  const imageList: string[] = reply.reply.images?.length
+    ? reply.reply.images
+    : reply.reply.image
+    ? [reply.reply.image]
+    : [];
+
   const { fetchProfile } = useProfileHooks();
   const { fetchProfileThread, fetchProfileThreadAuth } = useProfileThreadHooks();
   const handleClick = () => {
@@ -27,7 +49,6 @@ const ReplyCards = (reply: any, index: number) => {
 
   return (
     <Box
-      key={index}
       w="100%"
       py="5"
       color="white"
@@ -47,6 +68,7 @@ const ReplyCards = (reply: any, index: number) => {
                   : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
               }
               name={reply.reply.author.name}
+              {...darkenOnHover}
             />
           </GridItem>
         </Link>
@@ -59,7 +81,9 @@ const ReplyCards = (reply: any, index: number) => {
                   to={`/profile/${reply.reply.author.username}`}
                   onClick={handleClick}
                 >
-                  <Text fontWeight="semibold">{reply.reply.author.name}</Text>
+                  <Text fontWeight="semibold" {...darkenOnHover}>
+                    {reply.reply.author.name}
+                  </Text>
                 </Link>
 
                 <Link
@@ -70,7 +94,7 @@ const ReplyCards = (reply: any, index: number) => {
                     ml="1"
                     color="gray.500"
                     textDecoration="underline"
-                    _hover={{ color: "gray.200" }}
+                    {...darkenOnHover}
                   >
                     @{reply.reply.author.username}
                   </Text>
@@ -84,6 +108,8 @@ const ReplyCards = (reply: any, index: number) => {
                   id={reply.reply.id}
                   type="replies"
                   userId={reply.reply.author.id}
+                  content={reply.reply.content}
+                  images={imageList}
                 />
               </Flex>
 
@@ -104,11 +130,20 @@ const ReplyCards = (reply: any, index: number) => {
             </Box>
           </Flex>
           <Box>
-            <Image
-              src={!reply.reply.image ? "" : reply.reply.image}
-              maxW="100%"
+            <ImageGrid
+              images={imageList}
+              onOpen={openImageAt}
               pt="2"
               pr={{ base: "4", md: "2", xl: "7" }}
+            />
+
+            <ImageViewer
+              isOpen={isImageOpen}
+              onClose={onImageClose}
+              images={imageList}
+              startIndex={imageStartIndex}
+              author={reply.reply.author}
+              createdAt={reply.reply.created_at}
             />
           </Box>
         </GridItem>

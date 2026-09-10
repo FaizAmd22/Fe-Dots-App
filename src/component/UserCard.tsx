@@ -13,6 +13,7 @@ import { useSideProfileHooks } from "../hooks/sideProfile";
 import { useProfileHooks } from "../hooks/profile";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { Link, useLocation } from "react-router-dom";
+import { darkenOnHover } from "../features/HoverStyles";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 
@@ -92,6 +93,7 @@ const UserCard = (data: any) => {
             // alt={data.data.name}
             w={data.type == "suggestion" ? "45px" : "60px"}
             h={data.type == "suggestion" ? "45px" : "60px"}
+            {...darkenOnHover}
           />
         </Link>
       </GridItem>
@@ -99,7 +101,10 @@ const UserCard = (data: any) => {
       <GridItem colSpan={6} my="auto" pl="2">
         <Flex flexDirection="column">
           <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
-            <Text fontSize={data.type == "suggestion" ? "sm" : "md"}>
+            <Text
+              fontSize={data.type == "suggestion" ? "sm" : "md"}
+              {...darkenOnHover}
+            >
               {data.data.name}
             </Text>
           </Link>
@@ -108,7 +113,7 @@ const UserCard = (data: any) => {
             <Text
               color="gray.500"
               fontSize={data.type == "suggestion" ? "sm" : "md"}
-              _hover={{ color: "white" }}
+              {...darkenOnHover}
             >
               @{data.data.username}
             </Text>

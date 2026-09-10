@@ -1,10 +1,35 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, GridItem } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useChatHooks } from "../hooks/chat";
+import { useChatSocket } from "../hooks/chatSocket";
 import MobileNavbar from "../component/navbar/components/MobileNavbar";
 import Navbar from "../component/navbar/index";
 import SideProfile from "../component/sideProfile/index";
 
+// Pembaruan utama datang dari socket. Interval ini tinggal jaring pengaman
+// kalau koneksi socket sedang putus, jadi jaraknya dilonggarkan.
+const UNREAD_REFRESH_MS = 120000;
+
 function MainLayout() {
+  const { fetchUnreadTotal } = useChatHooks();
+  useChatSocket();
+  const { pathname } = useLocation();
+  const token = sessionStorage.getItem("token");
+
+  // Berpindah halaman ikut menyegarkan, jadi membuka lalu meninggalkan sebuah
+  // percakapan langsung menurunkan angkanya tanpa menunggu interval berikutnya.
+  useEffect(() => {
+    if (token) fetchUnreadTotal();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!token) return;
+    const timer = setInterval(fetchUnreadTotal, UNREAD_REFRESH_MS);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <>
       <Grid templateColumns="repeat(10, 1fr)" h="100vh" overflow='hidden'>

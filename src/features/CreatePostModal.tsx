@@ -16,7 +16,7 @@ import {
   InputLeftElement,
   Box,
   IconButton,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -72,12 +72,12 @@ const CreatePostModal = () => {
   const handleSubmit = async () => {
     if (formData.content == null && formData.image == null) {
       return toast({
-        position: 'top',
+        position: "top",
         title: "Data can't be empty!",
-        status: 'error',
+        status: "error",
         duration: 1500,
         isClosable: true,
-      })
+      });
     }
 
     try {
@@ -91,42 +91,39 @@ const CreatePostModal = () => {
       const PostThreadPromise = new Promise((resolve) => {
         setTimeout(() => {
           fetchThreadAuth();
-          fetchProfileThreadAuth()
+          fetchProfileThreadAuth();
           resolve(0);
         }, 1000);
       });
 
-      toast.promise(
-        PostThreadPromise,
-        {
-          success: {
-            title: "Thread Posted",
-            position: "top",
-            description: "Your thread has been posted successfully!",
-          },
-          error: {
-            title: "Error",
-            position: "top",
-            description: "An error occurred while posting thread",
-          },
-          loading: {
-            title: "Posting Thread",
-            position: "top",
-            description: "Please wait...",
-          },
+      toast.promise(PostThreadPromise, {
+        success: {
+          title: "Thread Posted",
+          position: "top",
+          description: "Your thread has been posted successfully!",
         },
-      );
+        error: {
+          title: "Error",
+          position: "top",
+          description: "An error occurred while posting thread",
+        },
+        loading: {
+          title: "Posting Thread",
+          position: "top",
+          description: "Please wait...",
+        },
+      });
       onClose();
       // window.location.reload()
     } catch (error) {
       console.log(error);
       toast({
-        position: 'top',
+        position: "top",
         title: "Something error while post thread!",
-        status: 'error',
+        status: "error",
         duration: 1500,
         isClosable: true,
-      })
+      });
     }
   };
 
@@ -139,7 +136,7 @@ const CreatePostModal = () => {
         color="white"
         bg="green.500"
         rounded="full"
-        fontSize="16px"
+        fontSize="14px"
         fontWeight="semibold"
         display={{ base: "none", md: "block" }}
         _hover={{ bg: "white", color: "green.500", boxShadow: "lg" }}
@@ -228,10 +225,14 @@ const CreatePostModal = () => {
                   color="red.600"
                   fontSize="28px"
                   _hover={{ bg: "none", color: "white" }}
-                  onClick={() => setFormData((prevData) => ({
-                    ...prevData,
-                    image: null,
-                  }))} aria-label={""}                />
+                  onClick={() =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      image: null,
+                    }))
+                  }
+                  aria-label={""}
+                />
 
                 {/* <Image src={URL.createObjectURL(formData.image)} h="120px" /> */}
                 <Avatar src={URL.createObjectURL(formData.image)} size="2xl" />

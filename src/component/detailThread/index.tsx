@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import DetailThreadCards from "./components/DetailThreadCards";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
-import {
-  selectIsFetchDetail,
-} from "../../slices/detailThreadSlice";
+import { selectIsFetchDetail } from "../../slices/detailThreadSlice";
 import { useSelector } from "react-redux";
-import loading from "../../assets/loading1.gif"
+import loading from "../../assets/loading1.gif";
 
 const DetailThread = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -68,8 +66,14 @@ const DetailThread = () => {
       </Button>
 
       {isLoading ? (
-        <Box w='100%' h='80%' display='flex' alignItems='center' justifyContent='center'>
-          <Image src={loading} alt='loading' />
+        <Box
+          w="100%"
+          h="80%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Image src={loading} alt="loading" />
         </Box>
       ) : (
         <DetailThreadCards />

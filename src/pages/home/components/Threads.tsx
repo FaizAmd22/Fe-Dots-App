@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { LoadingThread } from "../../../component/LoadingCard";
 import ThreadCard from "../../../component/ThreadCard";
 import { useThreadsHooks } from "../../../hooks/threads";
-import { ThreadInterface } from "../../../interfaces/ThreadInterface";
+import { IThreads } from "../../../interfaces/ThreadInterface";
 import { selectThread } from "../../../slices/threadSlice";
 
 const Threads = () => {
@@ -14,8 +14,6 @@ const Threads = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const loopingLoading = [1, 2, 3, 4];
   const datas = useSelector(selectThread);
-
-  console.log("datas di thread :", datas);
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,6 +31,7 @@ const Threads = () => {
   return (
     <Stack
       h="80vh"
+      paddingRight={2}
       my="5"
       overflowY="auto"
       sx={{
@@ -61,8 +60,10 @@ const Threads = () => {
           })}
         </Stack>
       ) : (
-        datas.map((thread: ThreadInterface, index: number) => {
-          return <ThreadCard key={index} thread={thread} />;
+        // Itemnya adalah thread itu sendiri (IThreads), bukan pembungkus
+        // props ThreadInterface — anotasi lamanya membuat thread.id ditolak.
+        datas.map((thread: IThreads) => {
+          return <ThreadCard key={thread.id} thread={thread} />;
         })
       )}
     </Stack>

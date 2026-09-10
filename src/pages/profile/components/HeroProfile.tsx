@@ -1,18 +1,27 @@
-import { Flex, Image, Text, Grid, GridItem, Stack, Spacer, Button } from '@chakra-ui/react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Flex, Image, Text, Grid, GridItem, Stack, Spacer, Button, IconButton, useToast } from '@chakra-ui/react'
 import { FaCalendarDays } from "react-icons/fa6";
+import { LuMessageCircle } from "react-icons/lu";
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import EditProfileModal from '../../../features/EditProfileModal';
+import { useChatHooks } from '../../../hooks/chat';
 import { useProfileHooks } from '../../../hooks/profile';
 import { useSideProfileHooks } from '../../../hooks/sideProfile';
 import { useSuggestionHooks } from '../../../hooks/suggestion';
 import { API } from '../../../libs/axios';
 import { selectProfile } from '../../../slices/profileSlice';
 import { selectUser } from '../../../slices/userSlice';
+import { selectLastSeenById, selectOnlineUserIds } from '../../../slices/chatSlice';
+import PresenceLabel from '../../../features/PresenceLabel';
 
 const HeroProfile = () => {
     const user = useSelector(selectProfile)
     // const [followed, setFollowed] = useState(user.isFollow)
     const currentUser = useSelector(selectUser)
+    const onlineUserIds = useSelector(selectOnlineUserIds)
+    const lastSeenById = useSelector(selectLastSeenById)
     const date = new Date(currentUser.created_at)
     const formatedDate = date.toDateString()
     const token = sessionStorage.getItem("token")
@@ -22,7 +31,32 @@ const HeroProfile = () => {
     const { fetchProfile } = useProfileHooks();
     const {fetchSuggestion} = useSuggestionHooks()
     const { fetchCurrentUser } = useSideProfileHooks();
-    
+    const { createConversation } = useChatHooks();
+    const navigate = useNavigate();
+    const toast = useToast();
+    const [isOpeningChat, setIsOpeningChat] = useState<boolean>(false);
+
+    // Backend mengembalikan percakapan lama kalau DM-nya sudah pernah ada, jadi
+    // tombol ini aman ditekan berkali-kali tanpa membuat percakapan bertumpuk.
+    const handleOpenChat = async () => {
+        if (isOpeningChat) return;
+        setIsOpeningChat(true);
+
+        try {
+            const conversationId = await createConversation([user.id]);
+            navigate(`/chat/${conversationId}`);
+        } catch (error: any) {
+            toast({
+                position: "top",
+                title: error.response?.data?.message || "Gagal membuka percakapan!",
+                status: "error",
+                duration: 2000,
+                isClosable: true,
+            });
+            setIsOpeningChat(false);
+        }
+    };
+
     const handleFollow = async () => {
         if (!user.isFollow) {
          await API.post(
@@ -116,23 +150,41 @@ const HeroProfile = () => {
                 </Text>
 
                 {(currentUser.id != user.id && token) && (
-                    <Button
-                        position='relative'
-                        px='10'
-                        ml='2'
-                        bg='none'
-                        right='0'
-                        border='2px'
-                        fontSize='sm'
-                        margin='auto'
-                        rounded='full'
-                        color={user.isFollow ? "gray.500" : "white"}
-                        borderColor={user.isFollow ? "gray.500" : "white"}
-                        _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
-                        onClick={handleFollow}
-                    >
-                        {user.isFollow ? "Unfollow" : "Follow"}
-                    </Button>
+                    <>
+                        <Button
+                            position='relative'
+                            px='10'
+                            ml='2'
+                            bg='none'
+                            right='0'
+                            border='2px'
+                            fontSize='sm'
+                            margin='auto'
+                            rounded='full'
+                            color={user.isFollow ? "gray.500" : "white"}
+                            borderColor={user.isFollow ? "gray.500" : "white"}
+                            _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
+                            onClick={handleFollow}
+                        >
+                            {user.isFollow ? "Unfollow" : "Follow"}
+                        </Button>
+
+                        <IconButton
+                            bg='none'
+                            border='2px'
+                            margin='auto'
+                            rounded='full'
+                            color='white'
+                            borderColor='white'
+                            fontSize='xl'
+                            aria-label={`Kirim pesan ke ${user.name}`}
+                            title={`Kirim pesan ke ${user.name}`}
+                            icon={<LuMessageCircle />}
+                            isLoading={isOpeningChat}
+                            _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
+                            onClick={handleOpenChat}
+                        />
+                    </>
                 )}
 
                 <Spacer />
@@ -140,6 +192,15 @@ const HeroProfile = () => {
             <Text color='gray.500' mt='-3'>
                 @{user.username}
             </Text>
+
+            {/* Profil sendiri tidak perlu penanda online. */}
+            {currentUser.id != user.id && (
+                <PresenceLabel
+                    fontSize='sm'
+                    isOnline={onlineUserIds.includes(user.id)}
+                    lastSeenAt={lastSeenById[user.id] || user.last_seen_at || null}
+                />
+            )}
 
             <Flex alignItems='center' gap='2' color='gray.500'>
                 <FaCalendarDays />

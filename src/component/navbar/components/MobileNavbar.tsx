@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Flex, Center, Link, Text } from "@chakra-ui/react";
-import { RiHome7Line } from "react-icons/ri";
-import { TbUserSearch } from "react-icons/tb";
-import { LuHeart } from "react-icons/lu";
-import { HiOutlineUserCircle } from "react-icons/hi2";
+import { Box, Flex, Center, Link, Text } from "@chakra-ui/react";
+import { buildMenuItems } from "../menuItems";
+import UnreadBadge from "../UnreadBadge";
+import { navTextOnGroupHover } from "../../../features/HoverStyles";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -16,28 +15,7 @@ const MobileNavbar = () => {
   const token = sessionStorage.getItem("token");
   const [selected, setSelected] = useState<string>("Home");
   const navigate = useNavigate();
-  const ListNavbar = [
-    {
-      name: "Home",
-      path: "/",
-      icon: <RiHome7Line />,
-    },
-    {
-      name: "Search",
-      path: "/search",
-      icon: <TbUserSearch />,
-    },
-    {
-      name: "Follows",
-      path: "/follows",
-      icon: <LuHeart />,
-    },
-    {
-      name: "Profile",
-      path: `/profile/${user.username}`,
-      icon: <HiOutlineUserCircle />,
-    },
-  ];
+  const ListNavbar = buildMenuItems(user.username);
 
   const handleClick = (name: string, path: string) => {
     if (!token) {
@@ -71,7 +49,9 @@ const MobileNavbar = () => {
 
   return (
     <Center h="9vh" bg="#262626">
-      <Flex gap="20">
+      {/* Dulu gap="20" yang dikalibrasi untuk 4 ikon; dengan 5 ikon itu meluber
+          di layar kecil, jadi jaraknya dibiarkan menyesuaikan lebar layar. */}
+      <Flex w="100%" px="6" justifyContent="space-between">
         {ListNavbar.map((data, index) => {
           return (
             <Link
@@ -79,9 +59,16 @@ const MobileNavbar = () => {
               fontSize="25px"
               onClick={() => handleClick(data.name, data.path)}
             >
-              <Text color={selected == data.path ? "white" : "#767676"}>
-                {data.icon}
-              </Text>
+              <Box position="relative" role="group">
+                <Text
+                  color={selected == data.path ? "white" : "#767676"}
+                  {...navTextOnGroupHover}
+                >
+                  {data.icon}
+                </Text>
+
+                {data.name === "Chat" && <UnreadBadge floating />}
+              </Box>
             </Link>
           );
         })}

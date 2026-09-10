@@ -17,9 +17,12 @@ const Profile = () => {
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
+      // Hanya profilnya yang ditunggu. Suggestion di sidebar mengambil
+      // seluruh user dan tidak memengaruhi isi halaman ini, jadi
+      // dijalankan di belakang — dulu halaman menunggunya lebih dulu.
+      fetchSuggestion()
       await fetchProfile()
-      await fetchSuggestion()
-      
+
       setIsLoading(false);
     };
     fetchData();

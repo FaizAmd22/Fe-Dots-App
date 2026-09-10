@@ -10,11 +10,10 @@ import {
   Spacer,
   Link,
 } from "@chakra-ui/react";
-import { RiHome7Line } from "react-icons/ri";
-import { TbUserSearch } from "react-icons/tb";
-import { LuHeart } from "react-icons/lu";
-import { HiOutlineUserCircle } from "react-icons/hi2";
 import { CiLogout } from "react-icons/ci";
+import { buildMenuItems } from "./menuItems";
+import UnreadBadge from "./UnreadBadge";
+import { navTextOnGroupHover } from "../../features/HoverStyles";
 import CreatePostModal from "../../features/CreatePostModal";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -23,6 +22,7 @@ import { selectUser } from "../../slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API } from "../../libs/axios";
+import { disconnectSocket } from "../../libs/socket";
 import { useThreadsHooks } from "../../hooks/threads";
 import { useProfileHooks } from "../../hooks/profile";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
@@ -37,31 +37,8 @@ const Navbar = () => {
   const { fetchProfile } = useProfileHooks();
   const { fetchDetail } = useDetailThreadHooks();
   const { fetchProfileThread } = useProfileThreadHooks();
-  // console.log("token :", token)
-  // console.log("user :", user)
 
-  const ListNavbar = [
-    {
-      name: "Home",
-      path: "/",
-      icon: <RiHome7Line />,
-    },
-    {
-      name: "Search",
-      path: "/search",
-      icon: <TbUserSearch />,
-    },
-    {
-      name: "Follows",
-      path: "/follows",
-      icon: <LuHeart />,
-    },
-    {
-      name: "Profile",
-      path: `/profile/${user.username}`,
-      icon: <HiOutlineUserCircle />,
-    },
-  ];
+  const ListNavbar = buildMenuItems(user.username);
 
   const handleClick = (name: string, path: string) => {
     if (!token) {
@@ -83,8 +60,6 @@ const Navbar = () => {
         });
       }
     } else {
-      console.log("data user di navbar : ");
-
       navigate(path);
       setSelected(path);
       sessionStorage.setItem("profile", JSON.stringify(user));
@@ -92,16 +67,33 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
-    const response = await API.delete("/logout");
-    console.log("response logout :", response);
+    // Konfirmasi dulu: logout gampang tertekan tidak sengaja, apalagi tombolnya
+    // bersebelahan dengan menu lain.
+    const confirmation = await Swal.fire({
+      title: "Logout?",
+      text: "You'll need to login again to access your account.",
+      icon: "warning",
+      background: "#2b2b2b",
+      color: "white",
+      showCancelButton: true,
+      confirmButtonText: "Yes, logout",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    await API.delete("/logout");
 
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("id");
+    // Koneksi socket memakai token lama, jadi harus diputus saat logout.
+    disconnectSocket();
     delete axios.defaults.headers.common["Authorization"];
-    fetchThread()
-    fetchDetail()
-    fetchProfile()
-    fetchProfileThread()
+    fetchThread();
+    fetchDetail();
+    fetchProfile();
+    fetchProfileThread();
     // navigate("/")
     // alert("Logout Success!")
     Swal.fire({
@@ -139,7 +131,7 @@ const Navbar = () => {
                 px="5"
                 py="1"
                 bg="none"
-                fontSize="md"
+                fontSize="sm"
                 margin="auto"
                 rounded="full"
                 border="2px"
@@ -160,7 +152,7 @@ const Navbar = () => {
                 py="1"
                 bg="none"
                 margin="auto"
-                fontSize="md"
+                fontSize="sm"
                 rounded="full"
                 color="white"
                 border="2px"
@@ -183,28 +175,32 @@ const Navbar = () => {
           mt="3"
           pb="3"
           px="3"
-          spacing={3}
+          spacing={2.5}
           color="gray.300"
           display={{ base: "none", md: "block" }}
         >
           {ListNavbar.map((data, index) => {
             return (
-              <ListItem
-                w="100%"
-                key={index}
-                // color={data.path.includes(selected) && "gray.100"}
-                _hover={{ color: "white", fontWeight: "semibold" }}
-              >
+              <ListItem w="100%" key={index}>
                 <Link
                   onClick={() => handleClick(data.name, data.path)}
-                  _hover={{ TextDecoder: "none" }}
+                  _hover={{ textDecoration: "none" }}
                 >
-                  <Flex>
+                  {/* role="group" sengaja di Flex, bukan di ListItem: Chakra
+                      bisa menimpa atribut role pada komponen list-nya. */}
+                  <Flex
+                    role="group"
+                    px="2"
+                    py="2"
+                    rounded="lg"
+                    cursor="pointer"
+                  >
                     <Center>
                       <Text
                         color={data.path == selected ? "white" : "gray.300"}
-                        fontSize={{ base: "3xl", lg: "4xl" }}
+                        fontSize={{ base: "xl", lg: "2xl" }}
                         mr="2"
+                        {...navTextOnGroupHover}
                       >
                         {data.icon}
                       </Text>
@@ -215,9 +211,12 @@ const Navbar = () => {
                           data.path == selected ? "semibold" : "normal"
                         }
                         fontSize="md"
+                        {...navTextOnGroupHover}
                       >
                         {data.name}
                       </Text>
+
+                      {data.name === "Chat" && <UnreadBadge />}
                     </Center>
                   </Flex>
                 </Link>
@@ -226,7 +225,11 @@ const Navbar = () => {
           })}
         </List>
 
-        {token && <CreatePostModal />}
+        {token && (
+          <Stack paddingTop={6}>
+            <CreatePostModal />
+          </Stack>
+        )}
       </Stack>
 
       <Spacer />
@@ -238,7 +241,7 @@ const Navbar = () => {
           py="2"
           bg="none"
           color="green.500"
-          fontSize="lg"
+          fontSize="md"
           border="2px"
           rounded="full"
           fontWeight="semibold"
@@ -256,8 +259,8 @@ const Navbar = () => {
           onClick={() => handleLogout()}
         >
           <Center gap="3">
-            <CiLogout fontSize="30px" />
-            <Text fontSize={{ base: "md", lg: "lg" }}>Logout</Text>
+            <CiLogout fontSize="25px" />
+            <Text fontSize={{ base: "sm", lg: "md" }}>Logout</Text>
           </Center>
         </Button>
       )}

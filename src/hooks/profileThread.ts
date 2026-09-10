@@ -1,59 +1,49 @@
-import { useDispatch, useSelector } from "react-redux";
-import { IThreads } from "../interfaces/ThreadInterface";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { API } from "../libs/axios";
-import { selectProfile } from "../slices/profileSlice";
 import { addProfileThread } from "../slices/profileThreadSlice";
 
 export const useProfileThreadHooks = () => {
-    // const [data, setData] = useState([]);
     const token = sessionStorage.getItem("token");
-    const user = useSelector(selectProfile);
-    const dispatch = useDispatch()
-    const sessionProfile = sessionStorage.getItem("profile")
-    const profile = JSON.parse(sessionProfile!)
+    const dispatch = useDispatch();
 
-//   console.log("userId di session :", userId);
+    // Username diambil dari URL halaman profil — sumber yang paling bisa
+    // dipercaya. Dulu dari sessionStorage/Redux, yang bisa masih berisi profil
+    // yang terakhir dibuka sebelumnya.
+    const { username } = useParams();
 
-    // const filteredData = data.filter((item: IThreads) => item.author.id == user.id);
-    // console.log("filtered :", filteredData);
-    // dispatch(addProfileThread(filteredData))
-
+    // Dulu: mengunduh SELURUH feed (thread semua orang beserta like dan reply-nya)
+    // lalu menyaring milik satu user di browser. Sekarang database yang menyaring
+    // lewat ?username=, jadi yang terkirim hanya thread milik profil ini.
+    //
+    // Di luar halaman profil tidak ada username, dan hook ini berhenti sendiri.
     const fetchProfileThread = async () => {
+        if (!username) return;
+
         try {
-            // dispatch(addProfileThread([]))
-            const response = await API.get("/thread");
-            console.log("response :", response.data.data);
-            //   setData(response.data.data);
-            const data = response.data.data 
-            const filteredData = data.filter((item: IThreads) => item.author.id == user.id);
-            console.log("filtered :", filteredData);
-            dispatch(addProfileThread(filteredData))
+            const response = await API.get("/thread", { params: { username } });
+            dispatch(addProfileThread(response.data.data));
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching profile threads:", error);
         }
     };
 
     const fetchProfileThreadAuth = async () => {
-        // dispatch(addProfileThread([]))
+        if (!username) return;
+
         try {
-            const response = await API.get(`/threads`, {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        });
-        console.log("response :", response.data.data);
-            // setData(response.data.data);
-            const data = response.data.data 
-            const filteredData = data.filter((item: IThreads) => item.author.id == profile.id);
-            console.log("filtered :", filteredData);
-            dispatch(addProfileThread(filteredData))
+            const response = await API.get("/threads", {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { username },
+            });
+            dispatch(addProfileThread(response.data.data));
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching profile threads:", error);
         }
     };
-    
+
     return {
         fetchProfileThread,
-        fetchProfileThreadAuth
-    }
-}
+        fetchProfileThreadAuth,
+    };
+};
