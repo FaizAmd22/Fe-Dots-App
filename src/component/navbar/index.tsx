@@ -27,6 +27,7 @@ import { useThreadsHooks } from "../../hooks/threads";
 import { useProfileHooks } from "../../hooks/profile";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
+import BrandLogo from "../BrandLogo";
 
 const Navbar = () => {
   const user = useSelector(selectUser);
@@ -121,7 +122,12 @@ const Navbar = () => {
           display={{ base: "none", xs: "block" }}
         >
           <Flex>
-            <Text fontSize={{ base: "3xl", lg: "5xl" }}>Dots.</Text>
+            <Stack py={5}>
+              <BrandLogo
+                responsive
+                h={{ base: "36px", md: "40px", lg: "48px" }}
+              />
+            </Stack>
 
             <Spacer />
 

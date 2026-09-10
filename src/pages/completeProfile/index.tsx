@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { API } from "../../libs/axios";
 import { addUser } from "../../slices/authSlice";
+import BrandLogo from "../../component/BrandLogo";
 
 // Langkah kedua login Google: akun belum dibuat sampai user memilih username.
 // signupToken dibawa lewat router state dari GoogleLoginButton.
@@ -56,9 +57,7 @@ const CompleteProfile = () => {
   return (
     <Stack w="100vw" bg="#1D1D1D" h="100vh">
       <Stack w={{ base: "90%", md: "40%" }} p="4" color="white" margin="auto">
-        <Text fontSize="5xl" fontWeight="semibold" color="green.500">
-          Dots.
-        </Text>
+        <BrandLogo h="56px" />
 
         <Text pb="1" fontSize="3xl" fontWeight="semibold">
           Choose your username

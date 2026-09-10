@@ -5,6 +5,7 @@ import { API } from "../../libs/axios";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import GoogleLoginButton from "../../features/GoogleLoginButton";
+import BrandLogo from "../../component/BrandLogo";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -75,14 +76,8 @@ const Register = () => {
         color="white"
         margin="auto"
       >
-        <Link
-          href="/"
-          fontSize="5xl"
-          color="green.500"
-          fontWeight="semibold"
-          _hover={{ textDecoration: "none" }}
-        >
-          Dots.
+        <Link href="/" w="fit-content" _hover={{ textDecoration: "none" }}>
+          <BrandLogo h="56px" />
         </Link>
 
         <Text

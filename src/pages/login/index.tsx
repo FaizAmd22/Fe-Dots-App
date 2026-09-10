@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/authSlice";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import GoogleLoginButton from "../../features/GoogleLoginButton";
+import BrandLogo from "../../component/BrandLogo";
 
 const Login = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -74,14 +75,8 @@ const Login = () => {
         color="white"
         margin="auto"
       >
-        <Link
-          href="/"
-          fontSize="5xl"
-          fontWeight="semibold"
-          color="green.500"
-          _hover={{ textDecoration: "none" }}
-        >
-          Dots.
+        <Link href="/" w="fit-content" _hover={{ textDecoration: "none" }}>
+          <BrandLogo h="56px" />
         </Link>
 
         <Text
