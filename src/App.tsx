@@ -11,6 +11,7 @@ import CompleteProfile from "./pages/completeProfile/index";
 import Search from "./pages/search/index";
 import Chat from "./pages/chat/index";
 import ChatRoom from "./pages/chatRoom/index";
+import Notifications from "./pages/notifications/index";
 import { Navigate, Outlet } from "react-router-dom";
 
 function IsNotLogin() {
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/" element={<IsLogin />}>
             <Route path="/chat" element={<Chat />} />
             <Route path="/chat/:id" element={<ChatRoom />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Route>
         </Route>
 

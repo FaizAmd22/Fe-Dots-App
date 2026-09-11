@@ -235,7 +235,7 @@ const Navbar = () => {
                         {data.name}
                       </Text>
 
-                      {data.name === "Chat" && <UnreadBadge />}
+                      {data.badge && <UnreadBadge kind={data.badge} />}
                     </Center>
                   </Flex>
                 </Link>

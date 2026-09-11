@@ -67,7 +67,7 @@ const MobileNavbar = () => {
                   {data.icon}
                 </Text>
 
-                {data.name === "Chat" && <UnreadBadge floating />}
+                {data.badge && <UnreadBadge floating kind={data.badge} />}
               </Box>
             </Link>
           );

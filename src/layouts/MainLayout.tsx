@@ -4,6 +4,8 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useChatHooks } from "../hooks/chat";
 import { useChatSocket } from "../hooks/chatSocket";
+import { useNotificationHooks } from "../hooks/notification";
+import { useNotificationSocket } from "../hooks/notificationSocket";
 import MobileNavbar from "../component/navbar/components/MobileNavbar";
 import Navbar from "../component/navbar/index";
 import SideProfile from "../component/sideProfile/index";
@@ -14,19 +16,27 @@ const UNREAD_REFRESH_MS = 120000;
 
 function MainLayout() {
   const { fetchUnreadTotal } = useChatHooks();
+  const { fetchNotificationUnread } = useNotificationHooks();
+  // Urutan penting: useChatSocket yang membuat koneksi, notifikasi menumpang.
   useChatSocket();
+  useNotificationSocket();
   const { pathname } = useLocation();
   const token = sessionStorage.getItem("token");
 
   // Berpindah halaman ikut menyegarkan, jadi membuka lalu meninggalkan sebuah
   // percakapan langsung menurunkan angkanya tanpa menunggu interval berikutnya.
   useEffect(() => {
-    if (token) fetchUnreadTotal();
+    if (!token) return;
+    fetchUnreadTotal();
+    fetchNotificationUnread();
   }, [pathname]);
 
   useEffect(() => {
     if (!token) return;
-    const timer = setInterval(fetchUnreadTotal, UNREAD_REFRESH_MS);
+    const timer = setInterval(() => {
+      fetchUnreadTotal();
+      fetchNotificationUnread();
+    }, UNREAD_REFRESH_MS);
     return () => clearInterval(timer);
   }, []);
 

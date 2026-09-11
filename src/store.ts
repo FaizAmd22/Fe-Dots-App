@@ -9,6 +9,7 @@ import userSlice from "./slices/userSlice";
 import profileThreadSlice from "./slices/profileThreadSlice";
 import followSlice from "./slices/followSlice";
 import chatSlice from "./slices/chatSlice";
+import notificationSlice from "./slices/notificationSlice";
 
 export default configureStore({
     reducer: {
@@ -22,5 +23,6 @@ export default configureStore({
         suggestion: suggestionSlice,
         follow: followSlice,
         chat: chatSlice,
+        notification: notificationSlice,
     }
 })
