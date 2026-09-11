@@ -17,18 +17,18 @@ import {
   MenuDivider,
 } from "@chakra-ui/react";
 import { CiLogout } from "react-icons/ci";
-import { LuHeart } from "react-icons/lu";
+import { LuHeart, LuSettings } from "react-icons/lu";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { FALLBACK_AVATAR } from "../../features/ChatHelpers";
 import { buildMenuItems } from "./menuItems";
 import UnreadBadge from "./UnreadBadge";
-import { darkenOnHover, navTextOnGroupHover } from "../../features/HoverStyles";
+import { darkenOnHover, navIconStyle, navLabelStyle } from "../../features/HoverStyles";
 import CreatePostModal from "../../features/CreatePostModal";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../slices/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API } from "../../libs/axios";
 import { disconnectSocket } from "../../libs/socket";
@@ -37,12 +37,17 @@ import { useProfileHooks } from "../../hooks/profile";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
 import BrandLogo from "../BrandLogo";
+import { swalTheme } from "../../features/swalTheme";
 
 const Navbar = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
-  const [selected, setSelected] = useState<string>("Home");
+  const { pathname } = useLocation();
+  // Mengikuti URL, bukan menu terakhir yang diklik. Dulu state awalnya "Home"
+  // (bukan path), jadi saat halaman dibuka tidak ada menu yang tampil aktif.
+  const isActive = (path: string) =>
+    path === "/" ? pathname === "/" : pathname.startsWith(path);
   const { fetchThread } = useThreadsHooks();
   const { fetchProfile } = useProfileHooks();
   const { fetchDetail } = useDetailThreadHooks();
@@ -58,8 +63,7 @@ const Navbar = () => {
         Swal.fire({
           title: "You need to login first!",
           text: "Do you wanna login?",
-          background: "#2b2b2b",
-          color: "white",
+          ...swalTheme(),
           showCancelButton: true,
           confirmButtonText: "Yes",
           reverseButtons: true,
@@ -71,7 +75,6 @@ const Navbar = () => {
       }
     } else {
       navigate(path);
-      setSelected(path);
       sessionStorage.setItem("profile", JSON.stringify(user));
     }
   };
@@ -87,8 +90,7 @@ const Navbar = () => {
       title: "Logout?",
       text: "You'll need to login again to access your account.",
       icon: "warning",
-      background: "#2b2b2b",
-      color: "white",
+      ...swalTheme(),
       showCancelButton: true,
       confirmButtonText: "Yes, logout",
       cancelButtonText: "Cancel",
@@ -122,8 +124,7 @@ const Navbar = () => {
     Swal.fire({
       title: "Logout Success!",
       icon: "success",
-      background: "#2b2b2b",
-      color: "white",
+      ...swalTheme(),
       confirmButtonText: "Okey",
     }).then(() => window.location.assign("/"));
   };
@@ -170,8 +171,8 @@ const Navbar = () => {
                 display={{ base: "block", md: "none" }}
                 _hover={{
                   color: "green.500",
-                  bg: "white",
-                  borderColor: "white",
+                  bg: "app.inverse",
+                  borderColor: "app.inverse",
                 }}
               >
                 Login
@@ -195,9 +196,9 @@ const Navbar = () => {
                 </MenuButton>
 
                 <MenuList
-                  bg="#262626"
-                  borderColor="whiteAlpha.300"
-                  color="white"
+                  bg="app.card"
+                  borderColor="app.borderSoft"
+                  color="app.text"
                   fontWeight="normal"
                   minW="48"
                   py="1"
@@ -205,8 +206,8 @@ const Navbar = () => {
                 >
                   <MenuItem
                     bg="transparent"
-                    _hover={{ bg: "whiteAlpha.200" }}
-                    _focus={{ bg: "whiteAlpha.200" }}
+                    _hover={{ bg: "app.hover" }}
+                    _focus={{ bg: "app.hover" }}
                     icon={<HiOutlineUserCircle size="18px" />}
                     onClick={() =>
                       handleClick("Profile", `/profile/${user.username}`)
@@ -217,21 +218,31 @@ const Navbar = () => {
 
                   <MenuItem
                     bg="transparent"
-                    _hover={{ bg: "whiteAlpha.200" }}
-                    _focus={{ bg: "whiteAlpha.200" }}
+                    _hover={{ bg: "app.hover" }}
+                    _focus={{ bg: "app.hover" }}
                     icon={<LuHeart size="18px" />}
                     onClick={() => handleClick("Follows", "/follows")}
                   >
                     Follows
                   </MenuItem>
 
-                  <MenuDivider borderColor="whiteAlpha.300" />
+                  <MenuItem
+                    bg="transparent"
+                    _hover={{ bg: "app.hover" }}
+                    _focus={{ bg: "app.hover" }}
+                    icon={<LuSettings size="18px" />}
+                    onClick={() => handleClick("Settings", "/settings")}
+                  >
+                    Settings
+                  </MenuItem>
+
+                  <MenuDivider borderColor="app.borderSoft" />
 
                   <MenuItem
                     bg="transparent"
                     color="red.400"
-                    _hover={{ bg: "whiteAlpha.200" }}
-                    _focus={{ bg: "whiteAlpha.200" }}
+                    _hover={{ bg: "app.hover" }}
+                    _focus={{ bg: "app.hover" }}
                     icon={<CiLogout size="18px" />}
                     onClick={() => handleLogout()}
                   >
@@ -248,7 +259,7 @@ const Navbar = () => {
           pb="3"
           px="3"
           spacing={2.5}
-          color="gray.300"
+          color="app.textSoft"
           display={{ base: "none", md: "block" }}
         >
           {ListNavbar.map((data, index) => {
@@ -269,22 +280,14 @@ const Navbar = () => {
                   >
                     <Center>
                       <Text
-                        color={data.path == selected ? "white" : "gray.300"}
                         fontSize={{ base: "xl", lg: "2xl" }}
                         mr="2"
-                        {...navTextOnGroupHover}
+                        {...navIconStyle(isActive(data.path))}
                       >
                         {data.icon}
                       </Text>
 
-                      <Text
-                        color={data.path == selected ? "white" : "gray.300"}
-                        fontWeight={
-                          data.path == selected ? "semibold" : "normal"
-                        }
-                        fontSize="md"
-                        {...navTextOnGroupHover}
-                      >
+                      <Text fontSize="md" {...navLabelStyle(isActive(data.path))}>
                         {data.name}
                       </Text>
 
@@ -321,15 +324,15 @@ const Navbar = () => {
           rounded="full"
           fontWeight="semibold"
           display={{ base: "none", md: "block" }}
-          _hover={{ color: "green.500", borderColor: "white", bg: "white" }}
+          _hover={{ color: "green.500", borderColor: "app.inverse", bg: "app.inverse" }}
         >
           <Center gap="3">Login</Center>
         </Link>
       ) : (
         <Button
           bg="none"
-          color="gray.400"
-          _hover={{ color: "white", bg: "none" }}
+          color="app.textMuted"
+          _hover={{ color: "app.text", bg: "none" }}
           display={{ base: "none", md: "block" }}
           isLoading={isLoggingOut}
           onClick={() => handleLogout()}

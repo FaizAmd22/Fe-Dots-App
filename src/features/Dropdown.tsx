@@ -62,14 +62,14 @@ const Dropdown = (data: any) => {
         aria-label="Options"
         icon={<BsThreeDotsVertical />}
         variant="none"
-        borderColor="#1D1D1D"
+        borderColor="app.bg"
       />
-      <MenuList bg="#1D1D1D">
+      <MenuList bg="app.bg">
         {/* closeOnSelect dimatikan supaya menunya tidak langsung tertutup —
             kalau tertutup, perubahan teksnya tidak sempat terlihat. */}
         <MenuItem
           icon={copyState === "copied" ? <LuCheck /> : <LuCopy />}
-          bg="#1D1D1D"
+          bg="app.bg"
           color={copyState === "error" ? "red.400" : undefined}
           closeOnSelect={false}
           onClick={handleShare}
@@ -82,7 +82,7 @@ const Dropdown = (data: any) => {
         </MenuItem>
         {data.userId == userId && (
           <>
-            <MenuItem icon={<MdEdit />} bg="#1D1D1D" onClick={onEditOpen}>
+            <MenuItem icon={<MdEdit />} bg="app.bg" onClick={onEditOpen}>
               Edit
             </MenuItem>
 
@@ -92,7 +92,7 @@ const Dropdown = (data: any) => {
                 kondisional (hanya untuk konten sendiri), jumlah hook Dropdown
                 jadi berubah-ubah antar render dan React membuang seluruh pohon
                 komponen — layar berubah putih. */}
-            <MenuItem bg="#1D1D1D">
+            <MenuItem bg="app.bg">
               <AlertDelete {...data} />
             </MenuItem>
           </>

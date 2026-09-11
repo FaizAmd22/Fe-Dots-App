@@ -150,7 +150,7 @@ const EditPostModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent bg="#1D1D1D" color="white">
+      <ModalContent bg="app.bg" color="app.text">
         <ModalHeader>
           {type === "threads" ? "Edit thread" : "Edit balasan"}
         </ModalHeader>
@@ -160,7 +160,7 @@ const EditPostModal = ({
           <Textarea
             rows={4}
             placeholder="Tulis sesuatu..."
-            borderColor="gray.600"
+            borderColor="app.border"
             focusBorderColor="green.500"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -188,7 +188,7 @@ const EditPostModal = ({
                       color="red.600"
                       fontSize="22px"
                       aria-label="Hapus gambar"
-                      _hover={{ bg: "none", color: "white" }}
+                      _hover={{ bg: "none", color: "app.text" }}
                       onClick={() =>
                         setKeptImages((current) =>
                           current.filter((_, i) => i !== index)
@@ -218,7 +218,7 @@ const EditPostModal = ({
                       color="red.600"
                       fontSize="22px"
                       aria-label="Hapus gambar"
-                      _hover={{ bg: "none", color: "white" }}
+                      _hover={{ bg: "none", color: "app.text" }}
                       onClick={() =>
                         setNewImages((current) =>
                           current.filter((_, i) => i !== index)
@@ -256,7 +256,7 @@ const EditPostModal = ({
             color="green.500"
             leftIcon={<BiSolidImageAdd />}
             isDisabled={totalImages >= MAX_IMAGES}
-            _hover={{ bg: "#262626" }}
+            _hover={{ bg: "app.card" }}
             onClick={() => fileInput.current?.click()}
           >
             Tambah gambar
@@ -264,14 +264,14 @@ const EditPostModal = ({
         </ModalBody>
 
         <ModalFooter gap="2">
-          <Button variant="ghost" color="gray.400" onClick={onClose}>
+          <Button variant="ghost" color="app.textMuted" onClick={onClose}>
             Batal
           </Button>
           <Button
             rounded="full"
             bg="green.500"
             color="white"
-            _hover={{ color: "green.500", bg: "white" }}
+            _hover={{ color: "green.500", bg: "app.inverse" }}
             isLoading={isSaving}
             onClick={handleSave}
           >

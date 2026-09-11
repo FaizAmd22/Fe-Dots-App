@@ -79,6 +79,13 @@ const UserCard = (data: any) => {
     if (pathname.startsWith("/profile")) fetchProfile();
   };
 
+  // Kartu ini tampil di halaman Follows (latar biasa) dan di panel Suggestion
+  // (surface hijau di mode terang). Di atas surface, warna sekunder dan aksen
+  // hover harus berbeda: abu-abu dan hijau tidak terlihat di atas hijau.
+  const onSurface = data.type == "suggestion";
+  const mutedColor = onSurface ? "app.onSurfaceMuted" : "gray.500";
+  const accentColor = onSurface ? "app.surfaceAccent" : "green.500";
+
   return (
     <Grid templateColumns="repeat(11, 1fr)">
       {/* <Flex> */}
@@ -111,7 +118,7 @@ const UserCard = (data: any) => {
 
           <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
             <Text
-              color="gray.500"
+              color={mutedColor}
               fontSize={data.type == "suggestion" ? "sm" : "md"}
               {...darkenOnHover}
             >
@@ -132,9 +139,11 @@ const UserCard = (data: any) => {
         fontSize={data.type == "suggestion" ? "xs" : "sm"}
         margin="auto"
         rounded="full"
-        color={isFollow ? "gray.500" : "white"}
-        borderColor={isFollow ? "gray.500" : "white"}
-        _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
+        // Belum di-follow: mewarisi warna teks induknya (terang di atas
+        // surface, gelap/putih di halaman biasa).
+        color={isFollow ? mutedColor : "inherit"}
+        borderColor={isFollow ? mutedColor : "currentColor"}
+        _hover={{ bg: "none", color: accentColor, borderColor: accentColor }}
         isDisabled={isPending}
         onClick={handleFollow}
       >

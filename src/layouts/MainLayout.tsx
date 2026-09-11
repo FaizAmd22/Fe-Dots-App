@@ -59,17 +59,17 @@ function MainLayout() {
       >
         <GridItem
           zIndex="99"
-          bg="#1D1D1D"
+          bg="app.bg"
           colSpan={{ base: 10, md: 3, lg: 2 }}
         >
           <Navbar />
         </GridItem>
 
         <GridItem
-          bg="#1D1D1D"
-          borderColor="gray.400"
-          borderLeft={{ base: "none", md: "2px" }}
-          borderRight={{ base: "none", md: "2px" }}
+          bg="app.bg"
+          borderColor="app.divider"
+          borderLeftWidth={{ base: 0, md: "2px" }}
+          borderRightWidth={{ base: 0, md: "2px" }}
           colSpan={{ base: 10, md: 7, lg: 5 }}
           pt={{ base: 0, md: 10 }}
           minH="0"
@@ -80,7 +80,7 @@ function MainLayout() {
 
         <GridItem
           colSpan={3}
-          bg="#1D1D1D"
+          bg="app.bg"
           minH="0"
           display={{ base: "none", lg: "block" }}
         >
@@ -89,8 +89,8 @@ function MainLayout() {
 
         <GridItem
           colSpan={10}
-          bg="#262626"
-          color="white"
+          bg="app.navBar"
+          color="app.text"
           display={{ base: "block", md: "none" }}
         >
           <MobileNavbar />

@@ -106,7 +106,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
       mb="3"
       type="text"
       placeholder="Cari nama atau username"
-      borderColor="gray.600"
+      borderColor="app.border"
       focusBorderColor="green.500"
       value={keyword}
       onChange={(e) => setKeyword(e.target.value)}
@@ -116,7 +116,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered>
       <ModalOverlay />
-      <ModalContent bg="#1D1D1D" color="white">
+      <ModalContent bg="app.bg" color="app.text">
         <ModalHeader>Chat baru</ModalHeader>
         <ModalCloseButton />
 
@@ -140,7 +140,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                       rounded="md"
                       alignItems="center"
                       cursor="pointer"
-                      _hover={{ bg: "#262626" }}
+                      _hover={{ bg: "app.card" }}
                       onClick={() => openConversation([user.id as number])}
                     >
                       <Avatar w="35px" h="35px" name={user.name} src={user.picture} />
@@ -166,7 +166,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   mb="3"
                   type="text"
                   placeholder="Nama grup"
-                  borderColor="gray.600"
+                  borderColor="app.border"
                   focusBorderColor="green.500"
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
@@ -202,7 +202,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             rounded="full"
             bg="green.500"
             color="white"
-            _hover={{ color: "green.500", bg: "white" }}
+            _hover={{ color: "green.500", bg: "app.inverse" }}
             isLoading={isSubmitting}
             // Grup butuh minimal dua orang lain; satu orang berarti DM biasa.
             isDisabled={selected.length < 2 || !groupName.trim()}

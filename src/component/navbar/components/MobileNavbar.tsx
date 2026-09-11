@@ -2,11 +2,12 @@
 import { Box, Flex, Center, Link, Text } from "@chakra-ui/react";
 import { buildMenuItems } from "../menuItems";
 import UnreadBadge from "../UnreadBadge";
-import { navTextOnGroupHover } from "../../../features/HoverStyles";
+import { navIconStyle } from "../../../features/HoverStyles";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { swalTheme } from "../../../features/swalTheme";
 // import { Link } from "react-router-dom";
 
 const MobileNavbar = () => {
@@ -31,8 +32,7 @@ const MobileNavbar = () => {
         Swal.fire({
           title: "You need to login first!",
           text: "Do you wanna login?",
-          background: "#2b2b2b",
-          color: "white",
+          ...swalTheme(),
           showCancelButton: true,
           confirmButtonText: "Yes",
           reverseButtons: true,
@@ -54,7 +54,13 @@ const MobileNavbar = () => {
     // Tinggi mengikuti isi, bukan 9vh: dulu barisnya di layout cuma 5vh
     // sehingga navbar ini meluber menutupi konten. Padding bawah memberi ruang
     // untuk garis home indicator di iPhone.
-    <Center bg="#262626" pt="1" pb="calc(4px + env(safe-area-inset-bottom))">
+    <Center
+      bg="app.navBar"
+      borderTop="1px"
+      borderColor="app.navBarBorder"
+      pt="1"
+      pb="calc(4px + env(safe-area-inset-bottom))"
+    >
       <Flex w="100%" px="4" justifyContent="space-around">
         {ListNavbar.map((data) => {
           return (
@@ -66,10 +72,7 @@ const MobileNavbar = () => {
               onClick={() => handleClick(data.name, data.path)}
             >
               <Box position="relative" role="group">
-                <Text
-                  color={isActive(data.path) ? "white" : "#767676"}
-                  {...navTextOnGroupHover}
-                >
+                <Text {...navIconStyle(isActive(data.path), "app.iconInactive")}>
                   {data.icon}
                 </Text>
 

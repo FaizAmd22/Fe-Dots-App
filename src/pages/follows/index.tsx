@@ -29,7 +29,7 @@ const Follows = () => {
 
   // console.log("data :", data)
   return (
-    <Stack h="100%" color="white" py={{ base: "0", md: "4" }} px="4">
+    <Stack h="100%" color="app.text" py={{ base: "0", md: "4" }} px="4">
       <Text fontSize="2xl" pt={{ base: "0", md: "4" }} fontWeight="semibold">
         Follows
       </Text>
@@ -53,7 +53,7 @@ const Follows = () => {
               <Button
                 w="100%"
                 bg="none"
-                color="white"
+                color="app.text"
                 _hover={{ bg: "none" }}
                 onClick={() => fetchFollow()}
               >
@@ -64,7 +64,7 @@ const Follows = () => {
               <Button
                 w="100%"
                 bg="none"
-                color="white"
+                color="app.text"
                 _hover={{ bg: "none" }}
                 onClick={() => fetchFollow()}
               >
@@ -104,7 +104,7 @@ const Follows = () => {
           >
             {follower.map((data: IUsers) => {
               return (
-                <Box color="white" key={data.id}>
+                <Box color="app.text" key={data.id}>
                   <UserCard data={data} type="follower" />
                 </Box>
               );
@@ -134,7 +134,7 @@ const Follows = () => {
           >
             {following.map((data: IUsers) => {
               return (
-                <Box color="white" key={data.id}>
+                <Box color="app.text" key={data.id}>
                   <UserCard data={data} type="following" />
                 </Box>
               );

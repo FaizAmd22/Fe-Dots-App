@@ -47,7 +47,7 @@ const PresenceLabel = ({
 }) => (
   <Flex gap="2" alignItems="center">
     <FaCircle color={isOnline ? "#38A169" : "#718096"} size="10px" />
-    <Text fontSize={fontSize} color={isOnline ? "gray.300" : "gray.500"}>
+    <Text fontSize={fontSize} color={isOnline ? "app.textSoft" : "gray.500"}>
       {isOnline ? "Online" : showLastSeen ? formatLastSeen(lastSeenAt) : "Offline"}
     </Text>
   </Flex>

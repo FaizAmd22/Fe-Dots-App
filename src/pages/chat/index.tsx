@@ -34,7 +34,7 @@ const Chat = () => {
   }, []);
 
   return (
-    <Stack h="100%" px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="app.text">
       <Flex alignItems="center" py={{ base: "0", md: "4" }}>
         <Text fontSize="2xl" fontWeight="semibold">
           Chat
@@ -48,7 +48,7 @@ const Chat = () => {
           bg="green.500"
           color="white"
           leftIcon={<LuMessageSquarePlus />}
-          _hover={{ color: "green.500", bg: "white" }}
+          _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={onOpen}
         >
           Baru

@@ -14,17 +14,33 @@ export const darkenOnGroupHover = {
     _groupHover: { filter: "brightness(0.6)" },
 };
 
-// Navbar berlatar gelap, jadi menggelapkan teksnya justru membuat tidak terbaca.
-// Di sini arahnya dibalik: item memakai warna aksen aplikasi saat disorot.
-//
-// Sebelumnya efeknya gray.300 -> white di atas latar #1D1D1D -> #262626, dan
-// kedua perubahan itu terlalu tipis untuk benar-benar terlihat.
 export const navItemHover = {
     transition: "background-color 0.15s ease",
-    _hover: { bg: "whiteAlpha.200" },
+    _hover: { bg: "app.hover" },
 };
 
-export const navTextOnGroupHover = {
-    transition: "color 0.15s ease",
-    _groupHover: { color: "green.500" },
-};
+// Menu navbar: aktif = hijau dan tebal; hover = HANYA menebal, warnanya tetap.
+//
+// Ikon navbar sengaja semuanya ikon garis (Lucide/Tabler), karena "tebal"
+// pada ikon garis berarti garisnya lebih tebal (stroke-width). Ikon isian
+// seperti RiHome7Line tidak bisa ditebalkan dengan cara yang sama.
+const NAV_STROKE = 2;
+const NAV_STROKE_BOLD = 2.75;
+const GROUP_HOVER = "[role=group]:hover &";
+
+export const navIconStyle = (isActive: boolean, inactiveColor?: string) => ({
+    color: isActive ? "green.500" : inactiveColor,
+    sx: {
+        "& svg": {
+            strokeWidth: isActive ? NAV_STROKE_BOLD : NAV_STROKE,
+            transition: "stroke-width 0.15s ease",
+        },
+        [`${GROUP_HOVER} svg`]: { strokeWidth: NAV_STROKE_BOLD },
+    },
+});
+
+export const navLabelStyle = (isActive: boolean) => ({
+    color: isActive ? "green.500" : undefined,
+    fontWeight: isActive ? "semibold" : "normal",
+    sx: { [GROUP_HOVER]: { fontWeight: "semibold" } },
+});

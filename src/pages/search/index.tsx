@@ -62,7 +62,7 @@ const Search = () => {
   // console.log("filtered :", dataFilter);
 
   return (
-    <Stack h="100%" px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="app.text">
       <Text
         pb="2"
         fontSize="2xl"
@@ -73,7 +73,7 @@ const Search = () => {
       </Text>
 
       <InputGroup>
-        <InputLeftElement pl="2" color="gray.400" pointerEvents="none">
+        <InputLeftElement pl="2" color="app.textMuted" pointerEvents="none">
           <IoSearchOutline />
         </InputLeftElement>
 
@@ -89,7 +89,7 @@ const Search = () => {
       </InputGroup>
 
       {message && (
-        <Text marginX="auto" pt="50" color="white">
+        <Text marginX="auto" pt="50" color="app.text">
           User not found!
         </Text>
       )}

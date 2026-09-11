@@ -89,7 +89,7 @@ const Notifications = () => {
   };
 
   return (
-    <Stack h="100%" px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="app.text">
       <Text fontSize="2xl" fontWeight="semibold" py={{ base: "0", md: "4" }}>
         Notifikasi
       </Text>
@@ -147,8 +147,8 @@ const Notifications = () => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    color="gray.400"
-                    _hover={{ color: "white", bg: "whiteAlpha.200" }}
+                    color="app.textMuted"
+                    _hover={{ color: "app.text", bg: "app.hover" }}
                     onClick={loadMore}
                   >
                     Muat lebih banyak

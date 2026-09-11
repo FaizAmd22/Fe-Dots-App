@@ -49,7 +49,7 @@ const DetailThread = () => {
         mb="4"
         ml="-5"
         bg="none"
-        color="white"
+        color="app.text"
         fontSize="24px"
         fontWeight="semibold"
         transitionDuration="500ms"

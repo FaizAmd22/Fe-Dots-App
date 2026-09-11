@@ -94,7 +94,7 @@ const HeroProfile = () => {
     
     return ( 
         <Stack
-            color='white'
+            color='app.text'
             // borderBottom='2px'
             // borderColor='gray.700'
             pb='5'
@@ -123,7 +123,7 @@ const HeroProfile = () => {
                     h={{ base: '24', md: '36', xl: '52' }}
                     p={{ base: '1', md: '1.5', xl: '4' }}
                     rounded='full'
-                    bg='#1D1D1D'
+                    bg='app.bg'
                     flexShrink={0}
                 >
                     <Image
@@ -157,8 +157,8 @@ const HeroProfile = () => {
                             border='2px'
                             fontSize='sm'
                             rounded='full'
-                            color={user.isFollow ? "gray.500" : "white"}
-                            borderColor={user.isFollow ? "gray.500" : "white"}
+                            color={user.isFollow ? "gray.500" : "app.text"}
+                            borderColor={user.isFollow ? "gray.500" : "app.text"}
                             _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
                             isLoading={isFollowPending}
                             onClick={handleFollow}
@@ -171,8 +171,8 @@ const HeroProfile = () => {
                             bg='none'
                             border='2px'
                             rounded='full'
-                            color='white'
-                            borderColor='white'
+                            color='app.text'
+                            borderColor='app.text'
                             fontSize='xl'
                             aria-label={`Kirim pesan ke ${user.name}`}
                             title={`Kirim pesan ke ${user.name}`}

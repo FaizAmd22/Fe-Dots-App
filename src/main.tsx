@@ -1,15 +1,19 @@
 import * as React from 'react'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react'
 import * as ReactDOM from 'react-dom/client'
 import App from './App'
 import { Provider } from 'react-redux'
 import store from './store'
+import theme from './theme'
 
 const rootElement = document.getElementById('root')
 ReactDOM.createRoot(rootElement!).render(
   <React.StrictMode>
+    {/* Menerapkan tema tersimpan sebelum aplikasi tampil, supaya pengguna
+        mode terang tidak melihat kilasan gelap saat halaman dibuka. */}
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <Provider store={store}>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <App />
         </ChakraProvider>
     </Provider>

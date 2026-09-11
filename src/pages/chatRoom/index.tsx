@@ -275,7 +275,7 @@ const ChatRoom = () => {
   };
 
   return (
-    <Stack h="100%" pl="4" pr={{base: 4, md: 0}} pb="2" color="white">
+    <Stack h="100%" pl="4" pr={{base: 4, md: 0}} pb="2" color="app.text">
       {selectionMode ? (
         <SelectionToolbar
           count={selectedIds.length}
@@ -289,11 +289,11 @@ const ChatRoom = () => {
         <IconButton
           size="lg"
           bg="none"
-          color="white"
+          color="app.text"
           rounded="full"
           aria-label="Kembali"
           icon={<LuArrowLeft />}
-          _hover={{ bg: "#262626" }}
+          _hover={{ bg: "app.card" }}
           onClick={() => window.history.back()}
         />
 
@@ -395,8 +395,8 @@ const ChatRoom = () => {
                 <Button
                   size="xs"
                   bg="none"
-                  color="gray.400"
-                  _hover={{ color: "white", bg: "#262626" }}
+                  color="app.textMuted"
+                  _hover={{ color: "app.text", bg: "app.card" }}
                   onClick={loadOlderMessages}
                 >
                   Muat pesan sebelumnya

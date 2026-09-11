@@ -138,7 +138,7 @@ const ForwardModal = ({
   return (
     <Modal isOpen={isOpen} onClose={close} isCentered>
       <ModalOverlay />
-      <ModalContent bg="#1D1D1D" color="white">
+      <ModalContent bg="app.bg" color="app.text">
         <ModalHeader>
           Teruskan {messageIds.length} pesan
         </ModalHeader>
@@ -149,7 +149,7 @@ const ForwardModal = ({
             mb="3"
             type="text"
             placeholder="Cari percakapan atau user"
-            borderColor="gray.600"
+            borderColor="app.border"
             focusBorderColor="green.500"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
@@ -230,7 +230,7 @@ const ForwardModal = ({
             rounded="full"
             bg="green.500"
             color="white"
-            _hover={{ color: "green.500", bg: "white" }}
+            _hover={{ color: "green.500", bg: "app.inverse" }}
             isLoading={isSending}
             isDisabled={!totalPicked}
             onClick={handleForward}

@@ -181,12 +181,12 @@ const EditProfileModal = () => {
         flexShrink={0}
         bg="none"
         border="2px"
-        color="white"
+        color="inherit"
         rounded="full"
         fontSize="14px"
         textAlign="center"
-        borderColor="white"
-        _hover={{ bg: "none", color: "green.400", borderColor: "green.400" }}
+        borderColor="currentColor"
+        _hover={{ bg: "none", color: "app.surfaceAccent", borderColor: "app.surfaceAccent" }}
         onClick={onOpen}
       >
         Edit Profile
@@ -201,14 +201,14 @@ const EditProfileModal = () => {
       >
         <ModalOverlay onClick={handleClose} />
 
-        <ModalContent bg="#1D1D1D" color="white">
+        <ModalContent bg="app.bg" color="app.text">
           <ModalHeader>Edit Profile</ModalHeader>
 
           <ModalCloseButton onClick={handleClose} />
 
           <ModalBody w="100%" margin="auto">
             {/* <form> */}
-            <InputGroup w="100%" _hover={{ color: "white" }}>
+            <InputGroup w="100%" _hover={{ color: "app.text" }}>
               <InputLeftElement
                 pointerEvents="none"
                 cursor="pointer"
@@ -243,8 +243,8 @@ const EditProfileModal = () => {
 
               <InputRightElement>
                 <Text
-                  bg="#1D1D1D"
-                  color="white"
+                  bg="app.bg"
+                  color="app.text"
                   p="5"
                   rounded="full"
                   fontSize="20px"
@@ -256,12 +256,12 @@ const EditProfileModal = () => {
 
             <InputGroup
               w="150px"
-              bg="#1D1D1D"
+              bg="app.bg"
               mt="80px"
               rounded="full"
               color="green.500"
               cursor="pointer"
-              _hover={{ color: "white" }}
+              _hover={{ color: "app.text" }}
             >
               <InputLeftElement
                 pointerEvents="none"
@@ -306,7 +306,7 @@ const EditProfileModal = () => {
                   left="15px"
                   top="15px"
                 >
-                  <Text color="white" fontSize="3xl">
+                  <Text color="app.text" fontSize="3xl">
                     <CiEdit />
                   </Text>
                 </InputRightElement>
@@ -333,7 +333,7 @@ const EditProfileModal = () => {
               borderLeft="none"
               borderTop="none"
               borderBottom="1px"
-              focusBorderColor="#1D1D1D"
+              focusBorderColor="app.bg"
               value={`${inputData.name}`}
               placeholder="Name"
               name="name"
@@ -345,7 +345,7 @@ const EditProfileModal = () => {
               borderLeft="none"
               borderTop="none"
               borderBottom="1px"
-              focusBorderColor="#1D1D1D"
+              focusBorderColor="app.bg"
               value={`${inputData.username}`}
               placeholder="Username"
               name="username"
@@ -358,7 +358,7 @@ const EditProfileModal = () => {
               borderLeft="none"
               borderTop="none"
               borderBottom="1px"
-              focusBorderColor="#1D1D1D"
+              focusBorderColor="app.bg"
               value={`${inputData.bio}`}
               placeholder="Bio"
               name="bio"

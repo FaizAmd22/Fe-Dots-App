@@ -15,7 +15,7 @@ const SearchedUser = () => {
     <Box>
       {filter.map((data: IUsers) => {
         return (
-          <Box key={data.id} py="3" color="white">
+          <Box key={data.id} py="3" color="app.text">
             <UserCard data={data} type="" />
           </Box>
         );

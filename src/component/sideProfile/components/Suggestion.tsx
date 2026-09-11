@@ -36,7 +36,8 @@ const Suggestion = () => {
           h="30vh"
           px="4"
           rounded="lg"
-          bg="#262626"
+          bg="app.surface"
+          color="app.onSurface"
           overflowY="auto"
           overflowX="hidden"
           sx={{
@@ -44,15 +45,16 @@ const Suggestion = () => {
               width: "6px",
               backgroundColor: `none`,
             },
+            // Hijau di atas panel hijau tidak terlihat.
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: `green.500`,
+              backgroundColor: "app.surfaceAccent",
               borderRadius: "3px",
             },
           }}
         >
           {suggestionData.map((data: IUsers) => {
             return (
-              <Box color="white" key={data.id} py="3">
+              <Box key={data.id} py="3">
                 <UserCard data={data} type="suggestion" />
               </Box>
             );

@@ -31,7 +31,10 @@ const ConversationCard = ({ conversation }: { conversation: IConversation }) => 
       rounded="lg"
       cursor="pointer"
       alignItems="center"
-      _hover={{ bg: "#262626" }}
+      // Sama dengan kartu notifikasi: sorotan tipis yang ikut tema, bukan
+      // warna surface (di mode terang surface bisa berwarna penuh).
+      transition="background-color 0.15s ease"
+      _hover={{ bg: "app.hover" }}
       onClick={() => navigate(`/chat/${conversation.id}`)}
     >
       <Avatar

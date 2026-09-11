@@ -1,7 +1,12 @@
-import { RiHome7Line } from "react-icons/ri";
 import { TbUserSearch } from "react-icons/tb";
-import { LuBell, LuHeart, LuMessageCircle } from "react-icons/lu";
-import { HiOutlineUserCircle } from "react-icons/hi2";
+import {
+    LuBell,
+    LuHeart,
+    LuHome,
+    LuMessageCircle,
+    LuSettings,
+    LuUserCircle,
+} from "react-icons/lu";
 import type { BadgeKind } from "./UnreadBadge";
 
 type MenuItem = {
@@ -17,11 +22,15 @@ type MenuItem = {
 
 // Dipakai bersama oleh navbar desktop dan MobileNavbar. Sebelumnya array ini
 // disalin di kedua file, sehingga menu baru gampang lupa ditambahkan di salah satu.
+//
+// Semua ikon berupa ikon GARIS supaya bisa ditebalkan seragam saat aktif atau
+// di-hover (lihat navIconStyle). Home dan Profile dulu memakai ikon isian
+// (Remix) dan ikon Heroicons yang garisnya lebih tipis.
 export const buildMenuItems = (username?: string): MenuItem[] => [
     {
         name: "Home",
         path: "/",
-        icon: <RiHome7Line />,
+        icon: <LuHome />,
         mobile: true,
     },
     {
@@ -52,6 +61,11 @@ export const buildMenuItems = (username?: string): MenuItem[] => [
     {
         name: "Profile",
         path: `/profile/${username}`,
-        icon: <HiOutlineUserCircle />,
+        icon: <LuUserCircle />,
+    },
+    {
+        name: "Settings",
+        path: "/settings",
+        icon: <LuSettings />,
     },
 ];

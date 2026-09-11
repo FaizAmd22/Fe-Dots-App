@@ -23,7 +23,7 @@ const CurrentProfile = () => {
 
   return (
     <Stack gap="2">
-      <Text color="white" fontWeight="semibold" fontSize="xl">
+      <Text color="app.onSurface" fontWeight="semibold" fontSize="xl">
         My Profile
       </Text>
 
@@ -50,7 +50,7 @@ const CurrentProfile = () => {
           h="115px"
           mt="-70px"
           ml="4"
-          bg="#262626"
+          bg="app.surface"
           borderRadius="full"
           flexShrink={0}
         >
@@ -71,29 +71,29 @@ const CurrentProfile = () => {
       </Flex>
 
       <Stack gap="1">
-        <Flex color="white" fontSize="large">
+        <Flex color="app.onSurface" fontSize="large">
           <Center gap="2">{name}</Center>
         </Flex>
 
-        <Text color="gray.500" fontSize="sm">
+        <Text color="app.onSurfaceMuted" fontSize="sm">
           @{username}
         </Text>
 
-        <Text color="white" my="2">
+        <Text color="app.onSurface" my="2">
           {bio}
         </Text>
 
-        <Flex gap="4" color="white">
+        <Flex gap="4" color="app.onSurface">
           <Center gap="1">
             {follower}
 
-            <Text color="gray.500">Followers</Text>
+            <Text color="app.onSurfaceMuted">Followers</Text>
           </Center>
 
           <Center gap="1">
             {following}
 
-            <Text color="gray.500">Following</Text>
+            <Text color="app.onSurfaceMuted">Following</Text>
           </Center>
         </Flex>
       </Stack>

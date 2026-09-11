@@ -45,7 +45,6 @@ const MessageBubble = ({
   };
 
   // Pesan yang belum sampai server belum punya id asli, jadi belum bisa dipilih.
-  // Pesan yang belum sampai server belum punya id asli, jadi belum bisa dipilih.
   const selectable = !message.pending;
 
   return (
@@ -56,7 +55,7 @@ const MessageBubble = ({
       gap="2"
       alignItems="center"
       rounded="md"
-      bg={isSelected ? "whiteAlpha.200" : "transparent"}
+      bg={isSelected ? "app.hover" : "transparent"}
       cursor={selectionMode && selectable ? "pointer" : "default"}
       justifyContent={isMine ? "flex-end" : "flex-start"}
       onClick={() => {
@@ -82,8 +81,10 @@ const MessageBubble = ({
         py="2"
         maxW="75%"
         rounded="lg"
-        bg={isMine ? "green.500" : "#262626"}
-        color="white"
+        bg={isMine ? "green.500" : "app.card"}
+        // Putih hanya di atas hijau; gelembung lawan bicara mengikuti tema,
+        // kalau tidak teksnya hilang di atas abu-abu muda mode terang.
+        color={isMine ? "white" : "app.text"}
       >
         {/* Penanda ala WhatsApp: muncul di atas isi pesan, dengan warna
             redup supaya tidak bersaing dengan isinya. */}

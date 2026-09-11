@@ -5,7 +5,7 @@ import { PiInstagramLogoFill } from "react-icons/pi";
 
 const Copyright = () => {
   return (
-    <Box p="4" rounded="lg" color="white" bg="#262626" fontSize="12px">
+    <Box p="4" rounded="lg" color="app.onSurface" bg="app.surface" fontSize="12px">
       <Flex mb="2">
         <Center>
           <Text>
@@ -20,7 +20,7 @@ const Copyright = () => {
                   target="_blank"
                   href="https://github.com/"
                   fontSize="lg"
-                  _hover={{ color: "green.500" }}
+                  _hover={{ color: "app.surfaceAccent" }}
                 >
                   <FaGithub />
                 </Link>
@@ -29,7 +29,7 @@ const Copyright = () => {
                   target="_blank"
                   href="https://www.linkedin.com/"
                   fontSize="lg"
-                  _hover={{ color: "green.500" }}
+                  _hover={{ color: "app.surfaceAccent" }}
                 >
                   <FaLinkedin />
                 </Link>
@@ -38,7 +38,7 @@ const Copyright = () => {
                   target="_blank"
                   href="http://instagram.com/"
                   fontSize="lg"
-                  _hover={{ color: "green.500" }}
+                  _hover={{ color: "app.surfaceAccent" }}
                 >
                   <PiInstagramLogoFill />
                 </Link>

@@ -65,7 +65,7 @@ const ThreadCard = (thread: any) => {
   };
 
   return (
-    <Box w="100%" color="white" borderTop="1px" py="5" borderColor="gray.600">
+    <Box w="100%" color="app.text" borderTop="1px" py="5" borderColor="app.border">
       <ImageViewer
         isOpen={isImageOpen}
         onClose={onImageClose}
@@ -76,7 +76,7 @@ const ThreadCard = (thread: any) => {
       />
 
       <Grid templateColumns="repeat(13, 1fr)">
-        <GridItem w="50px" mr="2" color="white" borderRadius="full">
+        <GridItem w="50px" mr="2" color="app.text" borderRadius="full">
           <Link to={`/profile/${author.username}`} onClick={handleClick}>
             <Avatar
               src={
@@ -93,7 +93,7 @@ const ThreadCard = (thread: any) => {
         <GridItem colSpan={12}>
           <Flex alignItems="center" alignContent="center">
             <Box>
-              <Flex gap="1" color="white" alignItems="center" h="22px">
+              <Flex gap="1" color="app.text" alignItems="center" h="22px">
                 <Link to={`/profile/${author.username}`} onClick={handleClick}>
                   <Text fontWeight="semibold" {...darkenOnHover}>
                     {author.name}
@@ -155,7 +155,7 @@ const ThreadCard = (thread: any) => {
               fontSize="xl"
               color="gray.500"
               borderRadius="full"
-              _hover={{ color: "gray.200" }}
+              _hover={{ color: "app.textHover" }}
             >
               <Link to={`/details/${id}`}>
                 <Flex>

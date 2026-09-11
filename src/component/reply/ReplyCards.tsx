@@ -51,16 +51,16 @@ const ReplyCards = (reply: any) => {
     <Box
       w="100%"
       py="5"
-      color="white"
+      color="app.text"
       borderTop="1px"
-      borderColor="gray.600"
+      borderColor="app.border"
     >
       <Grid templateColumns="repeat(13, 1fr)">
         <Link
           to={`/profile/${reply.reply.author.username}`}
           onClick={handleClick}
         >
-          <GridItem w="50px" mr="2" borderRadius="full" color="white">
+          <GridItem w="50px" mr="2" borderRadius="full" color="app.text">
             <Avatar
               src={
                 reply.reply.author.picture
@@ -76,7 +76,7 @@ const ReplyCards = (reply: any) => {
         <GridItem colSpan={12}>
           <Flex alignItems="center" alignContent="center">
             <Box>
-              <Flex gap="1" color="white" alignItems="center" h="22px">
+              <Flex gap="1" color="app.text" alignItems="center" h="22px">
                 <Link
                   to={`/profile/${reply.reply.author.username}`}
                   onClick={handleClick}

@@ -61,7 +61,6 @@ const ThreadProfileCards = () => {
           );
         })
       )}
-      ;
     </>
   );
   // return profileThreads.map((thread: IThreads, index: number) => {

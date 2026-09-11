@@ -75,12 +75,12 @@ const Register = () => {
   };
 
   return (
-    <Stack w="100vw" h="100vh" bg="#1D1D1D">
+    <Stack w="100vw" h="100vh" bg="app.bg">
       <Stack
         w={{ base: "90%", md: "40%" }}
         p="4"
         pb="0"
-        color="white"
+        color="app.text"
         margin="auto"
       >
         <Link href="/" w="fit-content" _hover={{ textDecoration: "none" }}>
@@ -123,7 +123,7 @@ const Register = () => {
           rounded="full"
           bg="green.500"
           textAlign="center"
-          _hover={{ color: "green.500", bg: "white" }}
+          _hover={{ color: "green.500", bg: "app.inverse" }}
           isLoading={isSubmitting}
           onClick={handleSubmit}
         >
@@ -132,7 +132,7 @@ const Register = () => {
 
         {error && <Text color="red.500">{error}</Text>}
 
-        <Text py="2" textAlign="center" color="gray.400" fontSize="sm">
+        <Text py="2" textAlign="center" color="app.textMuted" fontSize="sm">
           or
         </Text>
 
@@ -143,7 +143,7 @@ const Register = () => {
           <Link
             px="2"
             color="green.500"
-            _hover={{ color: "white" }}
+            _hover={{ color: "app.text" }}
             onClick={() => navigate("/login")}
           >
             Login
@@ -154,10 +154,13 @@ const Register = () => {
           mt="5"
           py="2"
           bg="red.500"
+          // Eksplisit putih: tanpa ini teksnya mewarisi warna teks tema dan
+          // menjadi gelap di atas merah saat mode terang.
+          color="white"
           rounded="full"
           textAlign="center"
           fontWeight="semibold"
-          _hover={{ color: "red.500", bg: "white", textDecoration: "none" }}
+          _hover={{ color: "red.500", bg: "app.inverse", textDecoration: "none" }}
           onClick={() => navigate("/")}
         >
           <Text>Back To Home</Text>

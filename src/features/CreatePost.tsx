@@ -161,7 +161,7 @@ const CreatePost = (type: IType) => {
   };
 
   return (
-    <Box color="white" pb="2">
+    <Box color="app.text" pb="2">
       {/* Flex, bukan grid 13 kolom: di HP satu kolom grid cuma ~27px, jadi
           avatar, ikon gambar, dan tombol Post saling berdesakan dan input
           teksnya terpotong. Sekarang hanya input yang melebar/menyempit. */}
@@ -199,7 +199,7 @@ const CreatePost = (type: IType) => {
           flexShrink={0}
           fontSize="3xl"
           color="green.500"
-          _hover={{ color: "white" }}
+          _hover={{ color: "app.text" }}
         >
           <InputLeftElement pointerEvents="none" fontSize="3xl" h="40px" w="40px">
             <BiSolidImageAdd />
@@ -227,7 +227,7 @@ const CreatePost = (type: IType) => {
           color="white"
           bg="green.500"
           borderRadius="full"
-          _hover={{ color: "green.500", bg: "white" }}
+          _hover={{ color: "green.500", bg: "app.inverse" }}
           isLoading={isPosting}
           onClick={handleSubmit}
         >
@@ -252,7 +252,7 @@ const CreatePost = (type: IType) => {
                   variant="solid"
                   color="red.600"
                   fontSize="24px"
-                  _hover={{ bg: "none", color: "white" }}
+                  _hover={{ bg: "none", color: "app.text" }}
                   aria-label="Hapus gambar"
                   onClick={() =>
                     setFormData((prevData) => ({

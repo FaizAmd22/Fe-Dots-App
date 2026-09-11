@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { LuForward, LuTrash2, LuX } from "react-icons/lu";
 import Swal from "sweetalert2";
+import { swalTheme } from "../../../features/swalTheme";
 
 const SelectionToolbar = ({
   count,
@@ -38,8 +39,7 @@ const SelectionToolbar = ({
           ? `${count} pesan akan hilang juga dari layar lawan bicara dan tidak bisa dikembalikan.`
           : `${count} pesan hanya hilang dari layarmu; lawan bicara tetap melihatnya.`,
       icon: "warning",
-      background: "#2b2b2b",
-      color: "white",
+      ...swalTheme(),
       showCancelButton: true,
       confirmButtonText: "Ya, hapus",
       cancelButtonText: "Batal",
@@ -72,11 +72,11 @@ const SelectionToolbar = ({
       <IconButton
         size="sm"
         bg="none"
-        color="white"
+        color="app.text"
         rounded="full"
         aria-label="Batalkan pilihan"
         icon={<LuX />}
-        _hover={{ bg: "#262626" }}
+        _hover={{ bg: "app.card" }}
         onClick={onCancel}
       />
 
@@ -89,10 +89,10 @@ const SelectionToolbar = ({
       <Button
         size="sm"
         bg="none"
-        color="white"
+        color="app.text"
         rounded="full"
         leftIcon={<LuForward />}
-        _hover={{ bg: "#262626" }}
+        _hover={{ bg: "app.card" }}
         onClick={onForward}
       >
         Teruskan
@@ -107,15 +107,15 @@ const SelectionToolbar = ({
           rounded="full"
           leftIcon={<LuTrash2 />}
           isLoading={isDeleting}
-          _hover={{ bg: "#262626" }}
+          _hover={{ bg: "app.card" }}
         >
           Hapus
         </MenuButton>
 
-        <MenuList bg="#262626" borderColor="gray.700">
+        <MenuList bg="app.card" borderColor="app.borderMenu">
           <MenuItem
-            bg="#262626"
-            _hover={{ bg: "#333333" }}
+            bg="app.card"
+            _hover={{ bg: "app.cardHover" }}
             onClick={() => confirmDelete("me")}
           >
             Hapus untuk saya
@@ -124,9 +124,9 @@ const SelectionToolbar = ({
           {/* Hanya pesan sendiri yang bisa ditarik dari layar orang lain. */}
           {canDeleteForEveryone && (
             <MenuItem
-              bg="#262626"
+              bg="app.card"
               color="red.400"
-              _hover={{ bg: "#333333" }}
+              _hover={{ bg: "app.cardHover" }}
               onClick={() => confirmDelete("everyone")}
             >
               Hapus untuk semua

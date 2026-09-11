@@ -45,11 +45,11 @@ const SideProfile = () => {
     >
       {token && (
         <>
-          <Box rounded="md" bg="#262626" p="4">
+          <Box rounded="md" bg="app.surface" color="app.onSurface" p="4">
             {isLoading ? <LoadingSideProfile /> : <CurrentProfile />}
           </Box>
 
-          <Text color="white" fontWeight="semibold" pl="2">
+          <Text color="app.text" fontWeight="semibold" pl="2">
             Suggestion for you
           </Text>
 

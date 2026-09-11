@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { useDetailThreadHooks } from "../hooks/detailThread";
+import { swalTheme } from "./swalTheme";
 
 const Liked = (likes: any) => {
   const { fetchThreadAuth } = useThreadsHooks();
@@ -37,8 +38,7 @@ const Liked = (likes: any) => {
       Swal.fire({
         title: "You need to login first!",
         text: "Do you wanna login?",
-        background: "#2b2b2b",
-        color: "white",
+        ...swalTheme(),
         showCancelButton: true,
         confirmButtonText: "Yes",
         reverseButtons: true,
@@ -87,7 +87,7 @@ const Liked = (likes: any) => {
         bg="none"
         fontSize="2xl"
         color="gray.500"
-        _hover={{ color: "gray.200" }}
+        _hover={{ color: "app.textHover" }}
         onClick={handleLiked}
       >
         {isLiked ? (

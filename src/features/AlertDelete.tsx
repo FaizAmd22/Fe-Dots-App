@@ -91,7 +91,7 @@ export default function AlertDelete(data: any) {
         isCentered
       >
         <AlertDialogOverlay>
-          <AlertDialogContent bg='#1D1D1D' color='white'>
+          <AlertDialogContent bg='app.bg' color='app.text'>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               {data.type == "threads" ? "Delete This Thread?" : "Delete This Reply?"}
             </AlertDialogHeader>

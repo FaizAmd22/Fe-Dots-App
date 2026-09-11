@@ -116,7 +116,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
           color="green.500"
           aria-label="Kirim gambar"
           icon={<LuImage />}
-          _hover={{ bg: "#262626" }}
+          _hover={{ bg: "app.card" }}
           onClick={() => fileInput.current?.click()}
         />
 
@@ -132,7 +132,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
         <Input
           rounded="full"
           placeholder="Tulis pesan"
-          borderColor="gray.600"
+          borderColor="app.border"
           focusBorderColor="green.500"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -153,7 +153,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
           color="white"
           aria-label="Kirim"
           icon={<LuSend />}
-          _hover={{ color: "green.500", bg: "white" }}
+          _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={handleSubmit}
         />
       </Flex>

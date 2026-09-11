@@ -134,7 +134,7 @@ const CreatePostModal = () => {
         fontSize="14px"
         fontWeight="semibold"
         display={{ base: "none", md: "block" }}
-        _hover={{ bg: "white", color: "green.500", boxShadow: "lg" }}
+        _hover={{ bg: "app.inverse", color: "green.500", boxShadow: "lg" }}
       >
         Create Post
       </Button>
@@ -146,8 +146,8 @@ const CreatePostModal = () => {
           maxW="600px"
           py="4"
           mx="2"
-          bg="#1d1d1d"
-          color="white"
+          bg="app.bg"
+          color="app.text"
           textAlign="center"
         >
           <ModalCloseButton />
@@ -179,7 +179,7 @@ const CreatePostModal = () => {
               h="100%"
               fontSize="3xl"
               color="green.500"
-              _hover={{ color: "white" }}
+              _hover={{ color: "app.text" }}
             >
               <InputLeftElement pointerEvents="none" fontSize="3xl">
                 <BiSolidImageAdd />
@@ -201,7 +201,7 @@ const CreatePostModal = () => {
               color="white"
               rounded="full"
               bg="green.500"
-              _hover={{ bg: "white", color: "green.500", boxShadow: "lg" }}
+              _hover={{ bg: "app.inverse", color: "green.500", boxShadow: "lg" }}
               isLoading={isPosting}
               onClick={handleSubmit}
             >
@@ -220,7 +220,7 @@ const CreatePostModal = () => {
                   variant="solid"
                   color="red.600"
                   fontSize="28px"
-                  _hover={{ bg: "none", color: "white" }}
+                  _hover={{ bg: "none", color: "app.text" }}
                   onClick={() =>
                     setFormData((prevData) => ({
                       ...prevData,

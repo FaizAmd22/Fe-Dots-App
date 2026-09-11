@@ -55,15 +55,15 @@ const CompleteProfile = () => {
   };
 
   return (
-    <Stack w="100vw" bg="#1D1D1D" h="100vh">
-      <Stack w={{ base: "90%", md: "40%" }} p="4" color="white" margin="auto">
+    <Stack w="100vw" bg="app.bg" h="100vh">
+      <Stack w={{ base: "90%", md: "40%" }} p="4" color="app.text" margin="auto">
         <BrandLogo h="56px" />
 
         <Text pb="1" fontSize="3xl" fontWeight="semibold">
           Choose your username
         </Text>
 
-        <Text pb="4" fontSize="sm" color="gray.400">
+        <Text pb="4" fontSize="sm" color="app.textMuted">
           Satu langkah lagi. Username ini yang akan tampil di profil dan link kamu.
         </Text>
 
@@ -72,7 +72,7 @@ const CompleteProfile = () => {
             <Avatar size="sm" src={profile.picture || undefined} name={profile.name} />
             <Stack spacing="0">
               <Text fontSize="sm">{profile.name}</Text>
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color="app.textMuted">
                 {profile.email}
               </Text>
             </Stack>
@@ -94,7 +94,7 @@ const CompleteProfile = () => {
           bg="green.500"
           textAlign="center"
           isLoading={isLoading}
-          _hover={{ color: "green.500", bg: "white" }}
+          _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={handleSubmit}
         >
           Continue
@@ -104,7 +104,7 @@ const CompleteProfile = () => {
 
         <Text py="2" fontSize="sm">
           Berubah pikiran?
-          <Link px="2" color="green.500" _hover={{ color: "white" }} onClick={() => navigate("/login")}>
+          <Link px="2" color="green.500" _hover={{ color: "app.text" }} onClick={() => navigate("/login")}>
             Kembali ke login
           </Link>
         </Text>

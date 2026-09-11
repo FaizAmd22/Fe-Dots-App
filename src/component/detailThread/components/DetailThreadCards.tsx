@@ -73,10 +73,10 @@ const DetailThreadCards = () => {
 
   return (
     <>
-      <Box w="100%" color="white">
+      <Box w="100%" color="app.text">
         <Box py="5">
           <Grid templateColumns="repeat(13, 1fr)">
-            <GridItem w="50px" mr="2" color="white" borderRadius="full">
+            <GridItem w="50px" mr="2" color="app.text" borderRadius="full">
               <NavLink
                 to={`/profile/${data.author.username}`}
                 onClick={handleClick}
@@ -102,7 +102,7 @@ const DetailThreadCards = () => {
                   >
                     <Text
                       fontWeight="semibold"
-                      color="white"
+                      color="app.text"
                       {...darkenOnHover}
                     >
                       {data.author.name}
@@ -167,7 +167,7 @@ const DetailThreadCards = () => {
               fontSize="xl"
               color="gray.500"
               borderRadius="full"
-              _hover={{ color: "gray.200" }}
+              _hover={{ color: "app.textHover" }}
             >
               <Flex>
                 <Center gap="2">
@@ -180,7 +180,7 @@ const DetailThreadCards = () => {
           </Flex>
         </Box>
 
-        <Box py="5" borderTop="1px" borderColor="gray.600">
+        <Box py="5" borderTop="1px" borderColor="app.border">
           {token && <CreatePost id={data.id} type="replies" />}
         </Box>
 

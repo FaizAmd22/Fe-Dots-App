@@ -63,12 +63,12 @@ const NotificationCard = ({ notification }: { notification: INotification }) => 
       rounded="lg"
       cursor={path ? "pointer" : "default"}
       borderBottom="1px"
-      borderColor="whiteAlpha.200"
+      borderColor="app.borderSubtle"
       // Yang belum dibaca tetap tersorot selama kunjungan ini, walaupun
       // di server sudah ditandai terbaca saat halaman dibuka.
-      bg={notification.isRead ? "transparent" : "whiteAlpha.100"}
+      bg={notification.isRead ? "transparent" : "app.subtle"}
       transition="background-color 0.15s ease"
-      _hover={{ bg: "whiteAlpha.200" }}
+      _hover={{ bg: "app.hover" }}
       onClick={() => path && navigate(path)}
     >
       <Box position="relative" flexShrink={0} {...darkenOnGroupHover}>
@@ -85,10 +85,10 @@ const NotificationCard = ({ notification }: { notification: INotification }) => 
           bottom="-2px"
           right="-4px"
           bg={meta.color}
-          color="white"
+          color="app.text"
           fontSize="11px"
           border="2px"
-          borderColor="#1D1D1D"
+          borderColor="app.bg"
         >
           {meta.icon}
         </Circle>
@@ -115,7 +115,7 @@ const NotificationCard = ({ notification }: { notification: INotification }) => 
         </Text>
 
         {preview && (
-          <Text fontSize="sm" color="gray.400" mt="1" noOfLines={2}>
+          <Text fontSize="sm" color="app.textMuted" mt="1" noOfLines={2}>
             {preview}
           </Text>
         )}
