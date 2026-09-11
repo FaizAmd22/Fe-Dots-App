@@ -34,7 +34,7 @@ const Chat = () => {
   }, []);
 
   return (
-    <Stack h={{ base: "78vh", md: "100vh" }} px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="white">
       <Flex alignItems="center" py={{ base: "0", md: "4" }}>
         <Text fontSize="2xl" fontWeight="semibold">
           Chat
@@ -56,7 +56,8 @@ const Chat = () => {
       </Flex>
 
       <Box
-        h="84vh"
+        flex="1"
+        minH="0"
         overflowY="auto"
         sx={{
           "&::-webkit-scrollbar": {

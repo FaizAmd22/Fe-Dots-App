@@ -89,13 +89,14 @@ const Notifications = () => {
   };
 
   return (
-    <Stack h={{ base: "78vh", md: "100vh" }} px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="white">
       <Text fontSize="2xl" fontWeight="semibold" py={{ base: "0", md: "4" }}>
         Notifikasi
       </Text>
 
       <Box
-        h="84vh"
+        flex="1"
+        minH="0"
         overflowY="auto"
         onScroll={handleScroll}
         sx={{

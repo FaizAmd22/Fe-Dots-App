@@ -275,7 +275,7 @@ const ChatRoom = () => {
   };
 
   return (
-    <Stack h={{ base: "78vh", md: "100vh" }} pl="4" pr={{base: 4, md: 0}} pb="2" color="white">
+    <Stack h="100%" pl="4" pr={{base: 4, md: 0}} pb="2" color="white">
       {selectionMode ? (
         <SelectionToolbar
           count={selectedIds.length}
@@ -360,6 +360,7 @@ const ChatRoom = () => {
         ref={listRef}
         onScroll={handleScroll}
         flex="1"
+        minH="0"
         paddingRight={1}
         overflowY="auto"
         sx={{

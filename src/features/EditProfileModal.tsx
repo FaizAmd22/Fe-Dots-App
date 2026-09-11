@@ -173,9 +173,12 @@ const EditProfileModal = () => {
 
   return (
     <>
+      {/* Lebar mengikuti teks. Dulu 11vw: di HP hanya ~45px, sehingga
+          tombolnya jadi lingkaran kecil dengan teks meluber keluar. */}
       <Button
-        w="11vw"
-        px="5"
+        size="sm"
+        px="4"
+        flexShrink={0}
         bg="none"
         border="2px"
         color="white"

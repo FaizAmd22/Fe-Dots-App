@@ -6,10 +6,6 @@ import {
   Input,
   Flex,
   Button,
-  Center,
-  Spacer,
-  Grid,
-  GridItem,
   InputGroup,
   InputLeftElement,
   Image,
@@ -166,79 +162,82 @@ const CreatePost = (type: IType) => {
 
   return (
     <Box color="white" pb="2">
-      <Grid templateColumns="repeat(13, 1fr)">
-        <GridItem mr="2">
-          <Avatar
-            src={
-              user.picture
-                ? user.picture
-                : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
-            }
-            name={user.name}
-            w="50px"
-            h="50px"
-          />
-        </GridItem>
+      {/* Flex, bukan grid 13 kolom: di HP satu kolom grid cuma ~27px, jadi
+          avatar, ikon gambar, dan tombol Post saling berdesakan dan input
+          teksnya terpotong. Sekarang hanya input yang melebar/menyempit. */}
+      <Flex alignItems="center" gap={{ base: "2", md: "3" }}>
+        <Avatar
+          src={
+            user.picture
+              ? user.picture
+              : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
+          }
+          name={user.name}
+          w={{ base: "40px", md: "50px" }}
+          h={{ base: "40px", md: "50px" }}
+          flexShrink={0}
+        />
 
-        <GridItem colSpan={10}>
+        <Input
+          flex="1"
+          minW="0"
+          px={{ base: "2", md: "4" }}
+          onChange={handleChange}
+          value={formData.content!}
+          type="text"
+          border="none"
+          name="content"
+          focusBorderColor="none"
+          placeholder={
+            type.type == "replies" ? "Type your reply!" : "What is happening?!"
+          }
+        />
+
+        <InputGroup
+          w="40px"
+          h="40px"
+          flexShrink={0}
+          fontSize="3xl"
+          color="green.500"
+          _hover={{ color: "white" }}
+        >
+          <InputLeftElement pointerEvents="none" fontSize="3xl" h="40px" w="40px">
+            <BiSolidImageAdd />
+          </InputLeftElement>
+
           <Input
+            opacity="0"
+            type="file"
+            name="image"
+            accept="image/*"
+            multiple
+            h="40px"
+            w="40px"
+            p="0"
+            cursor="pointer"
+            aria-label="Tambah gambar"
             onChange={handleChange}
-            value={formData.content!}
-            type="text"
-            border="none"
-            name="content"
-            focusBorderColor="none"
-            placeholder={
-              type.type == "replies"
-                ? "Type your reply!"
-                : "What is happening?!"
-            }
           />
-        </GridItem>
+        </InputGroup>
 
-        <Spacer />
+        <Button
+          size={{ base: "sm", md: "md" }}
+          px={{ base: "5", md: "7" }}
+          flexShrink={0}
+          color="white"
+          bg="green.500"
+          borderRadius="full"
+          _hover={{ color: "green.500", bg: "white" }}
+          isLoading={isPosting}
+          onClick={handleSubmit}
+        >
+          Post
+        </Button>
+      </Flex>
 
-        <Center>
-          <Flex justifyContent="center">
-            <InputGroup
-              w="50px"
-              h="100%"
-              fontSize="3xl"
-              color="green.500"
-              _hover={{ color: "white" }}
-            >
-              <InputLeftElement pointerEvents="none" fontSize="3xl">
-                <BiSolidImageAdd />
-              </InputLeftElement>
-
-              <Input
-                opacity="0"
-                type="file"
-                name="image"
-                accept="image/*"
-                multiple
-                onChange={handleChange}
-              />
-            </InputGroup>
-          </Flex>
-
-          <Button
-            px="7"
-            color="white"
-            bg="green.500"
-            borderRadius="full"
-            _hover={{ color: "green.500", bg: "white" }}
-            isLoading={isPosting}
-            onClick={handleSubmit}
-          >
-            Post
-          </Button>
-        </Center>
-      </Grid>
-
-      <Grid templateColumns="repeat(13, 1fr)">
-        <GridItem w="75px" />
-        <GridItem colSpan={9}>
+      {formData.images.length > 0 && (
+        // Sejajar dengan input teks, di sebelah kanan avatar.
+        <Box pl={{ base: "48px", md: "62px" }} pt="3">
           <Flex gap="3" flexWrap="wrap">
             {formData.images.map((image, index) => (
               <Box key={index} position="relative">
@@ -273,8 +272,8 @@ const CreatePost = (type: IType) => {
               </Box>
             ))}
           </Flex>
-        </GridItem>
-      </Grid>
+        </Box>
+      )}
     </Box>
   );
 };

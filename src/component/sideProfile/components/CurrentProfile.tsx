@@ -3,9 +3,6 @@ import {
   Box,
   Stack,
   Avatar,
-  Grid,
-  GridItem,
-  Spacer,
   Center,
   Flex,
   Image,
@@ -44,35 +41,34 @@ const CurrentProfile = () => {
         />
       </Box>
 
-      <Grid templateColumns="repeat(5, 1fr)">
-        <Spacer />
-        <GridItem
+      {/* Flex, bukan grid 5 kolom: tombol Edit Profile dulu menempati satu
+          kolom grid (~50px) sehingga tertarik jadi lingkaran kecil dengan
+          teks meluber. Sekarang lebarnya mengikuti teks. */}
+      <Flex justifyContent="space-between" alignItems="flex-end" gap="2">
+        <Center
           w="115px"
           h="115px"
           mt="-70px"
+          ml="4"
           bg="#262626"
           borderRadius="full"
+          flexShrink={0}
         >
-          <Center w="115px" h="115px">
-            <Avatar
-              src={
-                picture
-                  ? picture
-                  : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
-              }
-              //   alt="picture"
-              w="100px"
-              h="100px"
-              objectFit="cover"
-            />
-          </Center>
-        </GridItem>
-
-        <Spacer />
-        <Spacer />
+          <Avatar
+            src={
+              picture
+                ? picture
+                : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
+            }
+            //   alt="picture"
+            w="100px"
+            h="100px"
+            objectFit="cover"
+          />
+        </Center>
 
         <EditProfileModal />
-      </Grid>
+      </Flex>
 
       <Stack gap="1">
         <Flex color="white" fontSize="large">

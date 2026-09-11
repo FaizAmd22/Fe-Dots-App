@@ -62,7 +62,7 @@ const Search = () => {
   // console.log("filtered :", dataFilter);
 
   return (
-    <Stack h={{ base: "78vh", md: "100vh" }} px="4" pb="0" color="white">
+    <Stack h="100%" px="4" pb="0" color="white">
       <Text
         pb="2"
         fontSize="2xl"
@@ -95,8 +95,8 @@ const Search = () => {
       )}
 
       <Box
-        // bg='red'
-        h="84vh"
+        flex="1"
+        minH="0"
         overflowY="auto"
         sx={{
           "&::-webkit-scrollbar": {

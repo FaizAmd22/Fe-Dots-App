@@ -29,10 +29,12 @@ const Threads = () => {
   }, []);
 
   return (
+    // Mengisi sisa tinggi halaman di bawah form post, apa pun ukuran layarnya.
     <Stack
-      h="80vh"
+      flex="1"
+      minH="0"
       paddingRight={2}
-      my="5"
+      mt={{ base: "2", md: "5" }}
       overflowY="auto"
       sx={{
         "&::-webkit-scrollbar": {
@@ -49,7 +51,6 @@ const Threads = () => {
         <Stack
           gap="10"
           w="100%"
-          h="100vh"
           m="auto"
           display="flex"
           alignItems="center"

@@ -1,8 +1,16 @@
 import { API } from "../libs/axios";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { setProfile } from "../slices/profileSlice";
 
 export const useProfileHooks = () => {
+    // URL adalah sumber utama. Dulu username HANYA dibaca dari
+    // sessionStorage "profile", yang diisi saat avatar di kartu thread diklik.
+    // Akibatnya membuka link profil langsung, me-refresh halaman, atau datang
+    // dari notifikasi/menu avatar menampilkan profil kosong atau profil orang
+    // yang terakhir dilihat.
+    const { username: routeUsername } = useParams();
+
     const sessionProfile = sessionStorage.getItem("profile")
     // JSON.parse(null) menghasilkan null, bukan galat — galatnya baru muncul
     // saat profile.username dibaca. Hook ini dipanggil dari banyak tempat yang
@@ -14,38 +22,35 @@ export const useProfileHooks = () => {
         profile = null
     }
     const token = sessionStorage.getItem("token")
-    // console.log("profile di profile hooks :", profile.username);
-    
-    // console.log("username :", username);
-    
+
     const dispatch = useDispatch();
-    
-    const fetchProfile = async () => {
+
+    // Username bisa dikirim eksplisit (halaman profil); pemanggil lain yang
+    // hanya ingin menyegarkan profil yang sedang dibuka cukup memanggil tanpa
+    // argumen.
+    const fetchProfile = async (username?: string) => {
+        const target = username || routeUsername || profile?.username
+
         // Tanpa username tidak ada yang bisa diambil; memaksakannya hanya
         // menghasilkan request ke "/users/undefined" yang berakhir 404.
-        if (!profile?.username) return
+        if (!target) return
 
         try {
-        if (token) {
-            const response = await API.get(`/users/${profile.username}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-            dispatch(setProfile(response.data.data));
-        } else {
-            const response = await API.get(`/user/${profile.username}`);
-            dispatch(setProfile(response.data.data));
-        }
+            if (token) {
+                const response = await API.get(`/users/${target}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+                dispatch(setProfile(response.data.data));
+            } else {
+                const response = await API.get(`/user/${target}`);
+                dispatch(setProfile(response.data.data));
+            }
         } catch (error) {
             console.error("Error fetching profile:", error)
         }
-        // console.log("userID :", response.data.data.id);
-        
-        // console.log("fetchProfile :", response.data.data);
     };
-
-    // const fetchLikeProfile
 
     return {
         fetchProfile,

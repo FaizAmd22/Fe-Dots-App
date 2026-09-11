@@ -21,7 +21,7 @@ const Profile = () => {
       // seluruh user dan tidak memengaruhi isi halaman ini, jadi
       // dijalankan di belakang — dulu halaman menunggunya lebih dulu.
       fetchSuggestion()
-      await fetchProfile()
+      await fetchProfile(username)
 
       setIsLoading(false);
     };
@@ -31,10 +31,9 @@ const Profile = () => {
 
   return (
     <Box
-      h={{ base: "74vh", md: "96vh" }}
+      h="100%"
       px="4"
-      // py='0'
-      mt='4'
+      pt={{ base: "2", md: "4" }}
       overflowY="auto"
       style={{ overflowY: "auto" }}
       sx={{
@@ -49,10 +48,8 @@ const Profile = () => {
       }}
     >
       {isLoading ? (
-        <Box h='90vh'>
-          <Box mt='20px'>
-            <LoadingProfile />
-          </Box>
+        <Box mt='20px'>
+          <LoadingProfile />
         </Box>
       // <Text>Loading....</Text>
       ) : (

@@ -29,54 +29,64 @@ const Follows = () => {
 
   // console.log("data :", data)
   return (
-    <Stack
-      h={{ base: "78vh", md: "100vh" }}
-      color="white"
-      py={{ base: "0", md: "4" }}
-      px="4"
-    >
+    <Stack h="100%" color="white" py={{ base: "0", md: "4" }} px="4">
       <Text fontSize="2xl" pt={{ base: "0", md: "4" }} fontWeight="semibold">
         Follows
       </Text>
 
-      <Tabs isFitted variant="unstyled">
-        <TabList>
-          <Tab>
-            <Button
-              w="100%"
-              bg="none"
-              color="white"
-              _hover={{ bg: "none" }}
-              onClick={() => fetchFollow()}
-            >
-              Followers
-            </Button>
-          </Tab>
-          <Tab>
-            <Button
-              w="100%"
-              bg="none"
-              color="white"
-              _hover={{ bg: "none" }}
-              onClick={() => fetchFollow()}
-            >
-              Followings
-            </Button>
-          </Tab>
-        </TabList>
+      {/* Kolom flex supaya panel daftar mengisi sisa tinggi halaman. */}
+      <Tabs
+        isFitted
+        variant="unstyled"
+        display="flex"
+        flexDirection="column"
+        flex="1"
+        minH="0"
+      >
+        {/* Dibungkus Box relatif: TabIndicator memakai position absolute
+            tanpa "top", jadi posisinya mengikuti letak statisnya. Di dalam
+            Tabs yang kini kolom flex, letak statis itu jatuh ke puncak Tabs
+            dan garisnya tampil di bawah judul, bukan di bawah tab. */}
+        <Box position="relative">
+          <TabList>
+            <Tab>
+              <Button
+                w="100%"
+                bg="none"
+                color="white"
+                _hover={{ bg: "none" }}
+                onClick={() => fetchFollow()}
+              >
+                Followers
+              </Button>
+            </Tab>
+            <Tab>
+              <Button
+                w="100%"
+                bg="none"
+                color="white"
+                _hover={{ bg: "none" }}
+                onClick={() => fetchFollow()}
+              >
+                Followings
+              </Button>
+            </Tab>
+          </TabList>
 
-        <TabIndicator
-          mt="-1.5px"
-          height="2px"
-          bg="green.500"
-          borderRadius="1px"
-        />
+          <TabIndicator
+            mt="-1.5px"
+            height="2px"
+            bg="green.500"
+            borderRadius="1px"
+          />
+        </Box>
 
-        <TabPanels>
+        <TabPanels flex="1" minH="0">
           <TabPanel
-            h={{ base: "68vh", md: "80vh" }}
+            h="100%"
             gap="5"
-            mt="5"
+            mt={4}
+            pt={5}
             py="0"
             display="flex"
             flexDirection="column"
@@ -103,9 +113,10 @@ const Follows = () => {
           </TabPanel>
 
           <TabPanel
-            h={{ base: "68vh", md: "80vh" }}
+            h="100%"
             gap="5"
-            mt="5"
+            mt={4}
+            pt={5}
             py="0"
             display="flex"
             flexDirection="column"

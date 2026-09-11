@@ -26,7 +26,7 @@ const SideProfile = () => {
   return (
     <Stack
       w={{ xl: "80%" }}
-      h="100vh"
+      h="100%"
       gap="3"
       py="5"
       p="3"

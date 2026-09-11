@@ -30,7 +30,7 @@ const DetailThread = () => {
   return (
     <Box
       p="4"
-      h={{ base: "78vh", md: "100vh" }}
+      h="100%"
       overflowY="auto"
       style={{ overflowY: "auto" }}
       sx={{

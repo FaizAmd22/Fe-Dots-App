@@ -6,7 +6,7 @@ const Home = () => {
   const token = sessionStorage.getItem("token");
 
   return (
-    <Stack p="4" pb="0" color="white" h={{ base: "82vh", md: "100vh" }}>
+    <Stack p="4" pb="0" color="white" h="100%">
       <Text
         py="4"
         fontSize="2xl"

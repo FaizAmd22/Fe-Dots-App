@@ -5,17 +5,21 @@ import UnreadBadge from "../UnreadBadge";
 import { navTextOnGroupHover } from "../../../features/HoverStyles";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useState } from "react";
 // import { Link } from "react-router-dom";
 
 const MobileNavbar = () => {
   const user = useSelector(selectUser);
   const token = sessionStorage.getItem("token");
-  const [selected, setSelected] = useState<string>("Home");
   const navigate = useNavigate();
-  const ListNavbar = buildMenuItems(user.username);
+  const { pathname } = useLocation();
+  const ListNavbar = buildMenuItems(user.username).filter((item) => item.mobile);
+
+  // Mengikuti URL, bukan ikon terakhir yang diklik: halaman juga bisa dibuka
+  // dari menu avatar, tautan, atau tombol back browser.
+  const isActive = (path: string) =>
+    path === "/" ? pathname === "/" : pathname.startsWith(path);
 
   const handleClick = (name: string, path: string) => {
     if (!token) {
@@ -43,25 +47,27 @@ const MobileNavbar = () => {
     } else {
       // window.location.assign(path);
       navigate(path);
-      setSelected(path);
     }
   };
 
   return (
-    <Center h="9vh" bg="#262626">
-      {/* Dulu gap="20" yang dikalibrasi untuk 4 ikon; dengan 5 ikon itu meluber
-          di layar kecil, jadi jaraknya dibiarkan menyesuaikan lebar layar. */}
-      <Flex w="100%" px="6" justifyContent="space-between">
-        {ListNavbar.map((data, index) => {
+    // Tinggi mengikuti isi, bukan 9vh: dulu barisnya di layout cuma 5vh
+    // sehingga navbar ini meluber menutupi konten. Padding bawah memberi ruang
+    // untuk garis home indicator di iPhone.
+    <Center bg="#262626" pt="1" pb="calc(4px + env(safe-area-inset-bottom))">
+      <Flex w="100%" px="4" justifyContent="space-around">
+        {ListNavbar.map((data) => {
           return (
             <Link
-              key={index}
+              key={data.path}
+              p="2"
               fontSize="25px"
+              aria-label={data.name}
               onClick={() => handleClick(data.name, data.path)}
             >
               <Box position="relative" role="group">
                 <Text
-                  color={selected == data.path ? "white" : "#767676"}
+                  color={isActive(data.path) ? "white" : "#767676"}
                   {...navTextOnGroupHover}
                 >
                   {data.icon}

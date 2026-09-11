@@ -42,7 +42,21 @@ function MainLayout() {
 
   return (
     <>
-      <Grid templateColumns="repeat(10, 1fr)" h="100vh" overflow='hidden'>
+      {/* Mobile: header, konten, navbar bawah bertumpuk, dan hanya baris
+          konten yang menyerap sisa tinggi layar. Dulu tiap halaman menebak
+          tingginya sendiri dengan angka vh, sehingga bagian bawahnya tertutup
+          navbar. Desktop: satu baris, kolom navbar | konten | profil.
+
+          100dvh, bukan 100vh: di Safari iOS 100vh ikut menghitung area di
+          balik toolbar browser. 100vh tetap dipasang sebagai cadangan untuk
+          browser yang belum mengenal dvh. */}
+      <Grid
+        templateColumns="repeat(10, 1fr)"
+        templateRows={{ base: "auto minmax(0, 1fr) auto", md: "minmax(0, 1fr)" }}
+        h="100vh"
+        sx={{ "@supports (height: 100dvh)": { height: "100dvh" } }}
+        overflow="hidden"
+      >
         <GridItem
           zIndex="99"
           bg="#1D1D1D"
@@ -57,7 +71,9 @@ function MainLayout() {
           borderLeft={{ base: "none", md: "2px" }}
           borderRight={{ base: "none", md: "2px" }}
           colSpan={{ base: 10, md: 7, lg: 5 }}
-          pt={10}
+          pt={{ base: 0, md: 10 }}
+          minH="0"
+          overflow="hidden"
         >
           <Outlet />
         </GridItem>
@@ -65,6 +81,7 @@ function MainLayout() {
         <GridItem
           colSpan={3}
           bg="#1D1D1D"
+          minH="0"
           display={{ base: "none", lg: "block" }}
         >
           <SideProfile />
@@ -72,8 +89,7 @@ function MainLayout() {
 
         <GridItem
           colSpan={10}
-          h="5vh"
-          bg="black"
+          bg="#262626"
           color="white"
           display={{ base: "block", md: "none" }}
         >

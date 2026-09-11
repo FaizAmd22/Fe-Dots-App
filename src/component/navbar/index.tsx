@@ -9,11 +9,20 @@ import {
   Stack,
   Spacer,
   Link,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { CiLogout } from "react-icons/ci";
+import { LuHeart } from "react-icons/lu";
+import { HiOutlineUserCircle } from "react-icons/hi2";
+import { FALLBACK_AVATAR } from "../../features/ChatHelpers";
 import { buildMenuItems } from "./menuItems";
 import UnreadBadge from "./UnreadBadge";
-import { navTextOnGroupHover } from "../../features/HoverStyles";
+import { darkenOnHover, navTextOnGroupHover } from "../../features/HoverStyles";
 import CreatePostModal from "../../features/CreatePostModal";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -120,22 +129,24 @@ const Navbar = () => {
   };
 
   return (
+    // Di mobile komponen ini hanya menjadi header (logo + menu akun), dan
+    // tingginya mengikuti isi. Dulu 1vh: headernya meluber menimpa konten dan
+    // halaman harus diganjal padding supaya tidak tertutup.
     <Stack
-      h={{ base: "1vh", md: "100%" }}
+      h={{ base: "auto", md: "100%" }}
       pt="1"
       px={{ base: "0", md: "10" }}
-      pb="7"
+      pb={{ base: "0", md: "7" }}
     >
       <Stack>
         <Text
           px="3"
-          pt="2"
+          pt={{ base: "0", md: "2" }}
           color="green.500"
           fontWeight="semibold"
-          display={{ base: "none", xs: "block" }}
         >
-          <Flex>
-            <Stack py={5}>
+          <Flex alignItems="center">
+            <Stack py={{ base: 2, md: 5 }}>
               <BrandLogo
                 responsive
                 h={{ base: "36px", md: "40px", lg: "48px" }}
@@ -166,26 +177,68 @@ const Navbar = () => {
                 Login
               </Link>
             ) : (
-              <Link
-                px="5"
-                py="1"
-                bg="none"
-                margin="auto"
-                fontSize="sm"
-                rounded="full"
-                color="white"
-                border="2px"
-                borderColor="white"
-                display={{ base: "block", md: "none" }}
-                _hover={{
-                  color: "white",
-                  bg: "green.500",
-                  borderColor: "green.500",
-                }}
-                onClick={() => handleLogout()}
-              >
-                Logout
-              </Link>
+              // Navbar bawah mobile hanya memuat 4 menu utama; Profile,
+              // Follows, dan Logout pindah ke sini.
+              <Menu placement="bottom-end" autoSelect={false}>
+                <MenuButton
+                  display={{ base: "block", md: "none" }}
+                  rounded="full"
+                  aria-label="Menu akun"
+                  {...darkenOnHover}
+                >
+                  <Avatar
+                    w="36px"
+                    h="36px"
+                    name={user.name}
+                    src={user.picture || FALLBACK_AVATAR}
+                  />
+                </MenuButton>
+
+                <MenuList
+                  bg="#262626"
+                  borderColor="whiteAlpha.300"
+                  color="white"
+                  fontWeight="normal"
+                  minW="48"
+                  py="1"
+                  zIndex="popover"
+                >
+                  <MenuItem
+                    bg="transparent"
+                    _hover={{ bg: "whiteAlpha.200" }}
+                    _focus={{ bg: "whiteAlpha.200" }}
+                    icon={<HiOutlineUserCircle size="18px" />}
+                    onClick={() =>
+                      handleClick("Profile", `/profile/${user.username}`)
+                    }
+                  >
+                    Profile
+                  </MenuItem>
+
+                  <MenuItem
+                    bg="transparent"
+                    _hover={{ bg: "whiteAlpha.200" }}
+                    _focus={{ bg: "whiteAlpha.200" }}
+                    icon={<LuHeart size="18px" />}
+                    onClick={() => handleClick("Follows", "/follows")}
+                  >
+                    Follows
+                  </MenuItem>
+
+                  <MenuDivider borderColor="whiteAlpha.300" />
+
+                  <MenuItem
+                    bg="transparent"
+                    color="red.400"
+                    _hover={{ bg: "whiteAlpha.200" }}
+                    _focus={{ bg: "whiteAlpha.200" }}
+                    icon={<CiLogout size="18px" />}
+                    onClick={() => handleLogout()}
+                  >
+                    Logout
+                  </MenuItem>
+                </MenuList>
+              </Menu>
             )}
           </Flex>
         </Text>
@@ -244,8 +297,11 @@ const Navbar = () => {
           })}
         </List>
 
+        {/* Wadahnya ikut disembunyikan di mobile: tombolnya sendiri sudah
+            tersembunyi, tapi padding wadah ini tetap menyisakan celah kosong
+            di bawah header. */}
         {token && (
-          <Stack paddingTop={6}>
+          <Stack paddingTop={6} display={{ base: "none", md: "flex" }}>
             <CreatePostModal />
           </Stack>
         )}
@@ -284,6 +340,7 @@ const Navbar = () => {
           </Center>
         </Button>
       )}
+      
     </Stack>
   );
 };

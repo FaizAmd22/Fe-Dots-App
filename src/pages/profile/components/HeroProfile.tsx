@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Flex, Image, Text, Grid, GridItem, Stack, Spacer, Button, IconButton, useToast } from '@chakra-ui/react'
+import { Box, Flex, Image, Text, Stack, Button, IconButton, useToast } from '@chakra-ui/react'
 import { FaCalendarDays } from "react-icons/fa6";
 import { LuMessageCircle } from "react-icons/lu";
 import { useState } from 'react';
@@ -22,7 +22,9 @@ const HeroProfile = () => {
     const currentUser = useSelector(selectUser)
     const onlineUserIds = useSelector(selectOnlineUserIds)
     const lastSeenById = useSelector(selectLastSeenById)
-    const date = new Date(currentUser.created_at)
+    // Tanggal gabung pemilik profil yang sedang dibuka, bukan milik user yang
+    // login — dulu semua profil menampilkan tanggal gabung kita sendiri.
+    const date = new Date(user.created_at)
     const formatedDate = date.toDateString()
     const token = sessionStorage.getItem("token")
     // console.log("currentUser :", currentUser.id);
@@ -97,63 +99,63 @@ const HeroProfile = () => {
             // borderColor='gray.700'
             pb='5'
         >
+            {/* Ukuran sampul dan avatar mengecil di layar kecil. Dulu sampul
+                selalu 350px dan avatar 208px, sehingga di HP keduanya memenuhi
+                layar dan nama profil terdorong ke balik navbar. */}
             <Image
                 src={user.cover_photo ? user.cover_photo : 'https://i.pinimg.com/564x/70/38/f2/7038f235f718d1e43157fc5516a0aaa7.jpg'}
-                h='350px'
+                w='100%'
+                h={{ base: '150px', sm: '200px', md: '250px', xl: '350px' }}
                 objectFit='cover'
                 rounded='lg'
                 mt='2'
             />
-            
-            <Grid templateColumns='repeat(4, 1fr)'>
-                <GridItem
-                    w='52'
-                    h='52'
+
+            <Flex
+                justifyContent='space-between'
+                alignItems='flex-end'
+                gap='3'
+                px={{ base: '2', md: '5' }}
+                mt={{ base: '-48px', md: '-80px', xl: '-100px' }}
+            >
+                <Box
+                    w={{ base: '24', md: '36', xl: '52' }}
+                    h={{ base: '24', md: '36', xl: '52' }}
+                    p={{ base: '1', md: '1.5', xl: '4' }}
                     rounded='full'
                     bg='#1D1D1D'
-                    ml='5'
-                    mt='-100px'
+                    flexShrink={0}
                 >
-                    <Flex
+                    <Image
+                        src={user.picture ? user.picture : 'https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg'}
                         w='100%'
                         h='100%'
-                        justifyContent='center'
-                        alignItems='center'
-                    >
-                        <Image
-                            src={user.picture ? user.picture : 'https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg'}
-                            w='85%'
-                            h='85%'
-                            rounded='full'
-                            objectFit="cover"
-                        />
-                    </Flex>
-                </GridItem>
-
-                <Spacer />
-                <Spacer />
+                        rounded='full'
+                        objectFit="cover"
+                    />
+                </Box>
 
                 {currentUser.id == user.id && (
-                    <EditProfileModal />
+                    <Box pb={{ base: '1', md: '3' }}>
+                        <EditProfileModal />
+                    </Box>
                 )}
-            </Grid>
+            </Flex>
 
-            <Flex gap='5'>
-                <Text fontWeight='semibold' fontSize='3xl'>
+            {/* flexWrap: nama panjang tidak lagi mendesak tombol keluar layar. */}
+            <Flex gap='3' alignItems='center' flexWrap='wrap' rowGap='2'>
+                <Text fontWeight='semibold' fontSize={{ base: '2xl', md: '3xl' }} wordBreak='break-word'>
                     {user.name}
                 </Text>
 
                 {(currentUser.id != user.id && token) && (
                     <>
                         <Button
-                            position='relative'
-                            px='10'
-                            ml='2'
+                            size='sm'
+                            px={{ base: '5', md: '8' }}
                             bg='none'
-                            right='0'
                             border='2px'
                             fontSize='sm'
-                            margin='auto'
                             rounded='full'
                             color={user.isFollow ? "gray.500" : "white"}
                             borderColor={user.isFollow ? "gray.500" : "white"}
@@ -165,9 +167,9 @@ const HeroProfile = () => {
                         </Button>
 
                         <IconButton
+                            size='sm'
                             bg='none'
                             border='2px'
-                            margin='auto'
                             rounded='full'
                             color='white'
                             borderColor='white'
@@ -181,10 +183,8 @@ const HeroProfile = () => {
                         />
                     </>
                 )}
-
-                <Spacer />
             </Flex>
-            <Text color='gray.500' mt='-3'>
+            <Text color='gray.500' mt='-2'>
                 @{user.username}
             </Text>
 
