@@ -12,7 +12,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuChevronLeft, LuChevronRight, LuDownload, LuX } from "react-icons/lu";
 
 interface ImageViewerProps {
@@ -24,6 +24,9 @@ interface ImageViewerProps {
   // Waktu gambar tersimpan di database (created_at milik thread/reply/pesan).
   createdAt?: string;
 }
+
+// Jarak geser horizontal minimum (px) supaya dianggap swipe, bukan ketukan.
+const SWIPE_THRESHOLD = 50;
 
 // Kode acak pendek: waktu unduh (base36) + sedikit keacakan, supaya dua gambar
 // yang diunduh pada milidetik yang sama pun tidak bertabrakan namanya.
@@ -54,6 +57,14 @@ const formatSavedAt = (value?: string) => {
   });
 };
 
+// Tombol ikon di atas latar gelap viewer (viewer selalu gelap di kedua tema).
+const iconButtonStyle = {
+  bg: "none",
+  color: "white",
+  rounded: "full",
+  _hover: { bg: "whiteAlpha.200" },
+};
+
 const ImageViewer = ({
   isOpen,
   onClose,
@@ -64,6 +75,8 @@ const ImageViewer = ({
 }: ImageViewerProps) => {
   const [index, setIndex] = useState<number>(startIndex);
   const toast = useToast();
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const thumbRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const total = images.length;
   const hasMany = total > 1;
@@ -73,6 +86,17 @@ const ImageViewer = ({
   useEffect(() => {
     if (isOpen) setIndex(startIndex);
   }, [isOpen, startIndex]);
+
+  // Thumbnail gambar yang sedang tampil digulir ke tengah, supaya tetap terlihat
+  // walau barisnya lebih lebar dari layar HP.
+  useEffect(() => {
+    if (!isOpen) return;
+    thumbRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [index, isOpen]);
 
   const goPrev = () => setIndex((i) => (i - 1 + total) % total);
   const goNext = () => setIndex((i) => (i + 1) % total);
@@ -89,6 +113,27 @@ const ImageViewer = ({
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isOpen, hasMany, total]);
+
+  // Geser kiri/kanan di HP. Gerakan yang lebih vertikal daripada horizontal
+  // diabaikan, supaya tidak berpindah gambar saat user hanya menggulir.
+  const handleTouchStart = (event: React.TouchEvent) => {
+    const touch = event.touches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start || !hasMany) return;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+
+    if (dx < 0) goNext();
+    else goPrev();
+  };
 
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
@@ -132,31 +177,49 @@ const ImageViewer = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
-      {/* Warna latar aplikasi (#1D1D1D) dengan opacity 80%. */}
-      <ModalOverlay bg="rgba(29, 29, 29, 0.9)" />
+      {/* Warna latar aplikasi (#1D1D1D), semi-transparan, ditambah blur: tanpa
+          blur, isi halaman di belakang (feed, navbar bawah) ikut terbaca dan
+          tampilannya ramai, terutama di HP. */}
+      <ModalOverlay bg="rgba(29, 29, 29, 0.9)" backdropFilter="blur(10px)" />
 
-      <ModalContent bg="transparent" boxShadow="none" m="0" color="white">
-        <Flex direction="column" h="100vh" onClick={onClose}>
+      <ModalContent bg="transparent" boxShadow="none" m="0" rounded="none" color="white">
+        {/* 100dvh, bukan 100vh: di browser HP 100vh ikut menghitung area di
+            balik bilah alamat, sehingga header terpotong di atas. Padding
+            safe-area memberi ruang untuk notch dan home indicator. */}
+        <Flex
+          direction="column"
+          h="100vh"
+          sx={{ "@supports (height: 100dvh)": { height: "100dvh" } }}
+          pt="env(safe-area-inset-top)"
+          pb="env(safe-area-inset-bottom)"
+          onClick={onClose}
+        >
           {/* Klik di area kosong menutup, tapi klik pada isi jangan ikut menutup. */}
           <Flex
-            px="4"
-            py="3"
-            gap="3"
+            px={{ base: "2", md: "4" }}
+            py={{ base: "2", md: "3" }}
+            gap={{ base: "2", md: "3" }}
             alignItems="center"
             onClick={(e) => e.stopPropagation()}
           >
             <Avatar
-              w="40px"
-              h="40px"
+              w={{ base: "34px", md: "40px" }}
+              h={{ base: "34px", md: "40px" }}
+              flexShrink={0}
               name={author?.name}
               src={author?.picture}
             />
 
-            <Box>
-              <Text fontSize="md" fontWeight="semibold">
+            {/* minW 0: tanpa ini nama panjang mendorong tombol keluar layar. */}
+            <Box minW="0">
+              <Text
+                fontSize={{ base: "sm", md: "md" }}
+                fontWeight="semibold"
+                noOfLines={1}
+              >
                 {author?.name || "Unknown user"}
               </Text>
-              <Text fontSize="xs" color="gray.400">
+              <Text fontSize="xs" color="gray.400" noOfLines={1}>
                 {formatSavedAt(createdAt)}
               </Text>
             </Box>
@@ -164,72 +227,137 @@ const ImageViewer = ({
             <Spacer />
 
             {hasMany && (
-              <Text fontSize="sm" color="gray.400" mr="2">
+              <Text fontSize="sm" color="gray.400" flexShrink={0} mr={{ base: "0", md: "2" }}>
                 {index + 1} / {total}
               </Text>
             )}
 
             <IconButton
-              bg="none"
-              color="white"
-              rounded="full"
+              {...iconButtonStyle}
               fontSize="xl"
+              flexShrink={0}
               aria-label="Unduh gambar"
               title="Unduh gambar"
               icon={<LuDownload />}
               isLoading={isDownloading}
-              _hover={{ bg: "whiteAlpha.200" }}
               onClick={handleDownload}
             />
 
             <IconButton
-              bg="none"
-              color="white"
-              rounded="full"
+              {...iconButtonStyle}
               fontSize="xl"
+              flexShrink={0}
               aria-label="Tutup"
               title="Tutup"
               icon={<LuX />}
-              _hover={{ bg: "whiteAlpha.200" }}
               onClick={onClose}
             />
           </Flex>
 
-          <Flex flex="1" minH="0" px="4" pb="2" justifyContent="center">
+          <Flex
+            position="relative"
+            flex="1"
+            minH="0"
+            px={{ base: "2", md: "4" }}
+            pb="2"
+            alignItems="center"
+            justifyContent="center"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <Image
               src={current}
               alt=""
               maxH="100%"
               maxW="100%"
               objectFit="contain"
+              // Gambar tidak ikut terseret browser saat di-swipe.
+              draggable={false}
+              userSelect="none"
               onClick={(e) => e.stopPropagation()}
             />
+
+            {/* Di HP panah ada di kiri-kanan gambar: di baris thumbnail
+                ruangnya terlalu sempit dan tombolnya terjepit di tepi. */}
+            {hasMany && (
+              <>
+                <IconButton
+                  display={{ base: "inline-flex", md: "none" }}
+                  position="absolute"
+                  left="2"
+                  top="50%"
+                  transform="translateY(-50%)"
+                  size="sm"
+                  rounded="full"
+                  bg="blackAlpha.600"
+                  color="white"
+                  fontSize="xl"
+                  _hover={{ bg: "blackAlpha.700" }}
+                  _active={{ bg: "blackAlpha.800" }}
+                  aria-label="Gambar sebelumnya"
+                  icon={<LuChevronLeft />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goPrev();
+                  }}
+                />
+                <IconButton
+                  display={{ base: "inline-flex", md: "none" }}
+                  position="absolute"
+                  right="2"
+                  top="50%"
+                  transform="translateY(-50%)"
+                  size="sm"
+                  rounded="full"
+                  bg="blackAlpha.600"
+                  color="white"
+                  fontSize="xl"
+                  _hover={{ bg: "blackAlpha.700" }}
+                  _active={{ bg: "blackAlpha.800" }}
+                  aria-label="Gambar berikutnya"
+                  icon={<LuChevronRight />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goNext();
+                  }}
+                />
+              </>
+            )}
           </Flex>
 
           {hasMany && (
             <Flex
-              px="4"
-              py="4"
+              px={{ base: "2", md: "4" }}
+              py={{ base: "3", md: "4" }}
               gap="3"
               alignItems="center"
               justifyContent="center"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Panah desktop tetap di samping thumbnail. */}
               <IconButton
-                bg="none"
-                color="white"
-                rounded="full"
+                {...iconButtonStyle}
+                display={{ base: "none", md: "inline-flex" }}
                 fontSize="2xl"
                 aria-label="Gambar sebelumnya"
                 icon={<LuChevronLeft />}
-                _hover={{ bg: "whiteAlpha.200" }}
                 onClick={goPrev}
               />
 
-              <Flex gap="2" overflowX="auto" maxW="70vw" py="1">
+              <Flex
+                gap="2"
+                overflowX="auto"
+                maxW={{ base: "100%", md: "70vw" }}
+                py="1"
+                px="1"
+                sx={{ scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}
+              >
                 {images.map((image, thumbIndex) => (
                   <Box
                     key={image + thumbIndex}
+                    ref={(el: HTMLDivElement | null) => {
+                      thumbRefs.current[thumbIndex] = el;
+                    }}
                     flexShrink={0}
                     rounded="md"
                     overflow="hidden"
@@ -247,22 +375,21 @@ const ImageViewer = ({
                     <Image
                       src={image}
                       alt=""
-                      w="70px"
-                      h="70px"
+                      w={{ base: "52px", md: "70px" }}
+                      h={{ base: "52px", md: "70px" }}
                       objectFit="cover"
+                      draggable={false}
                     />
                   </Box>
                 ))}
               </Flex>
 
               <IconButton
-                bg="none"
-                color="white"
-                rounded="full"
+                {...iconButtonStyle}
+                display={{ base: "none", md: "inline-flex" }}
                 fontSize="2xl"
                 aria-label="Gambar berikutnya"
                 icon={<LuChevronRight />}
-                _hover={{ bg: "whiteAlpha.200" }}
                 onClick={goNext}
               />
             </Flex>
