@@ -29,12 +29,17 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+
   const handleLogin = async () => {
+    if (isLoggingIn) return;
+
     const requestingData = {
       username,
       password,
     };
 
+    setIsLoggingIn(true);
     try {
       setError("");
       const response = await API.post("/login", requestingData);
@@ -62,7 +67,11 @@ const Login = () => {
       // console.log("error : ", response.data);
     } catch (error: any) {
       console.log("error : ", error.response);
-      setError(error.response.data.message);
+      // ?. wajib: galat jaringan tidak punya response, dan tanpa ini
+      // halaman login ikut melempar error.
+      setError(error.response?.data?.message || "Gagal login, coba lagi!");
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -124,6 +133,7 @@ const Login = () => {
           bg="green.500"
           textAlign="center"
           _hover={{ color: "green.500", bg: "white" }}
+          isLoading={isLoggingIn}
           onClick={handleLogin}
         >
           Submit

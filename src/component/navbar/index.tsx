@@ -67,7 +67,11 @@ const Navbar = () => {
     }
   };
 
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
+
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+
     // Konfirmasi dulu: logout gampang tertekan tidak sengaja, apalagi tombolnya
     // bersebelahan dengan menu lain.
     const confirmation = await Swal.fire({
@@ -84,7 +88,16 @@ const Navbar = () => {
 
     if (!confirmation.isConfirmed) return;
 
-    await API.delete("/logout");
+    setIsLoggingOut(true);
+
+    // Logout tetap jalan walau request ini gagal (misalnya server sedang
+    // tidur): yang benar-benar mengeluarkan user adalah penghapusan token di
+    // bawah. Dulu kegagalannya menghentikan seluruh proses logout.
+    try {
+      await API.delete("/logout");
+    } catch (error) {
+      console.error("Logout request failed:", error);
+    }
 
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("id");
@@ -262,6 +275,7 @@ const Navbar = () => {
           color="gray.400"
           _hover={{ color: "white", bg: "none" }}
           display={{ base: "none", md: "block" }}
+          isLoading={isLoggingOut}
           onClick={() => handleLogout()}
         >
           <Center gap="3">

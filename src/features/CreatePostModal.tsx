@@ -69,7 +69,11 @@ const CreatePostModal = () => {
   };
   console.log("formDatra :", formData);
 
+  const [isPosting, setIsPosting] = useState<boolean>(false);
+
   const handleSubmit = async () => {
+    if (isPosting) return;
+
     if (formData.content == null && formData.image == null) {
       return toast({
         position: "top",
@@ -80,6 +84,7 @@ const CreatePostModal = () => {
       });
     }
 
+    setIsPosting(true);
     try {
       await API.post("/thread", formData, {
         headers: {
@@ -88,42 +93,32 @@ const CreatePostModal = () => {
         },
       });
 
-      const PostThreadPromise = new Promise((resolve) => {
-        setTimeout(() => {
-          fetchThreadAuth();
-          fetchProfileThreadAuth();
-          resolve(0);
-        }, 1000);
-      });
-
-      toast.promise(PostThreadPromise, {
-        success: {
-          title: "Thread Posted",
-          position: "top",
-          description: "Your thread has been posted successfully!",
-        },
-        error: {
-          title: "Error",
-          position: "top",
-          description: "An error occurred while posting thread",
-        },
-        loading: {
-          title: "Posting Thread",
-          position: "top",
-          description: "Please wait...",
-        },
-      });
-      onClose();
-      // window.location.reload()
-    } catch (error) {
-      console.log(error);
       toast({
         position: "top",
-        title: "Something error while post thread!",
+        title: "Thread Posted",
+        description: "Your thread has been posted successfully!",
+        status: "success",
+        duration: 1500,
+        isClosable: true,
+      });
+
+      // Input di modal ini tidak terkontrol, jadi tanpa pengosongan ini isi
+      // lama tetap tersimpan dan ikut terkirim lagi saat modal dibuka ulang.
+      setFormData({ content: null, image: null });
+      onClose();
+
+      fetchThreadAuth();
+      fetchProfileThreadAuth();
+    } catch (error) {
+      toast({
+        position: "top",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Something error while post thread!",
         status: "error",
         duration: 1500,
         isClosable: true,
       });
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -207,6 +202,7 @@ const CreatePostModal = () => {
               rounded="full"
               bg="green.500"
               _hover={{ bg: "white", color: "green.500", boxShadow: "lg" }}
+              isLoading={isPosting}
               onClick={handleSubmit}
             >
               Post

@@ -90,7 +90,12 @@ const ImageViewer = ({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isOpen, hasMany, total]);
 
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+
   const handleDownload = async () => {
+    if (isDownloading) return;
+
+    setIsDownloading(true);
     try {
       // Diambil sebagai blob supaya benar-benar terunduh; atribut download saja
       // tidak berlaku untuk gambar dari domain lain seperti Cloudinary.
@@ -118,6 +123,8 @@ const ImageViewer = ({
         duration: 2500,
         isClosable: true,
       });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -170,6 +177,7 @@ const ImageViewer = ({
               aria-label="Unduh gambar"
               title="Unduh gambar"
               icon={<LuDownload />}
+              isLoading={isDownloading}
               _hover={{ bg: "whiteAlpha.200" }}
               onClick={handleDownload}
             />

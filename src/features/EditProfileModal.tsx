@@ -115,83 +115,56 @@ const EditProfileModal = () => {
     }
   };
 
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   const handleSubmit = async () => {
+    if (isSaving) return;
+
     const userId = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
-    await API.patch(`/user/update/${userId}`, inputData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const headers = { Authorization: `Bearer ${token}` };
+    const multipart = { ...headers, "Content-Type": "multipart/form-data" };
 
-    if (picture != user.picture) {
-      await API.patch(
-        `/user/picture/${userId}`,
-        { picture: picture },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+    setIsSaving(true);
+    try {
+      await API.patch(`/user/update/${userId}`, inputData, { headers });
 
-      // console.log("response : ", responsePicture);
-    }
+      if (picture != user.picture) {
+        await API.patch(`/user/picture/${userId}`, { picture: picture }, { headers: multipart });
+      }
 
-    if (cover != user.cover_photo) {
-      await API.patch(
-        `/user/cover/${userId}`,
-        { cover_photo: cover },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      if (cover != user.cover_photo) {
+        await API.patch(`/user/cover/${userId}`, { cover_photo: cover }, { headers: multipart });
+      }
 
-      // console.log("response : ", responseCover);
-    }
-
-    // console.log("response : ", response);
-    const PostThreadPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        // fetchCurrentUser();
-        // fetchProfile();
-        // fetchThreadAuth();
-        // fetchDetailAuth();
-        // fetchProfileThreadAuth();
-        resolve(0);
-      }, 1000);
-    });
-
-    toast.promise(PostThreadPromise, {
-      success: {
+      toast({
+        position: "top",
         title: "Profile Updated!",
-        position: "top",
         description: "Your profile has been updated successfully!",
-      },
-      error: {
-        title: "Error",
-        position: "top",
-        description: "An error occurred while update profile",
-      },
-      loading: {
-        title: "Update Profile",
-        position: "top",
-        description: "Please wait...",
-      },
-    });
+        status: "success",
+        duration: 1500,
+        isClosable: true,
+      });
 
-    // fetchDetail()
-    fetchCurrentUser();
-    fetchProfile();
-    fetchThreadAuth();
-    fetchDetailAuth();
-    fetchProfileThreadAuth();
-    onClose();
-    // window.location.reload();
+      fetchCurrentUser();
+      fetchProfile();
+      fetchThreadAuth();
+      fetchDetailAuth();
+      fetchProfileThreadAuth();
+      onClose();
+    } catch (error) {
+      // Dulu tidak ada penanganan sama sekali: kalau satu upload gagal, modal
+      // tetap terbuka tanpa pesan apa pun.
+      toast({
+        position: "top",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Gagal memperbarui profil!",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // console.log("inputData :", inputData);
@@ -401,7 +374,7 @@ const EditProfileModal = () => {
               Cancel
             </Button>
 
-            <Button colorScheme="green" rounded="full" onClick={handleSubmit}>
+            <Button colorScheme="green" rounded="full" isLoading={isSaving} onClick={handleSubmit}>
               Save
             </Button>
           </ModalFooter>

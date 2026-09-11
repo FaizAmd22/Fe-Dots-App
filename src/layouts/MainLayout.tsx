@@ -47,6 +47,7 @@ function MainLayout() {
           borderLeft={{ base: "none", md: "2px" }}
           borderRight={{ base: "none", md: "2px" }}
           colSpan={{ base: 10, md: 7, lg: 5 }}
+          pt={10}
         >
           <Outlet />
         </GridItem>

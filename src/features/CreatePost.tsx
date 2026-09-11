@@ -95,18 +95,12 @@ const CreatePost = (type: IType) => {
   };
   console.log("formDatra :", formData);
 
+  const [isPosting, setIsPosting] = useState<boolean>(false);
+
   const handleSubmit = async () => {
-    const PostThreadPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        fetchThreadAuth();
-        fetchDetailAuth();
-        setFormData({
-          content: "",
-          images: [],
-        });
-        resolve(0);
-      }, 700);
-    });
+    // Klik kedua ditolak selagi yang pertama masih terkirim — dulu klik ganda
+    // menghasilkan dua thread yang sama.
+    if (isPosting) return;
 
     if (
       (formData.content == null || !formData.content) &&
@@ -127,80 +121,46 @@ const CreatePost = (type: IType) => {
     if (formData.content) body.append("content", formData.content);
     formData.images.forEach((image) => body.append("image", image));
 
+    const isThread = type.type == "threads";
+
+    // Tombol menampilkan spinner selama request berjalan. Dulu toast "Please
+    // wait" baru muncul SETELAH request selesai (lewat timer palsu 700 ms),
+    // jadi selama upload berlangsung layar benar-benar diam.
+    setIsPosting(true);
     try {
-      if (type.type == "threads") {
-        await API.post("/thread", body, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+      await API.post(isThread ? "/thread" : `/thread/${type.id}/reply`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-        toast.promise(PostThreadPromise, {
-          success: {
-            title: "Thread Posted",
-            position: "top",
-            description: "Your thread has been posted successfully!",
-          },
-          error: {
-            title: "Error",
-            position: "top",
-            description: "An error occurred while posting thread",
-          },
-          loading: {
-            title: "Posting Thread",
-            position: "top",
-            description: "Please wait...",
-          },
-        });
-        setFormData({
-          content: "",
-          images: [],
-        });
-        fetchThreadAuth();
-        fetchDetailAuth();
-        dispatch(setIsFetchDetail(true));
-        // window.location.reload();
-      } else {
-        const response = await API.post(`/thread/${type.id}/reply`, body, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+      setFormData({ content: "", images: [] });
 
-        toast.promise(PostThreadPromise, {
-          success: {
-            title: "Reply Posted",
-            position: "top",
-            description: "Your reply has been posted successfully!",
-          },
-          error: {
-            title: "Error",
-            position: "top",
-            description: "An error occurred while posting reply",
-          },
-          loading: {
-            title: "Posting Reply",
-            position: "top",
-            description: "Please wait...",
-          },
-        });
-        fetchThreadAuth();
-        fetchDetailAuth();
-        dispatch(setIsFetchDetail(true));
-        console.log("response :", response);
-        // window.location.reload()
-      }
+      toast({
+        position: "top",
+        title: isThread ? "Thread Posted" : "Reply Posted",
+        description: isThread
+          ? "Your thread has been posted successfully!"
+          : "Your reply has been posted successfully!",
+        status: "success",
+        duration: 1500,
+        isClosable: true,
+      });
+
+      fetchThreadAuth();
+      fetchDetailAuth();
+      dispatch(setIsFetchDetail(true));
     } catch (error) {
       toast({
         position: "top",
-        title: "Something error while post!",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Something error while post!",
         status: "error",
         duration: 1500,
         isClosable: true,
       });
-      console.log(error);
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -268,6 +228,7 @@ const CreatePost = (type: IType) => {
             bg="green.500"
             borderRadius="full"
             _hover={{ color: "green.500", bg: "white" }}
+            isLoading={isPosting}
             onClick={handleSubmit}
           >
             Post

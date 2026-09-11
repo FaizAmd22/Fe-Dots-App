@@ -10,7 +10,7 @@ import {
   Button,
   useToast
 } from "@chakra-ui/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { API } from "../libs/axios";
 import { MdDeleteForever } from "react-icons/md";
 import { useThreadsHooks } from "../hooks/threads";
@@ -29,7 +29,12 @@ export default function AlertDelete(data: any) {
 
   console.log("type :", data);
   
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
   const handleDelete = async () => {
+    if (isDeleting) return;
+
+    setIsDeleting(true);
     try {
       if (data.type == "threads") {
         await API.delete(`/thread/${data.id}`, {
@@ -68,6 +73,8 @@ export default function AlertDelete(data: any) {
         isClosable: true,
       });
       onClose();
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -94,10 +101,10 @@ export default function AlertDelete(data: any) {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose} isDisabled={isDeleting}>
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+              <Button colorScheme="red" onClick={handleDelete} ml={3} isLoading={isDeleting}>
                 Delete
               </Button>
             </AlertDialogFooter>

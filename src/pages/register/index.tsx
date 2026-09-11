@@ -29,7 +29,12 @@ const Register = () => {
 
   // console.log("data change :", formData);
 
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
       setError("");
       const response = await API.post("/register", formData);
@@ -63,7 +68,9 @@ const Register = () => {
       //   setError("Fullname can't be empty!");
       // }
 
-      setError(error.response?.data.message);
+      setError(error.response?.data?.message || "Gagal mendaftar, coba lagi!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -117,6 +124,7 @@ const Register = () => {
           bg="green.500"
           textAlign="center"
           _hover={{ color: "green.500", bg: "white" }}
+          isLoading={isSubmitting}
           onClick={handleSubmit}
         >
           Create

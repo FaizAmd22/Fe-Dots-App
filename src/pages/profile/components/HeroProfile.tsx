@@ -57,44 +57,38 @@ const HeroProfile = () => {
         }
     };
 
-    const handleFollow = async () => {
-        if (!user.isFollow) {
-         await API.post(
-            "/follow",
-            {
-              following: user.id,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-        //   setFollowed(true);
-        } else {
-          await API.post(
-            "/unfollow",
-            {
-              following: user.id,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-        //   setFollowed(false);
-        }
+    const [isFollowPending, setIsFollowPending] = useState<boolean>(false);
 
-        await fetchCurrentUser()
-        // await fetchFollow()
-        await fetchProfile()
-        await fetchSuggestion()
-        // await fetchProfileThread()
-        // await fetchProfileThreadAuth()
-      };
+    // Dulu tidak dikunci: klik ganda mengirim dua follow, dan yang kedua
+    // ditolak server dengan "already follow".
+    const handleFollow = async () => {
+        if (isFollowPending) return;
+
+        setIsFollowPending(true);
+        try {
+            await API.post(
+                user.isFollow ? "/unfollow" : "/follow",
+                { following: user.id },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            // Ditunggu supaya spinner baru hilang bersamaan dengan labelnya
+            // berganti; dua lainnya tidak memengaruhi tombol ini.
+            await fetchProfile();
+            fetchCurrentUser();
+            fetchSuggestion();
+        } catch (error) {
+            toast({
+                position: "top",
+                title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Gagal memperbarui follow!",
+                status: "error",
+                duration: 2000,
+                isClosable: true,
+            });
+        } finally {
+            setIsFollowPending(false);
+        }
+    };
     
     return ( 
         <Stack
@@ -164,6 +158,7 @@ const HeroProfile = () => {
                             color={user.isFollow ? "gray.500" : "white"}
                             borderColor={user.isFollow ? "gray.500" : "white"}
                             _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
+                            isLoading={isFollowPending}
                             onClick={handleFollow}
                         >
                             {user.isFollow ? "Unfollow" : "Follow"}
