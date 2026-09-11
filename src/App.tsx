@@ -13,6 +13,7 @@ import Chat from "./pages/chat/index";
 import ChatRoom from "./pages/chatRoom/index";
 import Notifications from "./pages/notifications/index";
 import Settings from "./pages/settings/index";
+import UserFollows from "./pages/userFollows/index";
 import { Navigate, Outlet } from "react-router-dom";
 
 function IsNotLogin() {
@@ -42,6 +43,9 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/follows" element={<Follows />} />
           <Route path="/profile/:username" element={<Profile />} />
+          {/* Followers/following milik user lain; tab dibaca dari path. */}
+          <Route path="/profile/:username/followers" element={<UserFollows />} />
+          <Route path="/profile/:username/following" element={<UserFollows />} />
           <Route path="/details/:id" element={<DetailThread />} />
 
           <Route path="/" element={<IsLogin />}>

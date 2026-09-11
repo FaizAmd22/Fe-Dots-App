@@ -132,6 +132,9 @@ const id = {
     title: "Relasi",
     followers: "Pengikut",
     followings: "Mengikuti",
+    emptyFollowers: "Belum ada pengikut.",
+    emptyFollowing: "Belum mengikuti siapa pun.",
+    loadFailed: "Gagal memuat daftar.",
   },
   chat: {
     title: "Chat",

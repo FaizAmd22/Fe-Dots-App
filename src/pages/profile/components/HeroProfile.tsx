@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Flex, Image, Text, Stack, Button, IconButton, useToast } from '@chakra-ui/react'
+import { Box, Flex, Image, Text, Stack, Button, IconButton, Link, useToast } from '@chakra-ui/react'
 import { FaCalendarDays } from "react-icons/fa6";
 import { LuMessageCircle } from "react-icons/lu";
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import EditProfileModal from '../../../features/EditProfileModal';
 import { useChatHooks } from '../../../hooks/chat';
 import { useProfileHooks } from '../../../hooks/profile';
@@ -39,6 +39,11 @@ const HeroProfile = () => {
     const navigate = useNavigate();
     const toast = useToast();
     const [isOpeningChat, setIsOpeningChat] = useState<boolean>(false);
+
+    const followsPath = (tab: 'followers' | 'following') =>
+        currentUser.id == user.id
+            ? `/follows?tab=${tab}`
+            : `/profile/${user.username}/${tab}`;
 
     // Backend mengembalikan percakapan lama kalau DM-nya sudah pernah ada, jadi
     // tombol ini aman ditekan berkali-kali tanpa membuat percakapan bertumpuk.
@@ -206,24 +211,30 @@ const HeroProfile = () => {
                 </Text>
             </Flex>
 
+            {/* Profil sendiri membuka menu Follows (tab sesuai yang diklik);
+                profil orang lain membuka daftar milik orang tersebut. */}
             <Flex gap='4'>
-                <Flex gap='1'>
-                    <Text>
-                        {user.follower}
-                    </Text>
-                    <Text color='gray.500'>
-                        {t("common.followers")}
-                    </Text>
-                </Flex>
+                <Link
+                    as={RouterLink}
+                    to={followsPath('followers')}
+                    display='flex'
+                    gap='1'
+                    _hover={{ textDecoration: 'underline' }}
+                >
+                    <Text>{user.follower}</Text>
+                    <Text color='gray.500'>{t("common.followers")}</Text>
+                </Link>
 
-                <Flex gap='1'>
-                    <Text>
-                        {user.following}
-                    </Text>
-                    <Text color='gray.500'>
-                        {t("common.following")}
-                    </Text>
-                </Flex>
+                <Link
+                    as={RouterLink}
+                    to={followsPath('following')}
+                    display='flex'
+                    gap='1'
+                    _hover={{ textDecoration: 'underline' }}
+                >
+                    <Text>{user.following}</Text>
+                    <Text color='gray.500'>{t("common.following")}</Text>
+                </Link>
             </Flex>
         </Stack>
     );

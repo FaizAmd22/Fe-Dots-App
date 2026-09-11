@@ -59,13 +59,15 @@ export const buildMenuItems = (username?: string): MenuItem[] => [
         path: "/notifications",
         icon: <LuBell />,
         badge: "notification",
-        mobile: true,
+        // Di mobile notifikasi tampil sebagai ikon lonceng di header, di
+        // samping avatar (lihat navbar/index.tsx), bukan di navbar bawah.
     },
     {
         name: "Follows",
         labelKey: "nav.follows",
         path: "/follows",
         icon: <LuHeart />,
+        mobile: true,
     },
     {
         name: "Profile",

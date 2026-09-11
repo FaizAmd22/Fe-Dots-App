@@ -50,9 +50,28 @@ export const useFollowHooks = () => {
       dispatch(setFollowing(response.data.following))
     };
 
+    // Daftar milik user mana pun, untuk halaman /profile/:username/followers.
+    // Tidak disimpan di Redux: slice follow khusus daftar milik sendiri.
+    // Versi login dipakai kalau ada token, supaya isFollow dihitung dari
+    // sudut pandang user yang melihat.
+    const fetchUserFollows = async (username: string) => {
+      const response = token
+        ? await API.get(`/users/${username}/follows`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        : await API.get(`/user/${username}/follows`);
+
+      return {
+        user: response.data.user,
+        follower: response.data.follower,
+        following: response.data.following,
+      };
+    };
+
     return {
       fetchFollow,
       fetchFollower,
-      fetchFollowing
+      fetchFollowing,
+      fetchUserFollows,
     }
 }

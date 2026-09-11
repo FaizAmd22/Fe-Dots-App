@@ -15,10 +15,13 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
+  Box,
+  HStack,
+  IconButton,
 } from "@chakra-ui/react";
 import { CiLogout } from "react-icons/ci";
 import { LuLogOut } from "react-icons/lu";
-import { LuHeart, LuSettings } from "react-icons/lu";
+import { LuBell, LuSettings } from "react-icons/lu";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { FALLBACK_AVATAR } from "../../features/ChatHelpers";
 import { buildMenuItems } from "./menuItems";
@@ -164,8 +167,24 @@ const Navbar = () => {
                 {t("auth.login")}
               </Link>
             ) : (
-              // Navbar bawah mobile hanya memuat 4 menu utama; Profile,
-              // Follows, dan Logout pindah ke sini.
+              // Navbar bawah mobile hanya memuat 4 menu utama (Home, Search,
+              // Chat, Follows). Notifikasi tampil sebagai lonceng di sini,
+              // sedangkan Profile, Settings, dan Logout ada di menu avatar.
+              <HStack spacing="3" display={{ base: "flex", md: "none" }}>
+                <Box position="relative">
+                  <IconButton
+                    variant="ghost"
+                    rounded="full"
+                    fontSize="22px"
+                    aria-label={t("nav.notifications")}
+                    icon={<LuBell />}
+                    _hover={{ bg: "app.hover" }}
+                    {...navIconStyle(isActive("/notifications"), "app.textSoft")}
+                    onClick={() => handleClick("Notifications", "/notifications")}
+                  />
+                  <UnreadBadge floating kind="notification" />
+                </Box>
+
               <Menu placement="bottom-end" autoSelect={false}>
                 <MenuButton
                   display={{ base: "block", md: "none" }}
@@ -206,16 +225,6 @@ const Navbar = () => {
                     bg="transparent"
                     _hover={{ bg: "app.hover" }}
                     _focus={{ bg: "app.hover" }}
-                    icon={<LuHeart size="18px" />}
-                    onClick={() => handleClick("Follows", "/follows")}
-                  >
-                    {t("nav.follows")}
-                  </MenuItem>
-
-                  <MenuItem
-                    bg="transparent"
-                    _hover={{ bg: "app.hover" }}
-                    _focus={{ bg: "app.hover" }}
                     icon={<LuSettings size="18px" />}
                     onClick={() => handleClick("Settings", "/settings")}
                   >
@@ -236,6 +245,7 @@ const Navbar = () => {
                   </MenuItem>
                 </MenuList>
               </Menu>
+              </HStack>
             )}
           </Flex>
         </Text>

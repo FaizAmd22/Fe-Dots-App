@@ -6,8 +6,10 @@ import {
   Center,
   Flex,
   Image,
+  Link,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
+import { Link as RouterLink } from "react-router-dom";
 import { selectUser } from "../../../slices/userSlice";
 import EditProfileModal from "../../../features/EditProfileModal";
 import { useTranslation } from "../../../i18n/useTranslation";
@@ -85,18 +87,29 @@ const CurrentProfile = () => {
           {bio}
         </Text>
 
+        {/* Membuka menu Follows dengan tab sesuai angka yang diklik. */}
         <Flex gap="4" color="app.onSurface">
-          <Center gap="1">
+          <Link
+            as={RouterLink}
+            to="/follows?tab=followers"
+            display="flex"
+            gap="1"
+            _hover={{ textDecoration: "underline" }}
+          >
             {follower}
-
             <Text color="app.onSurfaceMuted">{t("common.followers")}</Text>
-          </Center>
+          </Link>
 
-          <Center gap="1">
+          <Link
+            as={RouterLink}
+            to="/follows?tab=following"
+            display="flex"
+            gap="1"
+            _hover={{ textDecoration: "underline" }}
+          >
             {following}
-
             <Text color="app.onSurfaceMuted">{t("common.following")}</Text>
-          </Center>
+          </Link>
         </Flex>
       </Stack>
     </Stack>

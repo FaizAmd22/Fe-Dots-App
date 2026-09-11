@@ -1,13 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Spacer,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Avatar,
-  Text,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Text } from "@chakra-ui/react";
 import { API } from "../libs/axios";
 import { useSideProfileHooks } from "../hooks/sideProfile";
 import { useProfileHooks } from "../hooks/profile";
@@ -17,6 +9,7 @@ import { darkenOnHover } from "../features/HoverStyles";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
 import { useTranslation } from "../i18n/useTranslation";
+import { useLoginPrompt } from "./feedback/useLoginPrompt";
 
 const UserCard = (data: any) => {
   const token = sessionStorage.getItem("token");
@@ -26,6 +19,10 @@ const UserCard = (data: any) => {
   const { pathname } = useLocation();
   const toast = useToast();
   const { t } = useTranslation();
+  const promptLogin = useLoginPrompt();
+  // Di daftar followers orang lain, kita sendiri bisa ikut tercantum; tombol
+  // Follow untuk diri sendiri tidak bermakna (dan ditolak server).
+  const isSelf = data.data.id === Number(sessionStorage.getItem("id"));
 
   // Status tombol dipegang lokal supaya bisa berubah seketika saat diklik,
   // tanpa menunggu request ke server selesai.
@@ -45,6 +42,11 @@ const UserCard = (data: any) => {
   };
 
   const handleFollow = async () => {
+    // Tamu bisa melihat daftar followers orang lain; follow butuh akun.
+    if (!token) {
+      promptLogin();
+      return;
+    }
     if (isPending) return;
 
     const nextIsFollow = !isFollow;
@@ -88,71 +90,72 @@ const UserCard = (data: any) => {
   const mutedColor = onSurface ? "app.onSurfaceMuted" : "gray.500";
   const accentColor = onSurface ? "app.surfaceAccent" : "green.500";
 
+  const isSuggestion = data.type == "suggestion";
+  const profilePath = `/profile/${data.data.username}`;
+  const avatarSize = isSuggestion ? "45px" : { base: "48px", md: "56px" };
+
   return (
-    <Grid templateColumns="repeat(11, 1fr)">
-      {/* <Flex> */}
-      <GridItem display="flex" alignItems="center">
-        <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
-          <Avatar
-            src={
-              data.data.picture
-                ? data.data.picture
-                : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
-            }
-            // alt={data.data.name}
-            w={data.type == "suggestion" ? "45px" : "60px"}
-            h={data.type == "suggestion" ? "45px" : "60px"}
+    // Flex, bukan grid 11 kolom: di HP satu kolom grid cuma ~30px sementara
+    // avatarnya 60px, jadi avatar terpotong dan kartu meluber ke samping
+    // (daftar Follows bisa digeser horizontal). Sekarang hanya kolom nama yang
+    // menyempit, dan teks panjang dipotong dengan "…".
+    <Flex alignItems="center" gap="3" w="100%" minW="0">
+      <Link to={profilePath} onClick={handleClick} style={{ flexShrink: 0 }}>
+        <Avatar
+          src={
+            data.data.picture
+              ? data.data.picture
+              : "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg"
+          }
+          name={data.data.name}
+          w={avatarSize}
+          h={avatarSize}
+          {...darkenOnHover}
+        />
+      </Link>
+
+      <Box flex="1" minW="0">
+        <Link to={profilePath} onClick={handleClick} style={{ display: "block" }}>
+          <Text
+            fontSize={isSuggestion ? "sm" : "md"}
+            fontWeight="medium"
+            noOfLines={1}
             {...darkenOnHover}
-          />
+          >
+            {data.data.name}
+          </Text>
         </Link>
-      </GridItem>
 
-      <GridItem colSpan={6} my="auto" pl="2">
-        <Flex flexDirection="column">
-          <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
-            <Text
-              fontSize={data.type == "suggestion" ? "sm" : "md"}
-              {...darkenOnHover}
-            >
-              {data.data.name}
-            </Text>
-          </Link>
+        <Link to={profilePath} onClick={handleClick} style={{ display: "block" }}>
+          <Text color={mutedColor} fontSize="sm" noOfLines={1} {...darkenOnHover}>
+            @{data.data.username}
+          </Text>
+        </Link>
+      </Box>
 
-          <Link to={`/profile/${data.data.username}`} onClick={handleClick}>
-            <Text
-              color={mutedColor}
-              fontSize={data.type == "suggestion" ? "sm" : "md"}
-              {...darkenOnHover}
-            >
-              @{data.data.username}
-            </Text>
-          </Link>
-        </Flex>
-      </GridItem>
-
-      <Spacer />
-
-      <Button
-        position="relative"
-        px={data.type == "suggestion" ? "6" : "10"}
-        bg="none"
-        right="0"
-        border="2px"
-        fontSize={data.type == "suggestion" ? "xs" : "sm"}
-        margin="auto"
-        rounded="full"
-        // Belum di-follow: mewarisi warna teks induknya (terang di atas
-        // surface, gelap/putih di halaman biasa).
-        color={isFollow ? mutedColor : "inherit"}
-        borderColor={isFollow ? mutedColor : "currentColor"}
-        _hover={{ bg: "none", color: accentColor, borderColor: accentColor }}
-        isDisabled={isPending}
-        onClick={handleFollow}
-      >
-        {isFollow ? t("common.unfollow") : t("common.follow")}
-      </Button>
-      {/* </Flex> */}
-    </Grid>
+      {!isSelf && (
+        <Button
+          flexShrink={0}
+          size="sm"
+          h={isSuggestion ? "32px" : "36px"}
+          px={isSuggestion ? "4" : { base: "4", md: "6" }}
+          minW={isSuggestion ? undefined : { base: "96px", md: "120px" }}
+          bg="none"
+          border="2px"
+          fontSize={isSuggestion ? "xs" : "sm"}
+          rounded="full"
+          // Belum di-follow: mewarisi warna teks induknya (terang di atas
+          // surface, gelap/putih di halaman biasa).
+          color={isFollow ? mutedColor : "inherit"}
+          borderColor={isFollow ? mutedColor : "currentColor"}
+          _hover={{ bg: "none", color: accentColor, borderColor: accentColor }}
+          isDisabled={isPending}
+          onClick={handleFollow}
+        >
+          {isFollow ? t("common.unfollow") : t("common.follow")}
+        </Button>
+      )}
+    </Flex>
   );
 };
 

@@ -132,6 +132,9 @@ const en: Dictionary = {
     title: "Follows",
     followers: "Followers",
     followings: "Followings",
+    emptyFollowers: "No followers yet.",
+    emptyFollowing: "Not following anyone yet.",
+    loadFailed: "Failed to load the list.",
   },
   chat: {
     title: "Chat",

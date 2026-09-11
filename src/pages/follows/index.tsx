@@ -1,150 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Text,
-  Stack,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  TabIndicator,
-  Box,
-  Button,
-} from "@chakra-ui/react";
-import { useEffect } from "react";
-import { IUsers } from "../../interfaces/UsersInterface";
-import UserCard from "../../component/UserCard";
+import { Stack, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import FollowsTabs, { FollowsTab } from "../../component/FollowsTabs";
 import { selectFollower, selectFollowing } from "../../slices/followSlice";
 import { useFollowHooks } from "../../hooks/follow";
 import { useTranslation } from "../../i18n/useTranslation";
 
+// Menu Follows: daftar followers/following milik user yang login. Tab aktif
+// dibaca dari ?tab=, supaya angka Followers/Following di profil sendiri bisa
+// langsung membuka tab yang sesuai.
 const Follows = () => {
   const { t } = useTranslation();
   const { fetchFollow } = useFollowHooks();
   const follower = useSelector(selectFollower);
   const following = useSelector(selectFollowing);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const tab: FollowsTab = searchParams.get("tab") === "following" ? "following" : "followers";
 
   useEffect(() => {
-    fetchFollow();
+    const load = async () => {
+      try {
+        await fetchFollow();
+      } catch (error) {
+        console.error("Error fetching follows:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
   }, []);
 
-  // console.log("data :", data)
   return (
     <Stack h="100%" color="app.text" py={{ base: "0", md: "4" }} px="4">
       <Text fontSize="2xl" pt={{ base: "0", md: "4" }} fontWeight="semibold">
         {t("follows.title")}
       </Text>
 
-      {/* Kolom flex supaya panel daftar mengisi sisa tinggi halaman. */}
-      <Tabs
-        isFitted
-        variant="unstyled"
-        display="flex"
-        flexDirection="column"
-        flex="1"
-        minH="0"
-      >
-        {/* Dibungkus Box relatif: TabIndicator memakai position absolute
-            tanpa "top", jadi posisinya mengikuti letak statisnya. Di dalam
-            Tabs yang kini kolom flex, letak statis itu jatuh ke puncak Tabs
-            dan garisnya tampil di bawah judul, bukan di bawah tab. */}
-        <Box position="relative">
-          <TabList>
-            <Tab>
-              <Button
-                w="100%"
-                bg="none"
-                color="app.text"
-                _hover={{ bg: "none" }}
-                onClick={() => fetchFollow()}
-              >
-                {t("follows.followers")}
-              </Button>
-            </Tab>
-            <Tab>
-              <Button
-                w="100%"
-                bg="none"
-                color="app.text"
-                _hover={{ bg: "none" }}
-                onClick={() => fetchFollow()}
-              >
-                {t("follows.followings")}
-              </Button>
-            </Tab>
-          </TabList>
-
-          <TabIndicator
-            mt="-1.5px"
-            height="2px"
-            bg="green.500"
-            borderRadius="1px"
-          />
-        </Box>
-
-        <TabPanels flex="1" minH="0">
-          <TabPanel
-            h="100%"
-            gap="5"
-            mt={4}
-            pt={5}
-            py="0"
-            display="flex"
-            flexDirection="column"
-            overflow="auto"
-            sx={{
-              "&::-webkit-scrollbar": {
-                width: "6px",
-                backgroundColor: `none`,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: `green.500`,
-                borderRadius: "3px",
-              },
-            }}
-          >
-            {follower.map((data: IUsers) => {
-              return (
-                <Box color="app.text" key={data.id}>
-                  <UserCard data={data} type="follower" />
-                </Box>
-              );
-            })}
-            {/* <Text>Follower</Text> */}
-          </TabPanel>
-
-          <TabPanel
-            h="100%"
-            gap="5"
-            mt={4}
-            pt={5}
-            py="0"
-            display="flex"
-            flexDirection="column"
-            overflow="auto"
-            sx={{
-              "&::-webkit-scrollbar": {
-                width: "6px",
-                backgroundColor: `none`,
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: `green.500`,
-                borderRadius: "3px",
-              },
-            }}
-          >
-            {following.map((data: IUsers) => {
-              return (
-                <Box color="app.text" key={data.id}>
-                  <UserCard data={data} type="following" />
-                </Box>
-              );
-            })}
-            {/* <Text>Following</Text> */}
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <FollowsTabs
+        tab={tab}
+        // replace: berpindah tab tidak menumpuk riwayat tombol back.
+        onTabChange={(next) => setSearchParams({ tab: next }, { replace: true })}
+        followers={follower}
+        following={following}
+        isLoading={isLoading}
+      />
     </Stack>
   );
 };
