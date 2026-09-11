@@ -10,9 +10,11 @@ import {
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
 import EditProfileModal from "../../../features/EditProfileModal";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const CurrentProfile = () => {
   const user = useSelector(selectUser);
+  const { t } = useTranslation();
 
   // console.log("user di current:", user);
   const { name, username, bio, cover_photo, follower, following, picture } =
@@ -24,7 +26,7 @@ const CurrentProfile = () => {
   return (
     <Stack gap="2">
       <Text color="app.onSurface" fontWeight="semibold" fontSize="xl">
-        My Profile
+        {t("profile.myProfile")}
       </Text>
 
       <Box w="100%" h="150px" rounded="lg">
@@ -87,13 +89,13 @@ const CurrentProfile = () => {
           <Center gap="1">
             {follower}
 
-            <Text color="app.onSurfaceMuted">Followers</Text>
+            <Text color="app.onSurfaceMuted">{t("common.followers")}</Text>
           </Center>
 
           <Center gap="1">
             {following}
 
-            <Text color="app.onSurfaceMuted">Following</Text>
+            <Text color="app.onSurfaceMuted">{t("common.following")}</Text>
           </Center>
         </Flex>
       </Stack>

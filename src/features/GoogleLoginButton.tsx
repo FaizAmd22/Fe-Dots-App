@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { API } from "../libs/axios";
 import { addUser } from "../slices/authSlice";
+import { useTranslation } from "../i18n/useTranslation";
 
 // Google Identity Services disuntikkan lewat <script> di index.html, jadi
 // tipenya tidak ikut dari npm. Cukup dideklarasikan seadanya di sini.
@@ -28,17 +29,18 @@ const GoogleLoginButton = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const toast = useToast();
+  const { t, language } = useTranslation();
 
   // Dipakai di dalam callback Google yang tidak ikut siklus render React,
   // jadi disimpan di ref supaya selalu memakai versi terbaru.
-  const handlers = useRef({ navigate, dispatch, toast, onError });
-  handlers.current = { navigate, dispatch, toast, onError };
+  const handlers = useRef({ navigate, dispatch, toast, onError, t });
+  handlers.current = { navigate, dispatch, toast, onError, t };
 
   useEffect(() => {
     if (!CLIENT_ID) return;
 
     const handleCredential = async (response: { credential: string }) => {
-      const { navigate, dispatch, toast, onError } = handlers.current;
+      const { navigate, dispatch, toast, onError, t } = handlers.current;
 
       try {
         const res = await API.post("/auth/google", { credential: response.credential });
@@ -58,14 +60,14 @@ const GoogleLoginButton = ({
 
         toast({
           position: "top",
-          title: "Login Success!",
+          title: t("auth.loginSuccess"),
           status: "success",
           duration: 1500,
           isClosable: true,
         });
         navigate("/");
       } catch (error: any) {
-        onError?.(error.response?.data?.message || "Login with Google failed!");
+        onError?.(error.response?.data?.message || t("auth.googleFailed"));
       }
     };
 
@@ -90,6 +92,8 @@ const GoogleLoginButton = ({
             shape: "pill",
             width: 320,
             text,
+            // Label tombol mengikuti bahasa aplikasi, bukan bahasa browser.
+            locale: language,
           });
         }
       } else if (++attempts > 100) {
@@ -99,19 +103,19 @@ const GoogleLoginButton = ({
     }, 100);
 
     return () => clearInterval(timer);
-  }, [text]);
+  }, [text, language]);
 
   if (!CLIENT_ID)
     return (
       <Text color="orange.300" fontSize="sm" textAlign="center">
-        VITE_GOOGLE_CLIENT_ID belum diset, tombol Google tidak bisa ditampilkan.
+        {t("auth.googleMissingClientId")}
       </Text>
     );
 
   if (scriptFailed)
     return (
       <Text color="orange.300" fontSize="sm" textAlign="center">
-        Gagal memuat Google Sign-In. Periksa koneksi internet lalu muat ulang halaman.
+        {t("auth.googleScriptFailed")}
       </Text>
     );
 

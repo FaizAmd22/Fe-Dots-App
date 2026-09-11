@@ -17,8 +17,10 @@ import UserCard from "../../component/UserCard";
 import { useSelector } from "react-redux";
 import { selectFollower, selectFollowing } from "../../slices/followSlice";
 import { useFollowHooks } from "../../hooks/follow";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Follows = () => {
+  const { t } = useTranslation();
   const { fetchFollow } = useFollowHooks();
   const follower = useSelector(selectFollower);
   const following = useSelector(selectFollowing);
@@ -31,7 +33,7 @@ const Follows = () => {
   return (
     <Stack h="100%" color="app.text" py={{ base: "0", md: "4" }} px="4">
       <Text fontSize="2xl" pt={{ base: "0", md: "4" }} fontWeight="semibold">
-        Follows
+        {t("follows.title")}
       </Text>
 
       {/* Kolom flex supaya panel daftar mengisi sisa tinggi halaman. */}
@@ -57,7 +59,7 @@ const Follows = () => {
                 _hover={{ bg: "none" }}
                 onClick={() => fetchFollow()}
               >
-                Followers
+                {t("follows.followers")}
               </Button>
             </Tab>
             <Tab>
@@ -68,7 +70,7 @@ const Follows = () => {
                 _hover={{ bg: "none" }}
                 onClick={() => fetchFollow()}
               >
-                Followings
+                {t("follows.followings")}
               </Button>
             </Tab>
           </TabList>

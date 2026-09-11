@@ -5,6 +5,7 @@ import App from './App'
 import { Provider } from 'react-redux'
 import store from './store'
 import theme from './theme'
+import LanguageProvider from './i18n/LanguageProvider'
 
 const rootElement = document.getElementById('root')
 ReactDOM.createRoot(rootElement!).render(
@@ -14,7 +15,9 @@ ReactDOM.createRoot(rootElement!).render(
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <Provider store={store}>
         <ChakraProvider theme={theme}>
-          <App />
+          <LanguageProvider>
+            <App />
+          </LanguageProvider>
         </ChakraProvider>
     </Provider>
   </React.StrictMode>

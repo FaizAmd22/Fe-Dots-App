@@ -11,6 +11,7 @@ import {
 import { useRef, useState } from "react";
 import { LuImage, LuSend, LuX } from "react-icons/lu";
 import { useChatHooks } from "../hooks/chat";
+import { useTranslation } from "../i18n/useTranslation";
 
 // Sama dengan MAX_IMAGES di backend.
 const MAX_IMAGES = 4;
@@ -18,6 +19,7 @@ const MAX_IMAGES = 4;
 const CreateMessage = ({ conversationId }: { conversationId: string }) => {
   const { sendMessage } = useChatHooks();
   const toast = useToast();
+  const { t } = useTranslation();
   const fileInput = useRef<HTMLInputElement>(null);
 
   const [content, setContent] = useState<string>("");
@@ -33,7 +35,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
       if (current.length + picked.length > MAX_IMAGES) {
         toast({
           position: "top",
-          title: `Maksimal ${MAX_IMAGES} gambar.`,
+          title: t("common.maxImages", { max: MAX_IMAGES }),
           status: "warning",
           duration: 2000,
           isClosable: true,
@@ -67,7 +69,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
     }).catch((error: any) => {
       toast({
         position: "top",
-        title: error.response?.data?.message || "Gagal mengirim pesan!",
+        title: error.response?.data?.message || t("chat.sendFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -98,7 +100,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
                 right="1"
                 rounded="full"
                 position="absolute"
-                aria-label="Hapus gambar"
+                aria-label={t("common.removeImage")}
                 icon={<LuX />}
                 onClick={() =>
                   setImages((current) => current.filter((_, i) => i !== index))
@@ -114,7 +116,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
           rounded="full"
           bg="none"
           color="green.500"
-          aria-label="Kirim gambar"
+          aria-label={t("chat.sendImage")}
           icon={<LuImage />}
           _hover={{ bg: "app.card" }}
           onClick={() => fileInput.current?.click()}
@@ -131,7 +133,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
 
         <Input
           rounded="full"
-          placeholder="Tulis pesan"
+          placeholder={t("chat.messagePlaceholder")}
           borderColor="app.border"
           focusBorderColor="green.500"
           value={content}
@@ -151,7 +153,7 @@ const CreateMessage = ({ conversationId }: { conversationId: string }) => {
           rounded="full"
           bg="green.500"
           color="white"
-          aria-label="Kirim"
+          aria-label={t("chat.send")}
           icon={<LuSend />}
           _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={handleSubmit}

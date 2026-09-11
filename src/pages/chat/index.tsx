@@ -17,8 +17,10 @@ import { IConversation } from "../../interfaces/ChatInterface";
 import { selectConversations } from "../../slices/chatSlice";
 import ConversationCard from "./components/ConversationCard";
 import NewChatModal from "./components/NewChatModal";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Chat = () => {
+  const { t } = useTranslation();
   const { fetchConversations } = useChatHooks();
   const conversations = useSelector(selectConversations);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -37,7 +39,7 @@ const Chat = () => {
     <Stack h="100%" px="4" pb="0" color="app.text">
       <Flex alignItems="center" py={{ base: "0", md: "4" }}>
         <Text fontSize="2xl" fontWeight="semibold">
-          Chat
+          {t("chat.title")}
         </Text>
 
         <Spacer />
@@ -51,7 +53,7 @@ const Chat = () => {
           _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={onOpen}
         >
-          Baru
+          {t("chat.new")}
         </Button>
       </Flex>
 
@@ -85,7 +87,7 @@ const Chat = () => {
           ))
         ) : (
           <Text color="gray.500" textAlign="center" pt="20">
-            Belum ada percakapan. Mulai chat lewat tombol "Baru".
+            {t("chat.empty")}
           </Text>
         )}
       </Box>

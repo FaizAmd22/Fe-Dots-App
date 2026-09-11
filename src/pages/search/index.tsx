@@ -14,8 +14,10 @@ import { useDispatch } from "react-redux";
 import { API } from "../../libs/axios";
 import { setUsers } from "../../slices/searchedUserSlice";
 import SearchedUser from "./components/SearchedUser";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Search = () => {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState<any>(null);
   const [dataFilter, setDataFilter] = useState<any>([]);
   const [message, setMessage] = useState<boolean>(false);
@@ -69,7 +71,7 @@ const Search = () => {
         fontWeight="semibold"
         py={{ base: "0", md: "4" }}
       >
-        Search
+        {t("search.title")}
       </Text>
 
       <InputGroup>
@@ -82,7 +84,7 @@ const Search = () => {
           type="text"
           rounded="full"
           name="username"
-          placeholder="Search here by username or name"
+          placeholder={t("search.placeholder")}
           borderColor="gray.500"
           focusBorderColor="green.500"
         />
@@ -90,7 +92,7 @@ const Search = () => {
 
       {message && (
         <Text marginX="auto" pt="50" color="app.text">
-          User not found!
+          {t("search.notFound")}
         </Text>
       )}
 

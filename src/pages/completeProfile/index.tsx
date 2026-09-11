@@ -6,6 +6,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { API } from "../../libs/axios";
 import { addUser } from "../../slices/authSlice";
 import BrandLogo from "../../component/BrandLogo";
+import { useTranslation } from "../../i18n/useTranslation";
 
 // Langkah kedua login Google: akun belum dibuat sampai user memilih username.
 // signupToken dibawa lewat router state dari GoogleLoginButton.
@@ -14,6 +15,7 @@ const CompleteProfile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const toast = useToast();
+  const { t } = useTranslation();
 
   const signupToken = location.state?.signupToken as string | undefined;
   const profile = location.state?.profile as
@@ -41,14 +43,14 @@ const CompleteProfile = () => {
 
       toast({
         position: "top",
-        title: "Account created!",
+        title: t("auth.accountCreated"),
         status: "success",
         duration: 1500,
         isClosable: true,
       });
       navigate("/");
     } catch (error: any) {
-      setError(error.response?.data?.message || "Something went wrong!");
+      setError(error.response?.data?.message || t("auth.somethingWrong"));
     } finally {
       setIsLoading(false);
     }
@@ -60,11 +62,11 @@ const CompleteProfile = () => {
         <BrandLogo h="56px" />
 
         <Text pb="1" fontSize="3xl" fontWeight="semibold">
-          Choose your username
+          {t("auth.chooseUsername")}
         </Text>
 
         <Text pb="4" fontSize="sm" color="app.textMuted">
-          Satu langkah lagi. Username ini yang akan tampil di profil dan link kamu.
+          {t("auth.chooseUsernameHint")}
         </Text>
 
         {profile && (
@@ -82,7 +84,7 @@ const CompleteProfile = () => {
         <Input
           type="text"
           value={username}
-          placeholder="Username"
+          placeholder={t("auth.username")}
           onChange={(e) => setUsername(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
         />
@@ -97,15 +99,15 @@ const CompleteProfile = () => {
           _hover={{ color: "green.500", bg: "app.inverse" }}
           onClick={handleSubmit}
         >
-          Continue
+          {t("common.continue")}
         </Button>
 
         {error && <Text color="red.500">{error}</Text>}
 
         <Text py="2" fontSize="sm">
-          Berubah pikiran?
+          {t("auth.changedMind")}
           <Link px="2" color="green.500" _hover={{ color: "app.text" }} onClick={() => navigate("/login")}>
-            Kembali ke login
+            {t("auth.backToLogin")}
           </Link>
         </Text>
       </Stack>

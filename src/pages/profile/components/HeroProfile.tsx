@@ -15,6 +15,7 @@ import { selectProfile } from '../../../slices/profileSlice';
 import { selectUser } from '../../../slices/userSlice';
 import { selectLastSeenById, selectOnlineUserIds } from '../../../slices/chatSlice';
 import PresenceLabel from '../../../features/PresenceLabel';
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const HeroProfile = () => {
     const user = useSelector(selectProfile)
@@ -22,10 +23,11 @@ const HeroProfile = () => {
     const currentUser = useSelector(selectUser)
     const onlineUserIds = useSelector(selectOnlineUserIds)
     const lastSeenById = useSelector(selectLastSeenById)
+    const { t, locale } = useTranslation()
     // Tanggal gabung pemilik profil yang sedang dibuka, bukan milik user yang
     // login — dulu semua profil menampilkan tanggal gabung kita sendiri.
     const date = new Date(user.created_at)
-    const formatedDate = date.toDateString()
+    const formatedDate = date.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
     const token = sessionStorage.getItem("token")
     // console.log("currentUser :", currentUser.id);
     console.log("user :", user);
@@ -50,7 +52,7 @@ const HeroProfile = () => {
         } catch (error: any) {
             toast({
                 position: "top",
-                title: error.response?.data?.message || "Gagal membuka percakapan!",
+                title: error.response?.data?.message || t("profile.openChatFailed"),
                 status: "error",
                 duration: 2000,
                 isClosable: true,
@@ -82,7 +84,7 @@ const HeroProfile = () => {
         } catch (error) {
             toast({
                 position: "top",
-                title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Gagal memperbarui follow!",
+                title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("profile.followFailed"),
                 status: "error",
                 duration: 2000,
                 isClosable: true,
@@ -163,7 +165,7 @@ const HeroProfile = () => {
                             isLoading={isFollowPending}
                             onClick={handleFollow}
                         >
-                            {user.isFollow ? "Unfollow" : "Follow"}
+                            {user.isFollow ? t("common.unfollow") : t("common.follow")}
                         </Button>
 
                         <IconButton
@@ -174,8 +176,8 @@ const HeroProfile = () => {
                             color='app.text'
                             borderColor='app.text'
                             fontSize='xl'
-                            aria-label={`Kirim pesan ke ${user.name}`}
-                            title={`Kirim pesan ke ${user.name}`}
+                            aria-label={t("profile.sendMessageTo", { name: user.name })}
+                            title={t("profile.sendMessageTo", { name: user.name })}
                             icon={<LuMessageCircle />}
                             isLoading={isOpeningChat}
                             _hover={{ bg: "none", color: "green.500", borderColor: "green.500" }}
@@ -200,7 +202,7 @@ const HeroProfile = () => {
             <Flex alignItems='center' gap='2' color='gray.500'>
                 <FaCalendarDays />
                 <Text>
-                    Joined {formatedDate}
+                    {t("profile.joined", { date: formatedDate })}
                 </Text>
             </Flex>
 
@@ -210,7 +212,7 @@ const HeroProfile = () => {
                         {user.follower}
                     </Text>
                     <Text color='gray.500'>
-                        Followers
+                        {t("common.followers")}
                     </Text>
                 </Flex>
 
@@ -219,7 +221,7 @@ const HeroProfile = () => {
                         {user.following}
                     </Text>
                     <Text color='gray.500'>
-                        Following
+                        {t("common.following")}
                     </Text>
                 </Flex>
             </Flex>

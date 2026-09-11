@@ -16,12 +16,14 @@ import { MdDeleteForever } from "react-icons/md";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { useDetailThreadHooks } from "../hooks/detailThread";
+import { useTranslation } from "../i18n/useTranslation";
 
 export default function AlertDelete(data: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const currentUrl = window.location.href;
   const toast = useToast();
+  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
   const { fetchDetailAuth } = useDetailThreadHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
@@ -55,7 +57,7 @@ export default function AlertDelete(data: any) {
       fetchProfileThreadAuth();
       toast({
         position: 'top',
-        title: 'Delete Success!',
+        title: t("post.deleteSuccess"),
         status: 'success',
         duration: 1500,
         isClosable: true,
@@ -67,7 +69,7 @@ export default function AlertDelete(data: any) {
     } catch (error) {
       toast({
         position: 'top',
-        title: "You don't have permission!",
+        title: t("post.noPermission"),
         status: 'error',
         duration: 1500,
         isClosable: true,
@@ -81,7 +83,7 @@ export default function AlertDelete(data: any) {
   return (
     <>
       <Button w='100%' padding={0} gap='2' colorScheme='red' onClick={onOpen}>
-        <MdDeleteForever /> Delete
+        <MdDeleteForever /> {t("common.delete")}
       </Button>
 
       <AlertDialog
@@ -93,19 +95,19 @@ export default function AlertDelete(data: any) {
         <AlertDialogOverlay>
           <AlertDialogContent bg='app.bg' color='app.text'>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {data.type == "threads" ? "Delete This Thread?" : "Delete This Reply?"}
+              {data.type == "threads" ? t("post.deleteThreadTitle") : t("post.deleteReplyTitle")}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              {t("post.deleteConfirm")}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} isDisabled={isDeleting}>
-                Cancel
+                {t("common.cancel")}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3} isLoading={isDeleting}>
-                Delete
+                {t("common.delete")}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

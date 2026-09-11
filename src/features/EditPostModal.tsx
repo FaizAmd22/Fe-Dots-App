@@ -24,6 +24,7 @@ import { API } from "../libs/axios";
 import { useThreadsHooks } from "../hooks/threads";
 import { useDetailThreadHooks } from "../hooks/detailThread";
 import { useProfileThreadHooks } from "../hooks/profileThread";
+import { useTranslation } from "../i18n/useTranslation";
 
 // Sama dengan MAX_IMAGES di backend.
 const MAX_IMAGES = 4;
@@ -46,6 +47,7 @@ const EditPostModal = ({
 }) => {
   const token = sessionStorage.getItem("token");
   const toast = useToast();
+  const { t } = useTranslation();
   const fileInput = useRef<HTMLInputElement>(null);
 
   const { fetchThreadAuth } = useThreadsHooks();
@@ -77,7 +79,7 @@ const EditPostModal = ({
     if (picked.length > room) {
       toast({
         position: "top",
-        title: `Maksimal ${MAX_IMAGES} gambar.`,
+        title: t("common.maxImages", { max: MAX_IMAGES }),
         status: "warning",
         duration: 2000,
         isClosable: true,
@@ -94,7 +96,7 @@ const EditPostModal = ({
     if (!draft.trim() && !totalImages) {
       return toast({
         position: "top",
-        title: "Konten tidak boleh kosong!",
+        title: t("common.emptyContent"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -122,7 +124,7 @@ const EditPostModal = ({
 
       toast({
         position: "top",
-        title: type === "threads" ? "Thread diperbarui!" : "Balasan diperbarui!",
+        title: type === "threads" ? t("post.threadUpdated") : t("post.replyUpdated"),
         status: "success",
         duration: 1500,
         isClosable: true,
@@ -137,7 +139,7 @@ const EditPostModal = ({
     } catch (error: any) {
       toast({
         position: "top",
-        title: error.response?.data?.message || "Gagal menyimpan perubahan!",
+        title: error.response?.data?.message || t("post.saveFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -152,14 +154,14 @@ const EditPostModal = ({
       <ModalOverlay />
       <ModalContent bg="app.bg" color="app.text">
         <ModalHeader>
-          {type === "threads" ? "Edit thread" : "Edit balasan"}
+          {type === "threads" ? t("post.editThread") : t("post.editReply")}
         </ModalHeader>
         <ModalCloseButton />
 
         <ModalBody pb="4">
           <Textarea
             rows={4}
-            placeholder="Tulis sesuatu..."
+            placeholder={t("post.editPlaceholder")}
             borderColor="app.border"
             focusBorderColor="green.500"
             value={draft}
@@ -169,7 +171,7 @@ const EditPostModal = ({
           {totalImages > 0 && (
             <Box mt="3">
               <Text fontSize="xs" color="gray.500" mb="1">
-                Gambar ({totalImages}/{MAX_IMAGES})
+                {t("post.images", { count: totalImages, max: MAX_IMAGES })}
               </Text>
 
               <Flex gap="2" flexWrap="wrap">
@@ -187,7 +189,7 @@ const EditPostModal = ({
                       isRound
                       color="red.600"
                       fontSize="22px"
-                      aria-label="Hapus gambar"
+                      aria-label={t("common.removeImage")}
                       _hover={{ bg: "none", color: "app.text" }}
                       onClick={() =>
                         setKeptImages((current) =>
@@ -217,7 +219,7 @@ const EditPostModal = ({
                       isRound
                       color="red.600"
                       fontSize="22px"
-                      aria-label="Hapus gambar"
+                      aria-label={t("common.removeImage")}
                       _hover={{ bg: "none", color: "app.text" }}
                       onClick={() =>
                         setNewImages((current) =>
@@ -259,13 +261,13 @@ const EditPostModal = ({
             _hover={{ bg: "app.card" }}
             onClick={() => fileInput.current?.click()}
           >
-            Tambah gambar
+            {t("common.addImage")}
           </Button>
         </ModalBody>
 
         <ModalFooter gap="2">
           <Button variant="ghost" color="app.textMuted" onClick={onClose}>
-            Batal
+            {t("common.cancel")}
           </Button>
           <Button
             rounded="full"
@@ -275,7 +277,7 @@ const EditPostModal = ({
             isLoading={isSaving}
             onClick={handleSave}
           >
-            Simpan
+            {t("common.save")}
           </Button>
         </ModalFooter>
       </ModalContent>

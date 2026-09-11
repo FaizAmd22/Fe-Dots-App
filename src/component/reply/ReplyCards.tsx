@@ -19,8 +19,10 @@ import Dropdown from "../../features/Dropdown";
 import Liked from "../../features/Liked";
 import { useProfileHooks } from "../../hooks/profile";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const ReplyCards = (reply: any) => {
+  const { t } = useTranslation();
   const {
     isOpen: isImageOpen,
     onOpen: onImageOpen,
@@ -101,7 +103,7 @@ const ReplyCards = (reply: any) => {
                 </Link>
 
                 <Text ml="3" fontSize="sm" color="gray.500">
-                  {changeFormatDate(reply.reply.created_at)}
+                  {changeFormatDate(reply.reply.created_at, t)}
                 </Text>
 
                 <Dropdown

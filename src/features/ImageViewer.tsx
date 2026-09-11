@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { LuChevronLeft, LuChevronRight, LuDownload, LuX } from "react-icons/lu";
+import { useTranslation } from "../i18n/useTranslation";
 
 interface ImageViewerProps {
   isOpen: boolean;
@@ -43,12 +44,12 @@ const extensionOf = (blobType: string, url: string) => {
   return match ? match[0].toLowerCase() : ".jpg";
 };
 
-const formatSavedAt = (value?: string) => {
+const formatSavedAt = (value: string | undefined, locale: string) => {
   if (!value) return "";
   const date = new Date(value);
   if (isNaN(date.getTime())) return "";
 
-  return date.toLocaleString([], {
+  return date.toLocaleString(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -75,6 +76,7 @@ const ImageViewer = ({
 }: ImageViewerProps) => {
   const [index, setIndex] = useState<number>(startIndex);
   const toast = useToast();
+  const { t, locale } = useTranslation();
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const thumbRefs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -163,7 +165,7 @@ const ImageViewer = ({
       window.open(current, "_blank");
       toast({
         position: "top",
-        title: "Gambar dibuka di tab baru, silakan simpan dari sana.",
+        title: t("viewer.openedInTab"),
         status: "info",
         duration: 2500,
         isClosable: true,
@@ -217,10 +219,10 @@ const ImageViewer = ({
                 fontWeight="semibold"
                 noOfLines={1}
               >
-                {author?.name || "Unknown user"}
+                {author?.name || t("common.unknownUser")}
               </Text>
               <Text fontSize="xs" color="gray.400" noOfLines={1}>
-                {formatSavedAt(createdAt)}
+                {formatSavedAt(createdAt, locale)}
               </Text>
             </Box>
 
@@ -236,8 +238,8 @@ const ImageViewer = ({
               {...iconButtonStyle}
               fontSize="xl"
               flexShrink={0}
-              aria-label="Unduh gambar"
-              title="Unduh gambar"
+              aria-label={t("viewer.download")}
+              title={t("viewer.download")}
               icon={<LuDownload />}
               isLoading={isDownloading}
               onClick={handleDownload}
@@ -247,8 +249,8 @@ const ImageViewer = ({
               {...iconButtonStyle}
               fontSize="xl"
               flexShrink={0}
-              aria-label="Tutup"
-              title="Tutup"
+              aria-label={t("viewer.close")}
+              title={t("viewer.close")}
               icon={<LuX />}
               onClick={onClose}
             />
@@ -294,7 +296,7 @@ const ImageViewer = ({
                   fontSize="xl"
                   _hover={{ bg: "blackAlpha.700" }}
                   _active={{ bg: "blackAlpha.800" }}
-                  aria-label="Gambar sebelumnya"
+                  aria-label={t("viewer.prev")}
                   icon={<LuChevronLeft />}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -314,7 +316,7 @@ const ImageViewer = ({
                   fontSize="xl"
                   _hover={{ bg: "blackAlpha.700" }}
                   _active={{ bg: "blackAlpha.800" }}
-                  aria-label="Gambar berikutnya"
+                  aria-label={t("viewer.next")}
                   icon={<LuChevronRight />}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -339,7 +341,7 @@ const ImageViewer = ({
                 {...iconButtonStyle}
                 display={{ base: "none", md: "inline-flex" }}
                 fontSize="2xl"
-                aria-label="Gambar sebelumnya"
+                aria-label={t("viewer.prev")}
                 icon={<LuChevronLeft />}
                 onClick={goPrev}
               />
@@ -388,7 +390,7 @@ const ImageViewer = ({
                 {...iconButtonStyle}
                 display={{ base: "none", md: "inline-flex" }}
                 fontSize="2xl"
-                aria-label="Gambar berikutnya"
+                aria-label={t("viewer.next")}
                 icon={<LuChevronRight />}
                 onClick={goNext}
               />

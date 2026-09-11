@@ -6,10 +6,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import GoogleLoginButton from "../../features/GoogleLoginButton";
 import BrandLogo from "../../component/BrandLogo";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Register = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     fullname: "",
     username: "",
@@ -48,7 +50,7 @@ const Register = () => {
 
       toast({
         position: "top",
-        title: "Register Success!",
+        title: t("auth.registerSuccess"),
         status: "success",
         duration: 1500,
         isClosable: true,
@@ -68,7 +70,7 @@ const Register = () => {
       //   setError("Fullname can't be empty!");
       // }
 
-      setError(error.response?.data?.message || "Gagal mendaftar, coba lagi!");
+      setError(error.response?.data?.message || t("auth.registerFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -93,26 +95,26 @@ const Register = () => {
           fontWeight="semibold"
           display={{ base: "none", md: "block" }}
         >
-          Create account Dots.
+          {t("auth.registerTitle")}
         </Text>
 
         <Stack spacing={3}>
           <Input
             type="text"
             name="fullname"
-            placeholder="Fullname"
+            placeholder={t("auth.fullname")}
             onChange={handleChange}
           />
           <Input
             type="text"
             name="username"
-            placeholder="Username"
+            placeholder={t("auth.username")}
             onChange={handleChange}
           />
           <Input
             type="text"
             name="password"
-            placeholder="Password"
+            placeholder={t("auth.password")}
             onChange={handleChange}
           />
         </Stack>
@@ -127,26 +129,26 @@ const Register = () => {
           isLoading={isSubmitting}
           onClick={handleSubmit}
         >
-          Create
+          {t("auth.create")}
         </Button>
 
         {error && <Text color="red.500">{error}</Text>}
 
         <Text py="2" textAlign="center" color="app.textMuted" fontSize="sm">
-          or
+          {t("common.or")}
         </Text>
 
         <GoogleLoginButton text="signup_with" onError={setError} />
 
         <Text py="2">
-          Already have account?
+          {t("auth.haveAccount")}
           <Link
             px="2"
             color="green.500"
             _hover={{ color: "app.text" }}
             onClick={() => navigate("/login")}
           >
-            Login
+            {t("auth.login")}
           </Link>
         </Text>
 
@@ -163,7 +165,7 @@ const Register = () => {
           _hover={{ color: "red.500", bg: "app.inverse", textDecoration: "none" }}
           onClick={() => navigate("/")}
         >
-          <Text>Back To Home</Text>
+          <Text>{t("auth.backToHome")}</Text>
         </Link>
       </Stack>
     </Stack>

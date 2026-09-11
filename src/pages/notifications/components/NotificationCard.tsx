@@ -8,33 +8,37 @@ import {
   INotification,
   NotificationType,
 } from "../../../interfaces/NotificationInterface";
+import type { Translate, TranslationKey } from "../../../i18n/translate";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const TYPE_META: Record<
   NotificationType,
-  { icon: JSX.Element; color: string; action: string }
+  { icon: JSX.Element; color: string; actionKey: TranslationKey }
 > = {
-  follow: { icon: <LuUserPlus />, color: "green.500", action: "mulai mengikuti Anda" },
-  like_thread: { icon: <LuHeart />, color: "red.500", action: "menyukai thread Anda" },
-  like_reply: { icon: <LuHeart />, color: "red.500", action: "menyukai balasan Anda" },
-  reply: { icon: <LuMessageCircle />, color: "blue.400", action: "membalas thread Anda" },
+  follow: { icon: <LuUserPlus />, color: "green.500", actionKey: "notifications.follow" },
+  like_thread: { icon: <LuHeart />, color: "red.500", actionKey: "notifications.likeThread" },
+  like_reply: { icon: <LuHeart />, color: "red.500", actionKey: "notifications.likeReply" },
+  reply: { icon: <LuMessageCircle />, color: "blue.400", actionKey: "notifications.reply" },
 };
 
 // "Budi", "Budi dan Ani", atau "Budi dan 3 lainnya".
-const actorLabel = ({ actors, actorCount }: INotification) => {
+const actorLabel = ({ actors, actorCount }: INotification, t: Translate) => {
   const [first, second] = actors;
-  if (!first) return "Seseorang";
+  if (!first) return t("notifications.someone");
   if (actorCount <= 1) return first.name;
-  if (actorCount === 2 && second) return `${first.name} dan ${second.name}`;
-  return `${first.name} dan ${actorCount - 1} lainnya`;
+  if (actorCount === 2 && second) {
+    return t("notifications.two", { first: first.name, second: second.name });
+  }
+  return t("notifications.many", { first: first.name, count: actorCount - 1 });
 };
 
 // Kutipan konten yang direspons: thread yang disukai, reply yang disukai, atau
 // isi balasan yang masuk.
-const previewText = (notification: INotification) => {
+const previewText = (notification: INotification, t: Translate) => {
   const preview =
     notification.type === "like_thread" ? notification.thread : notification.reply;
   if (!preview) return null;
-  return preview.content || (preview.image ? "📷 Foto" : null);
+  return preview.content || (preview.image ? t("common.photo") : null);
 };
 
 const targetPath = (notification: INotification) => {
@@ -49,9 +53,10 @@ const targetPath = (notification: INotification) => {
 
 const NotificationCard = ({ notification }: { notification: INotification }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const meta = TYPE_META[notification.type] || TYPE_META.follow;
   const [firstActor] = notification.actors;
-  const preview = previewText(notification);
+  const preview = previewText(notification, t);
   const path = targetPath(notification);
 
   return (
@@ -109,9 +114,9 @@ const NotificationCard = ({ notification }: { notification: INotification }) => 
 
         <Text fontSize="sm" lineHeight="short">
           <Text as="span" fontWeight="semibold">
-            {actorLabel(notification)}
+            {actorLabel(notification, t)}
           </Text>{" "}
-          {meta.action}
+          {t(meta.actionKey)}
         </Text>
 
         {preview && (
@@ -121,7 +126,7 @@ const NotificationCard = ({ notification }: { notification: INotification }) => 
         )}
 
         <Text fontSize="xs" color="gray.500" mt="1">
-          {changeFormatDate(notification.created_at)}
+          {changeFormatDate(notification.created_at, t)}
         </Text>
       </Box>
 

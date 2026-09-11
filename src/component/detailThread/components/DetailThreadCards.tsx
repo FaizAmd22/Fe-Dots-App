@@ -24,8 +24,10 @@ import Liked from "../../../features/Liked";
 import CreatePost from "../../../features/CreatePost";
 import ReplyCards from "../../reply/ReplyCards";
 import { useProfileHooks } from "../../../hooks/profile";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const DetailThreadCards = () => {
+  const { t, locale } = useTranslation();
   const {
     isOpen: isImageOpen,
     onOpen: onImageOpen,
@@ -47,7 +49,11 @@ const DetailThreadCards = () => {
     : [];
 
   const formatedDate = new Date(data.created_at);
-  const date = formatedDate.toDateString();
+  const date = formatedDate.toLocaleDateString(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
   const token = sessionStorage.getItem("token");
   const { fetchProfile } = useProfileHooks();
   const { fetchProfileThread, fetchProfileThreadAuth } =
@@ -66,7 +72,7 @@ const DetailThreadCards = () => {
   if (!data?.id || !data?.author) {
     return (
       <Box w="100%" color="gray.500" textAlign="center" py="20">
-        <Text>Thread tidak ditemukan atau sudah dihapus.</Text>
+        <Text>{t("post.notFound")}</Text>
       </Box>
     );
   }
@@ -173,7 +179,7 @@ const DetailThreadCards = () => {
                 <Center gap="2">
                   <BiCommentDetail />
 
-                  <Text fontSize="sm">{data.replies} Replies</Text>
+                  <Text fontSize="sm">{t("common.replies", { n: data.replies })}</Text>
                 </Center>
               </Flex>
             </Text>

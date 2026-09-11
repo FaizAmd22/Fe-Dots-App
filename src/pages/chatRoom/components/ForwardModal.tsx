@@ -25,6 +25,7 @@ import { IConversation } from "../../../interfaces/ChatInterface";
 import { IUsers } from "../../../interfaces/UsersInterface";
 import { API } from "../../../libs/axios";
 import { selectConversations } from "../../../slices/chatSlice";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const ForwardModal = ({
   isOpen,
@@ -40,6 +41,7 @@ const ForwardModal = ({
   const token = sessionStorage.getItem("token");
   const myId = Number(sessionStorage.getItem("id"));
   const toast = useToast();
+  const { t } = useTranslation();
   const { forwardMessages, fetchConversations } = useChatHooks();
   const conversations = useSelector(selectConversations);
 
@@ -69,7 +71,7 @@ const ForwardModal = ({
   const search = keyword.toLowerCase();
 
   const matchedConversations = (conversations as IConversation[]).filter((conversation) =>
-    conversationTitle(conversation, myId).toLowerCase().includes(search)
+    conversationTitle(conversation, myId, t).toLowerCase().includes(search)
   );
 
   // User yang sudah punya DM disembunyikan dari daftar bawah, supaya tujuan
@@ -114,7 +116,7 @@ const ForwardModal = ({
 
       toast({
         position: "top",
-        title: `Pesan diteruskan ke ${totalPicked} tujuan.`,
+        title: t("chat.forwardSuccess", { count: totalPicked }),
         status: "success",
         duration: 2000,
         isClosable: true,
@@ -125,7 +127,7 @@ const ForwardModal = ({
     } catch (error: any) {
       toast({
         position: "top",
-        title: error.response?.data?.message || "Gagal meneruskan pesan!",
+        title: error.response?.data?.message || t("chat.forwardFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -140,7 +142,7 @@ const ForwardModal = ({
       <ModalOverlay />
       <ModalContent bg="app.bg" color="app.text">
         <ModalHeader>
-          Teruskan {messageIds.length} pesan
+          {t("chat.forwardTitle", { count: messageIds.length })}
         </ModalHeader>
         <ModalCloseButton />
 
@@ -148,7 +150,7 @@ const ForwardModal = ({
           <Input
             mb="3"
             type="text"
-            placeholder="Cari percakapan atau user"
+            placeholder={t("chat.forwardSearch")}
             borderColor="app.border"
             focusBorderColor="green.500"
             value={keyword}
@@ -158,13 +160,13 @@ const ForwardModal = ({
           <Box maxH="45vh" overflowY="auto">
             {matchedConversations.length > 0 && (
               <Text fontSize="xs" color="gray.500" mb="1">
-                Percakapan
+                {t("chat.conversations")}
               </Text>
             )}
 
             {matchedConversations.map((conversation) => {
               const other = otherParticipant(conversation, myId);
-              const title = conversationTitle(conversation, myId);
+              const title = conversationTitle(conversation, myId, t);
 
               return (
                 <Flex key={`c-${conversation.id}`} py="2" px="1" alignItems="center">
@@ -186,7 +188,7 @@ const ForwardModal = ({
                     <Text fontSize="sm">{title}</Text>
                     <Text fontSize="xs" color="gray.500">
                       {conversation.is_group
-                        ? `${conversation.participants.length} anggota`
+                        ? t("chat.members", { count: conversation.participants.length })
                         : `@${other?.username}`}
                     </Text>
                   </Box>
@@ -196,7 +198,7 @@ const ForwardModal = ({
 
             {matchedUsers.length > 0 && (
               <Text fontSize="xs" color="gray.500" mt="3" mb="1">
-                User lain
+                {t("chat.otherUsers")}
               </Text>
             )}
 
@@ -219,7 +221,7 @@ const ForwardModal = ({
 
             {!matchedConversations.length && !matchedUsers.length && (
               <Text color="gray.500" fontSize="sm" textAlign="center" py="4">
-                Tidak ada tujuan yang cocok
+                {t("chat.noTargets")}
               </Text>
             )}
           </Box>
@@ -235,7 +237,7 @@ const ForwardModal = ({
             isDisabled={!totalPicked}
             onClick={handleForward}
           >
-            Teruskan{totalPicked ? ` (${totalPicked})` : ""}
+            {totalPicked ? t("chat.forwardCount", { count: totalPicked }) : t("chat.forward")}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -1,8 +1,10 @@
 import { Text, Stack } from "@chakra-ui/react";
 import CreatePost from "../../features/CreatePost";
 import Threads from "./components/Threads";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Home = () => {
+  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
 
   return (
@@ -13,7 +15,7 @@ const Home = () => {
         fontWeight="semibold"
         display={{ base: "none", md: "block" }}
       >
-        Home
+        {t("nav.home")}
       </Text>
 
       {token && <CreatePost type="threads" />}

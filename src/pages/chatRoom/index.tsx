@@ -34,11 +34,13 @@ import {
 } from "../../slices/chatSlice";
 import SelectionToolbar from "./components/SelectionToolbar";
 import { darkenOnGroupHover } from "../../features/HoverStyles";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const ChatRoom = () => {
   const { id } = useParams();
   const conversationId = String(id || "");
   const myId = Number(sessionStorage.getItem("id"));
+  const { t } = useTranslation();
 
   const {
     fetchMessages,
@@ -122,7 +124,7 @@ const ChatRoom = () => {
         markAsRead(conversationId);
         dispatch(markConversationRead(conversationId));
       } catch (err: any) {
-        setError(err.response?.data?.message || "Gagal memuat percakapan!");
+        setError(err.response?.data?.message || t("chat.loadFailed"));
         setIsLoading(false);
       }
     };
@@ -259,7 +261,7 @@ const ChatRoom = () => {
   }, [lastMessage?.id, isLoading]);
 
   const other = conversation ? otherParticipant(conversation, myId) : undefined;
-  const title = conversation ? conversationTitle(conversation, myId) : "";
+  const title = conversation ? conversationTitle(conversation, myId, t) : "";
 
   // Grup tidak punya satu profil untuk dituju, jadi hanya DM yang bisa diklik.
   const canOpenProfile = Boolean(!conversation?.is_group && other?.username);
@@ -291,7 +293,7 @@ const ChatRoom = () => {
           bg="none"
           color="app.text"
           rounded="full"
-          aria-label="Kembali"
+          aria-label={t("common.back")}
           icon={<LuArrowLeft />}
           _hover={{ bg: "app.card" }}
           onClick={() => window.history.back()}
@@ -328,7 +330,7 @@ const ChatRoom = () => {
 
               {conversation.is_group ? (
                 <Text fontSize="xs" color="gray.500">
-                  {conversation.participants.length} anggota
+                  {t("chat.members", { count: conversation.participants.length })}
                 </Text>
               ) : (
                 <PresenceLabel
@@ -380,7 +382,7 @@ const ChatRoom = () => {
           </Text>
         ) : isLoading ? (
           <Text color="gray.500" textAlign="center" pt="20">
-            Memuat pesan...
+            {t("chat.loadingMessages")}
           </Text>
         ) : messages.length ? (
           <>
@@ -399,7 +401,7 @@ const ChatRoom = () => {
                   _hover={{ color: "app.text", bg: "app.card" }}
                   onClick={loadOlderMessages}
                 >
-                  Muat pesan sebelumnya
+                  {t("chat.loadOlder")}
                 </Button>
               </Flex>
             ) : null}
@@ -418,7 +420,7 @@ const ChatRoom = () => {
           </>
         ) : (
           <Text color="gray.500" textAlign="center" pt="20">
-            Belum ada pesan. Sapa duluan!
+            {t("chat.emptyRoom")}
           </Text>
         )}
       </Box>

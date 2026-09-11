@@ -4,11 +4,12 @@ import ImageGrid from "../../../features/ImageGrid";
 import { useState } from "react";
 import { LuCheck, LuCheckCheck, LuClock, LuForward } from "react-icons/lu";
 import { IMessage } from "../../../interfaces/ChatInterface";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 // Di chat, jam lebih berguna daripada durasi relatif ala ChangeFormatDate
 // yang dipakai thread — "just a few seconds" di tiap gelembung tidak membantu.
-const clock = (date: string) =>
-  new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+const clock = (date: string, locale: string) =>
+  new Date(date).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 
 const MessageBubble = ({
   message,
@@ -25,6 +26,7 @@ const MessageBubble = ({
 }) => {
   const myId = Number(sessionStorage.getItem("id"));
   const isMine = message.sender?.id === myId;
+  const { t, locale } = useTranslation();
 
   const {
     isOpen: isImageOpen,
@@ -92,7 +94,7 @@ const MessageBubble = ({
           <Flex alignItems="center" gap="1" mb="0.5">
             <LuForward size="12" />
             <Text fontSize="xs" fontStyle="italic" opacity={0.8}>
-              Diteruskan
+              {t("chat.forwarded")}
             </Text>
           </Flex>
         )}
@@ -100,7 +102,7 @@ const MessageBubble = ({
         {/* Di grup perlu tahu siapa yang bicara; di DM sudah jelas. */}
         {isGroup && !isMine && (
           <Text fontSize="xs" color="green.300" fontWeight="semibold">
-            {message.sender?.name || "Unknown user"}
+            {message.sender?.name || t("common.unknownUser")}
           </Text>
         )}
 
@@ -127,7 +129,7 @@ const MessageBubble = ({
 
         <Flex justifyContent="flex-end" alignItems="center" gap="1">
           <Text fontSize="10px" color={isMine ? "green.100" : "gray.500"}>
-            {clock(message.created_at)}
+            {clock(message.created_at, locale)}
           </Text>
 
           {/* Status pengiriman hanya relevan untuk pesan sendiri:

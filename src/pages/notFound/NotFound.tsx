@@ -1,12 +1,12 @@
 import { Text } from '@chakra-ui/react'
+import { useTranslation } from '../../i18n/useTranslation';
 
 const NotFound = () => {
-    return ( 
-        <>
-            <Text>Not Found!</Text>
-            <Text>Not Found!</Text>
-        </>
+    const { t } = useTranslation();
+
+    return (
+        <Text>{t("misc.notFound")}</Text>
      );
 }
- 
+
 export default NotFound;

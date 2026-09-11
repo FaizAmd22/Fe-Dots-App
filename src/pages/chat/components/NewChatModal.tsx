@@ -27,12 +27,14 @@ import { useNavigate } from "react-router-dom";
 import { useChatHooks } from "../../../hooks/chat";
 import { API } from "../../../libs/axios";
 import { IUsers } from "../../../interfaces/UsersInterface";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const token = sessionStorage.getItem("token");
   const myId = Number(sessionStorage.getItem("id"));
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useTranslation();
   const { createConversation, fetchConversations } = useChatHooks();
 
   const [users, setUsers] = useState<IUsers[]>([]);
@@ -86,7 +88,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     } catch (error: any) {
       toast({
         position: "top",
-        title: error.response?.data?.message || "Gagal memulai percakapan!",
+        title: error.response?.data?.message || t("chat.startFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -105,7 +107,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     <Input
       mb="3"
       type="text"
-      placeholder="Cari nama atau username"
+      placeholder={t("chat.searchUsers")}
       borderColor="app.border"
       focusBorderColor="green.500"
       value={keyword}
@@ -117,14 +119,14 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
     <Modal isOpen={isOpen} onClose={close} isCentered>
       <ModalOverlay />
       <ModalContent bg="app.bg" color="app.text">
-        <ModalHeader>Chat baru</ModalHeader>
+        <ModalHeader>{t("chat.newChat")}</ModalHeader>
         <ModalCloseButton />
 
         <ModalBody pb="4">
           <Tabs variant="unstyled">
             <TabList mb="3">
-              <Tab _selected={{ color: "green.500", fontWeight: "semibold" }}>Personal</Tab>
-              <Tab _selected={{ color: "green.500", fontWeight: "semibold" }}>Grup</Tab>
+              <Tab _selected={{ color: "green.500", fontWeight: "semibold" }}>{t("chat.personal")}</Tab>
+              <Tab _selected={{ color: "green.500", fontWeight: "semibold" }}>{t("chat.group")}</Tab>
             </TabList>
 
             <TabPanels>
@@ -155,7 +157,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
                   {!filtered.length && (
                     <Text color="gray.500" fontSize="sm" textAlign="center" py="4">
-                      User tidak ditemukan
+                      {t("chat.userNotFound")}
                     </Text>
                   )}
                 </Box>
@@ -165,7 +167,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 <Input
                   mb="3"
                   type="text"
-                  placeholder="Nama grup"
+                  placeholder={t("chat.groupName")}
                   borderColor="app.border"
                   focusBorderColor="green.500"
                   value={groupName}
@@ -208,7 +210,7 @@ const NewChatModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
             isDisabled={selected.length < 2 || !groupName.trim()}
             onClick={() => openConversation(selected, groupName.trim())}
           >
-            Buat grup
+            {t("chat.createGroup")}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -7,11 +7,13 @@ import { useNotificationHooks } from "../../hooks/notification";
 import { connectSocket } from "../../libs/socket";
 import { selectNotifications } from "../../slices/notificationSlice";
 import NotificationCard from "./components/NotificationCard";
+import { useTranslation } from "../../i18n/useTranslation";
 
 // Jarak ke dasar daftar (px) saat halaman berikutnya mulai dimuat.
 const LOAD_MORE_THRESHOLD = 200;
 
 const Notifications = () => {
+  const { t } = useTranslation();
   const { fetchNotifications, fetchMoreNotifications, markNotificationsRead } =
     useNotificationHooks();
   const notifications = useSelector(selectNotifications);
@@ -91,7 +93,7 @@ const Notifications = () => {
   return (
     <Stack h="100%" px="4" pb="0" color="app.text">
       <Text fontSize="2xl" fontWeight="semibold" py={{ base: "0", md: "4" }}>
-        Notifikasi
+        {t("notifications.title")}
       </Text>
 
       <Box
@@ -118,7 +120,7 @@ const Notifications = () => {
           </Stack>
         ) : loadError && !notifications.length ? (
           <Stack alignItems="center" pt="20" gap="3">
-            <Text color="gray.500">Gagal memuat notifikasi.</Text>
+            <Text color="gray.500">{t("notifications.loadFailed")}</Text>
             <Button
               size="sm"
               rounded="full"
@@ -128,7 +130,7 @@ const Notifications = () => {
                 loadFirstPage();
               }}
             >
-              Coba lagi
+              {t("common.tryAgain")}
             </Button>
           </Stack>
         ) : notifications.length ? (
@@ -151,7 +153,7 @@ const Notifications = () => {
                     _hover={{ color: "app.text", bg: "app.hover" }}
                     onClick={loadMore}
                   >
-                    Muat lebih banyak
+                    {t("common.loadMore")}
                   </Button>
                 )}
               </Center>
@@ -159,8 +161,7 @@ const Notifications = () => {
           </>
         ) : (
           <Text color="gray.500" textAlign="center" pt="20" px="6">
-            Belum ada notifikasi. Follow, like, dan balasan dari orang lain akan
-            muncul di sini.
+            {t("notifications.empty")}
           </Text>
         )}
       </Box>

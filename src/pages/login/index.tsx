@@ -18,6 +18,7 @@ import { addUser } from "../../slices/authSlice";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import GoogleLoginButton from "../../features/GoogleLoginButton";
 import BrandLogo from "../../component/BrandLogo";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Login = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -26,6 +27,7 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const toast = useToast()
+  const { t } = useTranslation()
 
   const dispatch = useDispatch();
 
@@ -56,7 +58,7 @@ const Login = () => {
 
       toast({
         position: 'top',
-        title: 'Login Success!',
+        title: t("auth.loginSuccess"),
         status: 'success',
         duration: 1500,
         isClosable: true,
@@ -69,7 +71,7 @@ const Login = () => {
       console.log("error : ", error.response);
       // ?. wajib: galat jaringan tidak punya response, dan tanpa ini
       // halaman login ikut melempar error.
-      setError(error.response?.data?.message || "Gagal login, coba lagi!");
+      setError(error.response?.data?.message || t("auth.loginFailed"));
     } finally {
       setIsLoggingIn(false);
     }
@@ -94,20 +96,20 @@ const Login = () => {
           fontWeight="semibold"
           display={{ base: "none", md: "block" }}
         >
-          Login to Dots.
+          {t("auth.loginTitle")}
         </Text>
 
         <Stack spacing={3}>
           <Input
             type="text"
-            placeholder="Username or Email"
+            placeholder={t("auth.usernameOrEmail")}
             onChange={(e) => setUsername(e.target.value)}
           />
 
           <InputGroup size="md">
             <Input
               pr="4.5rem"
-              placeholder="Password"
+              placeholder={t("auth.password")}
               type={show ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -136,26 +138,26 @@ const Login = () => {
           isLoading={isLoggingIn}
           onClick={handleLogin}
         >
-          Submit
+          {t("auth.submit")}
         </Button>
 
         {error && <Text color="red.500">{error}</Text>}
 
         <Text py="2" textAlign="center" color="app.textMuted" fontSize="sm">
-          or
+          {t("common.or")}
         </Text>
 
         <GoogleLoginButton onError={setError} />
 
         <Text py="2">
-          Don't have an account yet?
+          {t("auth.noAccount")}
           <Link
             px="2"
             color="green.500"
             _hover={{ color: "app.text" }}
             onClick={() => navigate("/register")}
           >
-            Create account
+            {t("auth.createAccount")}
           </Link>
         </Text>
 
@@ -172,7 +174,7 @@ const Login = () => {
           _hover={{ color: "red.500", bg: "app.inverse", textDecoration: "none" }}
           onClick={() => navigate("/")}
         >
-          <Text>Back To Home</Text>
+          <Text>{t("auth.backToHome")}</Text>
         </Link>
       </Stack>
     </Stack>

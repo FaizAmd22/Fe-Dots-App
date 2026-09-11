@@ -38,8 +38,10 @@ import { useDetailThreadHooks } from "../../hooks/detailThread";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
 import BrandLogo from "../BrandLogo";
 import { swalTheme } from "../../features/swalTheme";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
@@ -61,11 +63,11 @@ const Navbar = () => {
         navigate(path);
       } else {
         Swal.fire({
-          title: "You need to login first!",
-          text: "Do you wanna login?",
+          title: t("auth.loginRequiredTitle"),
+          text: t("auth.loginRequiredText"),
           ...swalTheme(),
           showCancelButton: true,
-          confirmButtonText: "Yes",
+          confirmButtonText: t("common.yes"),
           reverseButtons: true,
         }).then((result: any) => {
           if (result.isConfirmed) {
@@ -87,13 +89,13 @@ const Navbar = () => {
     // Konfirmasi dulu: logout gampang tertekan tidak sengaja, apalagi tombolnya
     // bersebelahan dengan menu lain.
     const confirmation = await Swal.fire({
-      title: "Logout?",
-      text: "You'll need to login again to access your account.",
+      title: t("auth.logoutTitle"),
+      text: t("auth.logoutText"),
       icon: "warning",
       ...swalTheme(),
       showCancelButton: true,
-      confirmButtonText: "Yes, logout",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("auth.logoutConfirm"),
+      cancelButtonText: t("common.cancel"),
       reverseButtons: true,
     });
 
@@ -122,10 +124,10 @@ const Navbar = () => {
     // navigate("/")
     // alert("Logout Success!")
     Swal.fire({
-      title: "Logout Success!",
+      title: t("auth.logoutSuccess"),
       icon: "success",
       ...swalTheme(),
-      confirmButtonText: "Okey",
+      confirmButtonText: t("common.ok"),
     }).then(() => window.location.assign("/"));
   };
 
@@ -175,7 +177,7 @@ const Navbar = () => {
                   borderColor: "app.inverse",
                 }}
               >
-                Login
+                {t("auth.login")}
               </Link>
             ) : (
               // Navbar bawah mobile hanya memuat 4 menu utama; Profile,
@@ -184,7 +186,7 @@ const Navbar = () => {
                 <MenuButton
                   display={{ base: "block", md: "none" }}
                   rounded="full"
-                  aria-label="Menu akun"
+                  aria-label={t("nav.accountMenu")}
                   {...darkenOnHover}
                 >
                   <Avatar
@@ -213,7 +215,7 @@ const Navbar = () => {
                       handleClick("Profile", `/profile/${user.username}`)
                     }
                   >
-                    Profile
+                    {t("nav.profile")}
                   </MenuItem>
 
                   <MenuItem
@@ -223,7 +225,7 @@ const Navbar = () => {
                     icon={<LuHeart size="18px" />}
                     onClick={() => handleClick("Follows", "/follows")}
                   >
-                    Follows
+                    {t("nav.follows")}
                   </MenuItem>
 
                   <MenuItem
@@ -233,7 +235,7 @@ const Navbar = () => {
                     icon={<LuSettings size="18px" />}
                     onClick={() => handleClick("Settings", "/settings")}
                   >
-                    Settings
+                    {t("nav.settings")}
                   </MenuItem>
 
                   <MenuDivider borderColor="app.borderSoft" />
@@ -246,7 +248,7 @@ const Navbar = () => {
                     icon={<CiLogout size="18px" />}
                     onClick={() => handleLogout()}
                   >
-                    Logout
+                    {t("auth.logout")}
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -288,7 +290,7 @@ const Navbar = () => {
                       </Text>
 
                       <Text fontSize="md" {...navLabelStyle(isActive(data.path))}>
-                        {data.name}
+                        {t(data.labelKey)}
                       </Text>
 
                       {data.badge && <UnreadBadge kind={data.badge} />}
@@ -326,7 +328,7 @@ const Navbar = () => {
           display={{ base: "none", md: "block" }}
           _hover={{ color: "green.500", borderColor: "app.inverse", bg: "app.inverse" }}
         >
-          <Center gap="3">Login</Center>
+          <Center gap="3">{t("auth.login")}</Center>
         </Link>
       ) : (
         <Button
@@ -339,7 +341,7 @@ const Navbar = () => {
         >
           <Center gap="3">
             <CiLogout fontSize="25px" />
-            <Text fontSize={{ base: "sm", lg: "md" }}>Logout</Text>
+            <Text fontSize={{ base: "sm", lg: "md" }}>{t("auth.logout")}</Text>
           </Center>
         </Button>
       )}

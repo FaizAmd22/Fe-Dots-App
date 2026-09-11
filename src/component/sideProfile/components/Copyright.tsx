@@ -2,15 +2,17 @@ import { Box, Text, Flex, Center, Link } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { PiInstagramLogoFill } from "react-icons/pi";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const Copyright = () => {
+  const { t } = useTranslation();
   return (
     <Box p="4" rounded="lg" color="app.onSurface" bg="app.surface" fontSize="12px">
       <Flex mb="2">
         <Center>
           <Text>
             <Flex gap={1}>
-              Developed by
+              {t("misc.developedBy")}
               <Text fontWeight="bold">Faizhal Ahmad</Text>
             </Flex>
 

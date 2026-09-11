@@ -14,6 +14,7 @@ import { useState } from "react";
 import { LuForward, LuTrash2, LuX } from "react-icons/lu";
 import Swal from "sweetalert2";
 import { swalTheme } from "../../../features/swalTheme";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const SelectionToolbar = ({
   count,
@@ -29,20 +30,24 @@ const SelectionToolbar = ({
   onDelete: (scope: "me" | "everyone") => Promise<void>;
 }) => {
   const toast = useToast();
+  const { t } = useTranslation();
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const confirmDelete = async (scope: "me" | "everyone") => {
     const confirmation = await Swal.fire({
-      title: scope === "everyone" ? "Hapus untuk semua?" : "Hapus untuk saya?",
+      title:
+        scope === "everyone"
+          ? t("chat.deleteForEveryoneTitle")
+          : t("chat.deleteForMeTitle"),
       text:
         scope === "everyone"
-          ? `${count} pesan akan hilang juga dari layar lawan bicara dan tidak bisa dikembalikan.`
-          : `${count} pesan hanya hilang dari layarmu; lawan bicara tetap melihatnya.`,
+          ? t("chat.deleteForEveryoneText", { count })
+          : t("chat.deleteForMeText", { count }),
       icon: "warning",
       ...swalTheme(),
       showCancelButton: true,
-      confirmButtonText: "Ya, hapus",
-      cancelButtonText: "Batal",
+      confirmButtonText: t("chat.deleteConfirm"),
+      cancelButtonText: t("common.cancel"),
       reverseButtons: true,
     });
 
@@ -54,7 +59,7 @@ const SelectionToolbar = ({
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Gagal menghapus pesan!";
+          ?.message || t("chat.deleteFailed");
       toast({
         position: "top",
         title: message,
@@ -74,14 +79,14 @@ const SelectionToolbar = ({
         bg="none"
         color="app.text"
         rounded="full"
-        aria-label="Batalkan pilihan"
+        aria-label={t("chat.cancelSelection")}
         icon={<LuX />}
         _hover={{ bg: "app.card" }}
         onClick={onCancel}
       />
 
       <Text fontSize="md" fontWeight="semibold">
-        {count} dipilih
+        {t("chat.selected", { count })}
       </Text>
 
       <Spacer />
@@ -95,7 +100,7 @@ const SelectionToolbar = ({
         _hover={{ bg: "app.card" }}
         onClick={onForward}
       >
-        Teruskan
+        {t("chat.forward")}
       </Button>
 
       <Menu>
@@ -109,7 +114,7 @@ const SelectionToolbar = ({
           isLoading={isDeleting}
           _hover={{ bg: "app.card" }}
         >
-          Hapus
+          {t("common.delete")}
         </MenuButton>
 
         <MenuList bg="app.card" borderColor="app.borderMenu">
@@ -118,7 +123,7 @@ const SelectionToolbar = ({
             _hover={{ bg: "app.cardHover" }}
             onClick={() => confirmDelete("me")}
           >
-            Hapus untuk saya
+            {t("chat.deleteForMe")}
           </MenuItem>
 
           {/* Hanya pesan sendiri yang bisa ditarik dari layar orang lain. */}
@@ -129,7 +134,7 @@ const SelectionToolbar = ({
               _hover={{ bg: "app.cardHover" }}
               onClick={() => confirmDelete("everyone")}
             >
-              Hapus untuk semua
+              {t("chat.deleteForEveryone")}
             </MenuItem>
           )}
         </MenuList>

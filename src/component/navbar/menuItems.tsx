@@ -8,9 +8,13 @@ import {
     LuUserCircle,
 } from "react-icons/lu";
 import type { BadgeKind } from "./UnreadBadge";
+import type { TranslationKey } from "../../i18n/translate";
 
 type MenuItem = {
+    // Nama tetap berbahasa Inggris dan dipakai untuk logika (misalnya tamu
+    // hanya boleh membuka "Home"); yang tampil ke user adalah labelKey.
     name: string;
+    labelKey: TranslationKey;
     path: string;
     icon: JSX.Element;
     // Menu yang menampilkan angka belum dibaca.
@@ -29,18 +33,21 @@ type MenuItem = {
 export const buildMenuItems = (username?: string): MenuItem[] => [
     {
         name: "Home",
+        labelKey: "nav.home",
         path: "/",
         icon: <LuHome />,
         mobile: true,
     },
     {
         name: "Search",
+        labelKey: "nav.search",
         path: "/search",
         icon: <TbUserSearch />,
         mobile: true,
     },
     {
         name: "Chat",
+        labelKey: "nav.chat",
         path: "/chat",
         icon: <LuMessageCircle />,
         badge: "chat",
@@ -48,6 +55,7 @@ export const buildMenuItems = (username?: string): MenuItem[] => [
     },
     {
         name: "Notifications",
+        labelKey: "nav.notifications",
         path: "/notifications",
         icon: <LuBell />,
         badge: "notification",
@@ -55,16 +63,19 @@ export const buildMenuItems = (username?: string): MenuItem[] => [
     },
     {
         name: "Follows",
+        labelKey: "nav.follows",
         path: "/follows",
         icon: <LuHeart />,
     },
     {
         name: "Profile",
+        labelKey: "nav.profile",
         path: `/profile/${username}`,
         icon: <LuUserCircle />,
     },
     {
         name: "Settings",
+        labelKey: "nav.settings",
         path: "/settings",
         icon: <LuSettings />,
     },

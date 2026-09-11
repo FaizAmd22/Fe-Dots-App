@@ -16,6 +16,7 @@ import { Link, useLocation } from "react-router-dom";
 import { darkenOnHover } from "../features/HoverStyles";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/react";
+import { useTranslation } from "../i18n/useTranslation";
 
 const UserCard = (data: any) => {
   const token = sessionStorage.getItem("token");
@@ -24,6 +25,7 @@ const UserCard = (data: any) => {
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
   const { pathname } = useLocation();
   const toast = useToast();
+  const { t } = useTranslation();
 
   // Status tombol dipegang lokal supaya bisa berubah seketika saat diklik,
   // tanpa menunggu request ke server selesai.
@@ -61,7 +63,7 @@ const UserCard = (data: any) => {
       setIsPending(false);
       toast({
         position: "top",
-        title: error.response?.data?.message || "Gagal memperbarui follow!",
+        title: error.response?.data?.message || t("profile.followFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -147,7 +149,7 @@ const UserCard = (data: any) => {
         isDisabled={isPending}
         onClick={handleFollow}
       >
-        {isFollow ? "Unfollow" : "Follow"}
+        {isFollow ? t("common.unfollow") : t("common.follow")}
       </Button>
       {/* </Flex> */}
     </Grid>

@@ -8,9 +8,11 @@ import { selectUser } from "../../../slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { swalTheme } from "../../../features/swalTheme";
+import { useTranslation } from "../../../i18n/useTranslation";
 // import { Link } from "react-router-dom";
 
 const MobileNavbar = () => {
+  const { t } = useTranslation();
   const user = useSelector(selectUser);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
@@ -30,11 +32,11 @@ const MobileNavbar = () => {
         // console.log(true);
       } else {
         Swal.fire({
-          title: "You need to login first!",
-          text: "Do you wanna login?",
+          title: t("auth.loginRequiredTitle"),
+          text: t("auth.loginRequiredText"),
           ...swalTheme(),
           showCancelButton: true,
-          confirmButtonText: "Yes",
+          confirmButtonText: t("common.yes"),
           reverseButtons: true,
         }).then((result: any) => {
           if (result.isConfirmed) {
@@ -68,7 +70,7 @@ const MobileNavbar = () => {
               key={data.path}
               p="2"
               fontSize="25px"
-              aria-label={data.name}
+              aria-label={t(data.labelKey)}
               onClick={() => handleClick(data.name, data.path)}
             >
               <Box position="relative" role="group">

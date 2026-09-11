@@ -1,4 +1,5 @@
 import { IConversation, IParticipant, IReadState } from "../interfaces/ChatInterface";
+import type { Translate } from "../i18n/translate";
 
 export const FALLBACK_AVATAR =
     "https://i.pinimg.com/564x/c0/c8/17/c0c8178e509b2c6ec222408e527ba861.jpg";
@@ -10,9 +11,9 @@ export const otherParticipant = (
 ): IParticipant | undefined =>
     conversation.participants.find((participant) => participant.id !== myId);
 
-export const conversationTitle = (conversation: IConversation, myId: number) => {
-    if (conversation.is_group) return conversation.name || "Group";
-    return otherParticipant(conversation, myId)?.name || "Unknown user";
+export const conversationTitle = (conversation: IConversation, myId: number, t: Translate) => {
+    if (conversation.is_group) return conversation.name || t("chat.group");
+    return otherParticipant(conversation, myId)?.name || t("common.unknownUser");
 };
 
 // Id pesan terakhir yang sudah dibaca SEMUA lawan bicara — perhitungan yang

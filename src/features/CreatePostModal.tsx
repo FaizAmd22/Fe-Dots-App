@@ -26,11 +26,13 @@ import { IoCloseCircle } from "react-icons/io5";
 import { selectUser } from "../slices/userSlice";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
+import { useTranslation } from "../i18n/useTranslation";
 
 const CreatePostModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useSelector(selectUser);
   const toast = useToast();
+  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
   const { fetchThreadAuth } = useThreadsHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
@@ -77,7 +79,7 @@ const CreatePostModal = () => {
     if (formData.content == null && formData.image == null) {
       return toast({
         position: "top",
-        title: "Data can't be empty!",
+        title: t("common.emptyContent"),
         status: "error",
         duration: 1500,
         isClosable: true,
@@ -95,8 +97,8 @@ const CreatePostModal = () => {
 
       toast({
         position: "top",
-        title: "Thread Posted",
-        description: "Your thread has been posted successfully!",
+        title: t("post.threadPosted"),
+        description: t("post.threadPostedDesc"),
         status: "success",
         duration: 1500,
         isClosable: true,
@@ -112,7 +114,7 @@ const CreatePostModal = () => {
     } catch (error) {
       toast({
         position: "top",
-        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Something error while post thread!",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("post.postFailed"),
         status: "error",
         duration: 1500,
         isClosable: true,
@@ -136,7 +138,7 @@ const CreatePostModal = () => {
         display={{ base: "none", md: "block" }}
         _hover={{ bg: "app.inverse", color: "green.500", boxShadow: "lg" }}
       >
-        Create Post
+        {t("nav.createPost")}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -164,7 +166,7 @@ const CreatePostModal = () => {
 
               <Input
                 focusBorderColor="none"
-                placeholder="What's happening?!"
+                placeholder={t("post.placeholderThread")}
                 type="text"
                 border="none"
                 name="content"
@@ -205,7 +207,7 @@ const CreatePostModal = () => {
               isLoading={isPosting}
               onClick={handleSubmit}
             >
-              Post
+              {t("post.submit")}
             </Button>
           </Flex>
           <Box>
@@ -227,7 +229,7 @@ const CreatePostModal = () => {
                       image: null,
                     }))
                   }
-                  aria-label={""}
+                  aria-label={t("common.removeImage")}
                 />
 
                 {/* <Image src={URL.createObjectURL(formData.image)} h="120px" /> */}

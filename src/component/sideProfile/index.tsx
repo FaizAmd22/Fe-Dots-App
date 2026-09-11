@@ -5,8 +5,10 @@ import Suggestion from "./components/Suggestion";
 import CurrentProfile from "./components/CurrentProfile";
 import { useSideProfileHooks } from "../../hooks/sideProfile";
 import { LoadingSideProfile } from "../LoadingCard";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const SideProfile = () => {
+  const { t } = useTranslation();
   const { fetchCurrentUser } = useSideProfileHooks();
   const token = sessionStorage.getItem("token");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -50,7 +52,7 @@ const SideProfile = () => {
           </Box>
 
           <Text color="app.text" fontWeight="semibold" pl="2">
-            Suggestion for you
+            {t("profile.suggestion")}
           </Text>
 
           <Suggestion />

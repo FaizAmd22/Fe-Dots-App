@@ -30,11 +30,13 @@ import { useSideProfileHooks } from "../hooks/sideProfile";
 import { useThreadsHooks } from "../hooks/threads";
 import { useDetailThreadHooks } from "../hooks/detailThread";
 import { useProfileThreadHooks } from "../hooks/profileThread";
+import { useTranslation } from "../i18n/useTranslation";
 
 const EditProfileModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useSelector(selectUser);
   const toast = useToast();
+  const { t } = useTranslation();
   const [inputData, setInputData] = useState({
     username: null,
     name: null,
@@ -139,8 +141,8 @@ const EditProfileModal = () => {
 
       toast({
         position: "top",
-        title: "Profile Updated!",
-        description: "Your profile has been updated successfully!",
+        title: t("profile.updated"),
+        description: t("profile.updatedDesc"),
         status: "success",
         duration: 1500,
         isClosable: true,
@@ -157,7 +159,7 @@ const EditProfileModal = () => {
       // tetap terbuka tanpa pesan apa pun.
       toast({
         position: "top",
-        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Gagal memperbarui profil!",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("profile.updateFailed"),
         status: "error",
         duration: 2000,
         isClosable: true,
@@ -189,7 +191,7 @@ const EditProfileModal = () => {
         _hover={{ bg: "none", color: "app.surfaceAccent", borderColor: "app.surfaceAccent" }}
         onClick={onOpen}
       >
-        Edit Profile
+        {t("profile.editProfile")}
       </Button>
 
       <Modal
@@ -202,7 +204,7 @@ const EditProfileModal = () => {
         <ModalOverlay onClick={handleClose} />
 
         <ModalContent bg="app.bg" color="app.text">
-          <ModalHeader>Edit Profile</ModalHeader>
+          <ModalHeader>{t("profile.editProfile")}</ModalHeader>
 
           <ModalCloseButton onClick={handleClose} />
 
@@ -335,7 +337,7 @@ const EditProfileModal = () => {
               borderBottom="1px"
               focusBorderColor="app.bg"
               value={`${inputData.name}`}
-              placeholder="Name"
+              placeholder={t("profile.name")}
               name="name"
               onChange={handleChange}
             />
@@ -347,7 +349,7 @@ const EditProfileModal = () => {
               borderBottom="1px"
               focusBorderColor="app.bg"
               value={`${inputData.username}`}
-              placeholder="Username"
+              placeholder={t("auth.username")}
               name="username"
               onChange={handleChange}
             />
@@ -360,7 +362,7 @@ const EditProfileModal = () => {
               borderBottom="1px"
               focusBorderColor="app.bg"
               value={`${inputData.bio}`}
-              placeholder="Bio"
+              placeholder={t("profile.bio")}
               name="bio"
               onChange={handleChange}
             />
@@ -374,11 +376,11 @@ const EditProfileModal = () => {
               mr={5}
               onClick={handleClose}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
 
             <Button colorScheme="green" rounded="full" isLoading={isSaving} onClick={handleSubmit}>
-              Save
+              {t("common.save")}
             </Button>
           </ModalFooter>
         </ModalContent>

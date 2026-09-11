@@ -7,8 +7,10 @@ import { useDetailThreadHooks } from "../../hooks/detailThread";
 import { selectIsFetchDetail } from "../../slices/detailThreadSlice";
 import { useSelector } from "react-redux";
 import loading from "../../assets/loading1.gif";
+import { useTranslation } from "../../i18n/useTranslation";
 
 const DetailThread = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const token = sessionStorage.getItem("token");
   const { fetchDetail, fetchDetailAuth } = useDetailThreadHooks();
@@ -61,7 +63,7 @@ const DetailThread = () => {
           <Box w="20%">
             <IoChevronBackOutline />
           </Box>
-          Status
+          {t("post.status")}
         </Flex>
       </Button>
 

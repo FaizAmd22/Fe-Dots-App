@@ -7,18 +7,20 @@ import {
   FALLBACK_AVATAR,
   otherParticipant,
 } from "../../../features/ChatHelpers";
+import { useTranslation } from "../../../i18n/useTranslation";
 
 const ConversationCard = ({ conversation }: { conversation: IConversation }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const myId = Number(sessionStorage.getItem("id"));
   const other = otherParticipant(conversation, myId);
-  const title = conversationTitle(conversation, myId);
+  const title = conversationTitle(conversation, myId, t);
 
   const lastMessage = conversation.lastMessage;
 
   const subtitle = lastMessage
-    ? lastMessage.content || (lastMessage.image ? "📷 Photo" : "")
-    : "Belum ada pesan";
+    ? lastMessage.content || (lastMessage.image ? t("common.photo") : "")
+    : t("chat.noMessagesYet");
 
   // Centang hanya untuk pesan terakhir yang kita kirim sendiri — status baca
   // pesan orang lain bukan urusan kita.

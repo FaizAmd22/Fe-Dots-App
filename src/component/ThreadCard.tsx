@@ -21,8 +21,10 @@ import { useState } from "react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useProfileHooks } from "../hooks/profile";
 import { useProfileThreadHooks } from "../hooks/profileThread";
+import { useTranslation } from "../i18n/useTranslation";
 
 const ThreadCard = (thread: any) => {
+  const { t } = useTranslation();
   const { fetchProfile } = useProfileHooks();
   const { fetchProfileThread, fetchProfileThreadAuth } = useProfileThreadHooks();
 
@@ -112,7 +114,7 @@ const ThreadCard = (thread: any) => {
                 </Link>
 
                 <Text ml="3" fontSize="sm" color="gray.500">
-                  {changeFormatDate(created_at)}
+                  {changeFormatDate(created_at, t)}
                 </Text>
               </Flex>
             </Box>
@@ -162,7 +164,7 @@ const ThreadCard = (thread: any) => {
                   <Center gap="2" fontSize="2xl">
                     <BiCommentDetail />
 
-                    <Text fontSize="md">{replies} Replies</Text>
+                    <Text fontSize="md">{t("common.replies", { n: replies })}</Text>
                   </Center>
                 </Flex>
               </Link>

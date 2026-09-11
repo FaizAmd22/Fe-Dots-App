@@ -1,32 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export default function changeFormatDate(date: string) {
-    const startDate = new Date(date)
-    const endDate = Date.now()
-    
-    const milliSecStart = startDate.getTime()
-    
-    let duration: any = endDate - milliSecStart
-    const minutes = Math.floor(duration / 1000 / 60)
-    const hours = Math.floor(minutes / 60)
-    const day = Math.floor(hours / 24)
-    const month = Math.floor(day / 30)
-    const year = Math.floor(month / 12)
+import type { Translate } from "../i18n/translate";
 
-    // pengkondisian nilai duration
-    if (year >= 1) {
-        return duration = `${year} years`
-    } else if (month >= 1) {
-        return duration = `${month} months`
-    } else if (day >= 1) {
-        return duration = `${day} days`
-    } else if (hours >= 1) {
-        return duration = `${hours} hours`
-    } else if (minutes >= 1) {
-        return duration = `${minutes} minutes`
-    } else if (minutes < 1) {
-        return duration = 'just a few seconds'
-    }
-    return (
-        duration
-    )
+// Durasi relatif untuk kartu thread, reply, dan notifikasi: "2 hari" / "2 days".
+// t dikirim pemanggil (hasil useTranslation), karena ini bukan komponen.
+export default function changeFormatDate(date: string, t: Translate) {
+    const duration = Date.now() - new Date(date).getTime();
+    const minutes = Math.floor(duration / 1000 / 60);
+    const hours = Math.floor(minutes / 60);
+    const day = Math.floor(hours / 24);
+    const month = Math.floor(day / 30);
+    const year = Math.floor(month / 12);
+
+    // Bentuk tunggal dan jamak dipisah untuk bahasa Inggris ("1 day", "2 days");
+    // di bahasa Indonesia keduanya sama.
+    if (year >= 1) return t(year === 1 ? "time.year" : "time.years", { n: year });
+    if (month >= 1) return t(month === 1 ? "time.month" : "time.months", { n: month });
+    if (day >= 1) return t(day === 1 ? "time.day" : "time.days", { n: day });
+    if (hours >= 1) return t(hours === 1 ? "time.hour" : "time.hours", { n: hours });
+    if (minutes >= 1) return t(minutes === 1 ? "time.minute" : "time.minutes", { n: minutes });
+    return t("time.justNow");
 }

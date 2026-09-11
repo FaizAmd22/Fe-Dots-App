@@ -21,6 +21,7 @@ import { selectUser } from "../slices/userSlice";
 import { useThreadsHooks } from "../hooks/threads";
 import { useDetailThreadHooks } from "../hooks/detailThread";
 import { setIsFetchDetail } from "../slices/detailThreadSlice";
+import { useTranslation } from "../i18n/useTranslation";
 
 interface IType {
   id?: number;
@@ -38,6 +39,7 @@ interface inputData {
 const CreatePost = (type: IType) => {
   const user = useSelector(selectUser);
   const toast = useToast();
+  const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
   const dispatch = useDispatch();
   const { fetchThreadAuth } = useThreadsHooks();
@@ -63,7 +65,7 @@ const CreatePost = (type: IType) => {
         if (prevData.images.length + picked.length > MAX_IMAGES) {
           toast({
             position: "top",
-            title: `Maksimal ${MAX_IMAGES} gambar.`,
+            title: t("common.maxImages", { max: MAX_IMAGES }),
             status: "warning",
             duration: 2000,
             isClosable: true,
@@ -104,7 +106,7 @@ const CreatePost = (type: IType) => {
     ) {
       return toast({
         position: "top",
-        title: "Data can't be empty!",
+        title: t("common.emptyContent"),
         status: "error",
         duration: 1500,
         isClosable: true,
@@ -135,10 +137,10 @@ const CreatePost = (type: IType) => {
 
       toast({
         position: "top",
-        title: isThread ? "Thread Posted" : "Reply Posted",
+        title: isThread ? t("post.threadPosted") : t("post.replyPosted"),
         description: isThread
-          ? "Your thread has been posted successfully!"
-          : "Your reply has been posted successfully!",
+          ? t("post.threadPostedDesc")
+          : t("post.replyPostedDesc"),
         status: "success",
         duration: 1500,
         isClosable: true,
@@ -150,7 +152,7 @@ const CreatePost = (type: IType) => {
     } catch (error) {
       toast({
         position: "top",
-        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Something error while post!",
+        title: (error as { response?: { data?: { message?: string } } })?.response?.data?.message || t("post.postFailed"),
         status: "error",
         duration: 1500,
         isClosable: true,
@@ -189,7 +191,7 @@ const CreatePost = (type: IType) => {
           name="content"
           focusBorderColor="none"
           placeholder={
-            type.type == "replies" ? "Type your reply!" : "What is happening?!"
+            type.type == "replies" ? t("post.placeholderReply") : t("post.placeholderThread")
           }
         />
 
@@ -215,7 +217,7 @@ const CreatePost = (type: IType) => {
             w="40px"
             p="0"
             cursor="pointer"
-            aria-label="Tambah gambar"
+            aria-label={t("common.addImage")}
             onChange={handleChange}
           />
         </InputGroup>
@@ -231,7 +233,7 @@ const CreatePost = (type: IType) => {
           isLoading={isPosting}
           onClick={handleSubmit}
         >
-          Post
+          {t("post.submit")}
         </Button>
       </Flex>
 
@@ -253,7 +255,7 @@ const CreatePost = (type: IType) => {
                   color="red.600"
                   fontSize="24px"
                   _hover={{ bg: "none", color: "app.text" }}
-                  aria-label="Hapus gambar"
+                  aria-label={t("common.removeImage")}
                   onClick={() =>
                     setFormData((prevData) => ({
                       ...prevData,

@@ -13,12 +13,14 @@ import EditPostModal from "./EditPostModal";
 import { LuCheck, LuCopy } from "react-icons/lu";
 import { useEffect, useRef, useState } from "react";
 import { useDisclosure } from "@chakra-ui/react";
+import { useTranslation } from "../i18n/useTranslation";
 
 // Berapa lama teks "Link Copied" bertahan sebelum kembali normal.
 const FEEDBACK_MS = 2000;
 
 const Dropdown = (data: any) => {
   const userId = sessionStorage.getItem("id");
+  const { t } = useTranslation();
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const {
     isOpen: isEditOpen,
@@ -59,7 +61,7 @@ const Dropdown = (data: any) => {
     <Menu>
       <MenuButton
         as={IconButton}
-        aria-label="Options"
+        aria-label={t("post.options")}
         icon={<BsThreeDotsVertical />}
         variant="none"
         borderColor="app.bg"
@@ -75,15 +77,15 @@ const Dropdown = (data: any) => {
           onClick={handleShare}
         >
           {copyState === "copied"
-            ? "Link Copied"
+            ? t("post.linkCopied")
             : copyState === "error"
-            ? "Gagal menyalin"
-            : "Copy Link"}
+            ? t("post.copyFailed")
+            : t("post.copyLink")}
         </MenuItem>
         {data.userId == userId && (
           <>
             <MenuItem icon={<MdEdit />} bg="app.bg" onClick={onEditOpen}>
-              Edit
+              {t("common.edit")}
             </MenuItem>
 
             {/* Dirender sebagai komponen, BUKAN dipanggil sebagai fungsi.
