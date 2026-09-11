@@ -6,13 +6,13 @@ import { navIconStyle } from "../../../features/HoverStyles";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { swalTheme } from "../../../features/swalTheme";
+import { useLoginPrompt } from "../../feedback/useLoginPrompt";
 import { useTranslation } from "../../../i18n/useTranslation";
 // import { Link } from "react-router-dom";
 
 const MobileNavbar = () => {
   const { t } = useTranslation();
+  const promptLogin = useLoginPrompt();
   const user = useSelector(selectUser);
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
@@ -31,19 +31,7 @@ const MobileNavbar = () => {
         navigate(path);
         // console.log(true);
       } else {
-        Swal.fire({
-          title: t("auth.loginRequiredTitle"),
-          text: t("auth.loginRequiredText"),
-          ...swalTheme(),
-          showCancelButton: true,
-          confirmButtonText: t("common.yes"),
-          reverseButtons: true,
-        }).then((result: any) => {
-          if (result.isConfirmed) {
-            // window.location.replace("/login");
-            navigate("/login");
-          }
-        });
+        promptLogin();
         // console.log(false);
       }
     } else {

@@ -1,74 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Text,
-  Stack,
-  Input,
-  InputGroup,
-  Button,
-  InputRightElement,
-  Link,
-  useToast
-} from "@chakra-ui/react";
+import { Link, Stack, Text, useToast } from "@chakra-ui/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { API } from "../../libs/axios";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
- 
+import { LuUser } from "react-icons/lu";
+import { API } from "../../libs/axios";
 import { addUser } from "../../slices/authSlice";
-import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import GoogleLoginButton from "../../features/GoogleLoginButton";
-import BrandLogo from "../../component/BrandLogo";
+import AuthLayout, { AuthDivider, AuthError, AuthSubmitButton } from "../../component/auth/AuthLayout";
+import { AuthField, PasswordField } from "../../component/auth/AuthField";
 import { useTranslation } from "../../i18n/useTranslation";
 
 const Login = () => {
-  const [show, setShow] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const toast = useToast()
-  const { t } = useTranslation()
-
-  const dispatch = useDispatch();
-
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const { t } = useTranslation();
 
   const handleLogin = async () => {
     if (isLoggingIn) return;
 
-    const requestingData = {
-      username,
-      password,
-    };
-
     setIsLoggingIn(true);
     try {
       setError("");
-      const response = await API.post("/login", requestingData);
-      console.log("response: ", response);
+      const response = await API.post("/login", { username, password });
       dispatch(addUser(response.data));
 
-      const token = response.data.token;
-      const userId = response.data.user.id;
-
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("id", userId);
-
-      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("id", response.data.user.id);
 
       toast({
-        position: 'top',
+        position: "top",
         title: t("auth.loginSuccess"),
-        status: 'success',
+        status: "success",
         duration: 1500,
         isClosable: true,
-      })
-      // window.location.assign("/");
-      navigate("/")
-
-      // console.log("error : ", response.data);
+      });
+      navigate("/");
     } catch (error: any) {
-      console.log("error : ", error.response);
       // ?. wajib: galat jaringan tidak punya response, dan tanpa ini
       // halaman login ikut melempar error.
       setError(error.response?.data?.message || t("auth.loginFailed"));
@@ -78,106 +51,51 @@ const Login = () => {
   };
 
   return (
-    <Stack w="100vw" bg="app.bg" h={"100vh"}>
+    <AuthLayout title={t("auth.loginTitle")} subtitle={t("auth.loginSubtitle")}>
+      {/* Form sungguhan supaya Enter langsung mengirim; dulu harus klik tombol. */}
       <Stack
-        w={{ base: "90%", md: "40%" }}
-        p="4"
-        pb="0"
-        color="app.text"
-        margin="auto"
+        as="form"
+        spacing="4"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleLogin();
+        }}
       >
-        <Link href="/" w="fit-content" _hover={{ textDecoration: "none" }}>
-          <BrandLogo h="56px" />
-        </Link>
+        <AuthField
+          label={t("auth.usernameOrEmail")}
+          icon={<LuUser />}
+          name="username"
+          autoComplete="username"
+          autoFocus
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        />
 
-        <Text
-          pb="4"
-          fontSize="3xl"
-          fontWeight="semibold"
-          display={{ base: "none", md: "block" }}
-        >
-          {t("auth.loginTitle")}
-        </Text>
+        <PasswordField
+          label={t("auth.password")}
+          name="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
 
-        <Stack spacing={3}>
-          <Input
-            type="text"
-            placeholder={t("auth.usernameOrEmail")}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+        {error && <AuthError message={error} />}
 
-          <InputGroup size="md">
-            <Input
-              pr="4.5rem"
-              placeholder={t("auth.password")}
-              type={show ? "text" : "password"}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-
-            <InputRightElement width="4.5rem">
-              <Button
-                h="1.75rem"
-                bg="none"
-                size="sm"
-                color="green.500"
-                onClick={() => setShow(!show)}
-              >
-                {show ? <BiSolidShow /> : <BiSolidHide />}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-        </Stack>
-
-        <Button
-          mt="7"
-          color="white"
-          rounded="full"
-          bg="green.500"
-          textAlign="center"
-          _hover={{ color: "green.500", bg: "app.inverse" }}
-          isLoading={isLoggingIn}
-          onClick={handleLogin}
-        >
-          {t("auth.submit")}
-        </Button>
-
-        {error && <Text color="red.500">{error}</Text>}
-
-        <Text py="2" textAlign="center" color="app.textMuted" fontSize="sm">
-          {t("common.or")}
-        </Text>
-
-        <GoogleLoginButton onError={setError} />
-
-        <Text py="2">
-          {t("auth.noAccount")}
-          <Link
-            px="2"
-            color="green.500"
-            _hover={{ color: "app.text" }}
-            onClick={() => navigate("/register")}
-          >
-            {t("auth.createAccount")}
-          </Link>
-        </Text>
-
-        <Link
-          mt="5"
-          py="2"
-          bg="red.500"
-          // Eksplisit putih: tanpa ini teksnya mewarisi warna teks tema dan
-          // menjadi gelap di atas merah saat mode terang.
-          color="white"
-          rounded="full"
-          textAlign="center"
-          fontWeight="semibold"
-          _hover={{ color: "red.500", bg: "app.inverse", textDecoration: "none" }}
-          onClick={() => navigate("/")}
-        >
-          <Text>{t("auth.backToHome")}</Text>
-        </Link>
+        <AuthSubmitButton isLoading={isLoggingIn}>{t("auth.submit")}</AuthSubmitButton>
       </Stack>
-    </Stack>
+
+      <AuthDivider label={t("common.or")} />
+
+      <GoogleLoginButton onError={setError} />
+
+      <Text mt="8" textAlign="center" fontSize="sm" color="app.textMuted">
+        {t("auth.noAccount")}{" "}
+        <Link as={RouterLink} to="/register" color="green.500" fontWeight="semibold">
+          {t("auth.createAccount")}
+        </Link>
+      </Text>
+    </AuthLayout>
   );
 };
 

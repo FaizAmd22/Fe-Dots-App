@@ -95,15 +95,7 @@ const CreatePostModal = () => {
         },
       });
 
-      toast({
-        position: "top",
-        title: t("post.threadPosted"),
-        description: t("post.threadPostedDesc"),
-        status: "success",
-        duration: 1500,
-        isClosable: true,
-      });
-
+      // Sengaja tanpa toast sukses: thread baru langsung muncul di feed.
       // Input di modal ini tidak terkontrol, jadi tanpa pengosongan ini isi
       // lama tetap tersimpan dan ikut terkirim lagi saat modal dibuka ulang.
       setFormData({ content: null, image: null });

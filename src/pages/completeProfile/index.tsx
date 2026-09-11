@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Avatar, Button, Input, Link, Stack, Text, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Link, Stack, Text, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { LuAtSign } from "react-icons/lu";
 import { API } from "../../libs/axios";
 import { addUser } from "../../slices/authSlice";
-import BrandLogo from "../../component/BrandLogo";
+import AuthLayout, { AuthError, AuthSubmitButton } from "../../component/auth/AuthLayout";
+import { AuthField } from "../../component/auth/AuthField";
 import { useTranslation } from "../../i18n/useTranslation";
 
 // Langkah kedua login Google: akun belum dibuat sampai user memilih username.
@@ -31,6 +33,8 @@ const CompleteProfile = () => {
   if (!signupToken) return <Navigate to="/login" replace />;
 
   const handleSubmit = async () => {
+    if (isLoading) return;
+
     try {
       setError("");
       setIsLoading(true);
@@ -57,61 +61,60 @@ const CompleteProfile = () => {
   };
 
   return (
-    <Stack w="100vw" bg="app.bg" h="100vh">
-      <Stack w={{ base: "90%", md: "40%" }} p="4" color="app.text" margin="auto">
-        <BrandLogo h="56px" />
+    <AuthLayout title={t("auth.chooseUsername")} subtitle={t("auth.chooseUsernameHint")}>
+      {profile && (
+        <Flex
+          alignItems="center"
+          gap="3"
+          p="3"
+          mb="6"
+          rounded="xl"
+          border="1px"
+          borderColor="app.border"
+        >
+          <Avatar size="sm" src={profile.picture || undefined} name={profile.name} />
+          <Box minW="0">
+            <Text fontSize="sm" fontWeight="semibold" noOfLines={1}>
+              {profile.name}
+            </Text>
+            <Text fontSize="xs" color="app.textMuted" noOfLines={1}>
+              {profile.email}
+            </Text>
+          </Box>
+        </Flex>
+      )}
 
-        <Text pb="1" fontSize="3xl" fontWeight="semibold">
-          {t("auth.chooseUsername")}
-        </Text>
-
-        <Text pb="4" fontSize="sm" color="app.textMuted">
-          {t("auth.chooseUsernameHint")}
-        </Text>
-
-        {profile && (
-          <Stack direction="row" align="center" spacing="3" pb="2">
-            <Avatar size="sm" src={profile.picture || undefined} name={profile.name} />
-            <Stack spacing="0">
-              <Text fontSize="sm">{profile.name}</Text>
-              <Text fontSize="xs" color="app.textMuted">
-                {profile.email}
-              </Text>
-            </Stack>
-          </Stack>
-        )}
-
-        <Input
-          type="text"
+      <Stack
+        as="form"
+        spacing="4"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <AuthField
+          label={t("auth.username")}
+          icon={<LuAtSign />}
+          name="username"
+          autoComplete="username"
+          autoFocus
           value={username}
-          placeholder={t("auth.username")}
-          onChange={(e) => setUsername(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+          onChange={(event) => setUsername(event.target.value)}
         />
 
-        <Button
-          mt="5"
-          color="white"
-          rounded="full"
-          bg="green.500"
-          textAlign="center"
-          isLoading={isLoading}
-          _hover={{ color: "green.500", bg: "app.inverse" }}
-          onClick={handleSubmit}
-        >
-          {t("common.continue")}
-        </Button>
+        {error && <AuthError message={error} />}
 
-        {error && <Text color="red.500">{error}</Text>}
-
-        <Text py="2" fontSize="sm">
-          {t("auth.changedMind")}
-          <Link px="2" color="green.500" _hover={{ color: "app.text" }} onClick={() => navigate("/login")}>
-            {t("auth.backToLogin")}
-          </Link>
-        </Text>
+        <AuthSubmitButton isLoading={isLoading}>{t("common.continue")}</AuthSubmitButton>
       </Stack>
-    </Stack>
+
+      <Text mt="8" textAlign="center" fontSize="sm" color="app.textMuted">
+        {t("auth.changedMind")}{" "}
+        <Link as={RouterLink} to="/login" color="green.500" fontWeight="semibold">
+          {t("auth.backToLogin")}
+        </Link>
+      </Text>
+    </AuthLayout>
   );
 };
 

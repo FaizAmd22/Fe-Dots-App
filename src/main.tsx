@@ -6,6 +6,8 @@ import { Provider } from 'react-redux'
 import store from './store'
 import theme from './theme'
 import LanguageProvider from './i18n/LanguageProvider'
+import ConfirmProvider from './component/feedback/ConfirmProvider'
+import AppToast from './component/feedback/AppToast'
 
 const rootElement = document.getElementById('root')
 ReactDOM.createRoot(rootElement!).render(
@@ -14,9 +16,20 @@ ReactDOM.createRoot(rootElement!).render(
         mode terang tidak melihat kilasan gelap saat halaman dibuka. */}
     <ColorModeScript initialColorMode={theme.config.initialColorMode} />
     <Provider store={store}>
-        <ChakraProvider theme={theme}>
+        {/* Semua toast memakai tampilan AppToast; pemanggil cukup toast({ ... }). */}
+        <ChakraProvider
+          theme={theme}
+          toastOptions={{
+            defaultOptions: {
+              position: 'top',
+              render: (props) => <AppToast {...props} />,
+            },
+          }}
+        >
           <LanguageProvider>
-            <App />
+            <ConfirmProvider>
+              <App />
+            </ConfirmProvider>
           </LanguageProvider>
         </ChakraProvider>
     </Provider>

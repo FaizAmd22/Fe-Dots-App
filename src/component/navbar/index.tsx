@@ -17,6 +17,7 @@ import {
   MenuDivider,
 } from "@chakra-ui/react";
 import { CiLogout } from "react-icons/ci";
+import { LuLogOut } from "react-icons/lu";
 import { LuHeart, LuSettings } from "react-icons/lu";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import { FALLBACK_AVATAR } from "../../features/ChatHelpers";
@@ -25,7 +26,6 @@ import UnreadBadge from "./UnreadBadge";
 import { darkenOnHover, navIconStyle, navLabelStyle } from "../../features/HoverStyles";
 import CreatePostModal from "../../features/CreatePostModal";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,11 +37,14 @@ import { useProfileHooks } from "../../hooks/profile";
 import { useDetailThreadHooks } from "../../hooks/detailThread";
 import { useProfileThreadHooks } from "../../hooks/profileThread";
 import BrandLogo from "../BrandLogo";
-import { swalTheme } from "../../features/swalTheme";
+import { useConfirm } from "../feedback/useConfirm";
+import { useLoginPrompt } from "../feedback/useLoginPrompt";
 import { useTranslation } from "../../i18n/useTranslation";
 
 const Navbar = () => {
   const { t } = useTranslation();
+  const confirm = useConfirm();
+  const promptLogin = useLoginPrompt();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
@@ -62,18 +65,7 @@ const Navbar = () => {
       if (name == "Home") {
         navigate(path);
       } else {
-        Swal.fire({
-          title: t("auth.loginRequiredTitle"),
-          text: t("auth.loginRequiredText"),
-          ...swalTheme(),
-          showCancelButton: true,
-          confirmButtonText: t("common.yes"),
-          reverseButtons: true,
-        }).then((result: any) => {
-          if (result.isConfirmed) {
-            navigate("/login");
-          }
-        });
+        promptLogin();
       }
     } else {
       navigate(path);
@@ -88,18 +80,15 @@ const Navbar = () => {
 
     // Konfirmasi dulu: logout gampang tertekan tidak sengaja, apalagi tombolnya
     // bersebelahan dengan menu lain.
-    const confirmation = await Swal.fire({
+    const confirmed = await confirm({
       title: t("auth.logoutTitle"),
-      text: t("auth.logoutText"),
-      icon: "warning",
-      ...swalTheme(),
-      showCancelButton: true,
-      confirmButtonText: t("auth.logoutConfirm"),
-      cancelButtonText: t("common.cancel"),
-      reverseButtons: true,
+      description: t("auth.logoutText"),
+      confirmText: t("auth.logoutConfirm"),
+      tone: "danger",
+      icon: <LuLogOut />,
     });
 
-    if (!confirmation.isConfirmed) return;
+    if (!confirmed) return;
 
     setIsLoggingOut(true);
 
@@ -121,14 +110,9 @@ const Navbar = () => {
     fetchDetail();
     fetchProfile();
     fetchProfileThread();
-    // navigate("/")
-    // alert("Logout Success!")
-    Swal.fire({
-      title: t("auth.logoutSuccess"),
-      icon: "success",
-      ...swalTheme(),
-      confirmButtonText: t("common.ok"),
-    }).then(() => window.location.assign("/"));
+    // Tanpa popup "berhasil keluar": halaman langsung kembali ke beranda
+    // dalam keadaan belum login, dan itu sudah cukup jelas.
+    window.location.assign("/");
   };
 
   return (

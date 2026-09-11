@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Flex, Text, Link } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import { API } from "../libs/axios";
-import Swal from "sweetalert2";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { useDetailThreadHooks } from "../hooks/detailThread";
-import { swalTheme } from "./swalTheme";
-import { useTranslation } from "../i18n/useTranslation";
+import { useLoginPrompt } from "../component/feedback/useLoginPrompt";
 
 const Liked = (likes: any) => {
   const { fetchThreadAuth } = useThreadsHooks();
@@ -18,8 +15,7 @@ const Liked = (likes: any) => {
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
   const currentUrl = window.location.href;
   const token = sessionStorage.getItem("token");
-  const navigate = useNavigate();
-  const { t } = useTranslation();
+  const promptLogin = useLoginPrompt();
   const id = likes.id;
 
   // Status dipegang lokal supaya hati dan angkanya berubah seketika saat diklik,
@@ -37,16 +33,7 @@ const Liked = (likes: any) => {
 
   const handleLiked = async () => {
     if (!token) {
-      Swal.fire({
-        title: t("auth.loginRequiredTitle"),
-        text: t("auth.loginRequiredText"),
-        ...swalTheme(),
-        showCancelButton: true,
-        confirmButtonText: t("common.yes"),
-        reverseButtons: true,
-      }).then((result: any) => {
-        if (result.isConfirmed) navigate("/login");
-      });
+      promptLogin();
       return;
     }
 

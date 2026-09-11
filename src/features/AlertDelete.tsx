@@ -1,118 +1,65 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-  Button,
-  useToast
-} from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { MenuItem, useToast } from "@chakra-ui/react";
+import { LuTrash2 } from "react-icons/lu";
 import { API } from "../libs/axios";
-import { MdDeleteForever } from "react-icons/md";
 import { useThreadsHooks } from "../hooks/threads";
 import { useProfileThreadHooks } from "../hooks/profileThread";
 import { useDetailThreadHooks } from "../hooks/detailThread";
 import { useTranslation } from "../i18n/useTranslation";
+import { useConfirm } from "../component/feedback/useConfirm";
 
+// Item "Hapus" di menu opsi thread/reply. Dulu berupa tombol merah besar di
+// dalam menu dengan dialognya sendiri; sekarang item menu biasa yang memakai
+// dialog konfirmasi bersama, dengan spinner selama request berjalan.
 export default function AlertDelete(data: any) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement>(null);
-  const currentUrl = window.location.href;
   const toast = useToast();
+  const confirm = useConfirm();
   const { t } = useTranslation();
   const token = sessionStorage.getItem("token");
   const { fetchDetailAuth } = useDetailThreadHooks();
   const { fetchProfileThreadAuth } = useProfileThreadHooks();
   const { fetchThreadAuth } = useThreadsHooks();
+  const isThread = data.type == "threads";
 
-  console.log("type :", data);
-  
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-
-  const handleDelete = async () => {
-    if (isDeleting) return;
-
-    setIsDeleting(true);
+  const deletePost = async () => {
     try {
-      if (data.type == "threads") {
-        await API.delete(`/thread/${data.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      } else {
-        await API.delete(`/reply/${data.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      }
+      await API.delete(isThread ? `/thread/${data.id}` : `/reply/${data.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       fetchDetailAuth();
       fetchThreadAuth();
       fetchProfileThreadAuth();
-      toast({
-        position: 'top',
-        title: t("post.deleteSuccess"),
-        status: 'success',
-        duration: 1500,
-        isClosable: true,
-      });
-      onClose();
-      if (currentUrl.includes("details") && data.type == "threads") {
+      toast({ title: t("post.deleteSuccess"), status: "success", duration: 1500, isClosable: true });
+
+      if (window.location.href.includes("details") && isThread) {
         window.history.back();
       }
     } catch (error) {
-      toast({
-        position: 'top',
-        title: t("post.noPermission"),
-        status: 'error',
-        duration: 1500,
-        isClosable: true,
-      });
-      onClose();
-    } finally {
-      setIsDeleting(false);
+      toast({ title: t("post.noPermission"), status: "error", duration: 2000, isClosable: true });
     }
   };
 
+  const handleClick = () =>
+    confirm({
+      title: isThread ? t("post.deleteThreadTitle") : t("post.deleteReplyTitle"),
+      description: t("post.deleteConfirm"),
+      confirmText: t("common.delete"),
+      tone: "danger",
+      icon: <LuTrash2 />,
+      onConfirm: deletePost,
+    });
+
   return (
-    <>
-      <Button w='100%' padding={0} gap='2' colorScheme='red' onClick={onOpen}>
-        <MdDeleteForever /> {t("common.delete")}
-      </Button>
-
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-        isCentered
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent bg='app.bg' color='app.text'>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {data.type == "threads" ? t("post.deleteThreadTitle") : t("post.deleteReplyTitle")}
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              {t("post.deleteConfirm")}
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose} isDisabled={isDeleting}>
-                {t("common.cancel")}
-              </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3} isLoading={isDeleting}>
-                {t("common.delete")}
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </>
+    <MenuItem
+      icon={<LuTrash2 />}
+      color="red.400"
+      bg="transparent"
+      _hover={{ bg: "app.hover" }}
+      _focus={{ bg: "app.hover" }}
+      onClick={handleClick}
+    >
+      {t("common.delete")}
+    </MenuItem>
   );
 }

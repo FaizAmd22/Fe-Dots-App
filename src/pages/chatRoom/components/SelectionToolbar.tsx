@@ -12,8 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { LuForward, LuTrash2, LuX } from "react-icons/lu";
-import Swal from "sweetalert2";
-import { swalTheme } from "../../../features/swalTheme";
+import { useConfirm } from "../../../component/feedback/useConfirm";
 import { useTranslation } from "../../../i18n/useTranslation";
 
 const SelectionToolbar = ({
@@ -31,27 +30,25 @@ const SelectionToolbar = ({
 }) => {
   const toast = useToast();
   const { t } = useTranslation();
+  const confirm = useConfirm();
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const confirmDelete = async (scope: "me" | "everyone") => {
-    const confirmation = await Swal.fire({
+    const confirmed = await confirm({
       title:
         scope === "everyone"
           ? t("chat.deleteForEveryoneTitle")
           : t("chat.deleteForMeTitle"),
-      text:
+      description:
         scope === "everyone"
           ? t("chat.deleteForEveryoneText", { count })
           : t("chat.deleteForMeText", { count }),
-      icon: "warning",
-      ...swalTheme(),
-      showCancelButton: true,
-      confirmButtonText: t("chat.deleteConfirm"),
-      cancelButtonText: t("common.cancel"),
-      reverseButtons: true,
+      confirmText: t("chat.deleteConfirm"),
+      tone: "danger",
+      icon: <LuTrash2 />,
     });
 
-    if (!confirmation.isConfirmed) return;
+    if (!confirmed) return;
 
     setIsDeleting(true);
     try {

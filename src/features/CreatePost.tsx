@@ -135,16 +135,8 @@ const CreatePost = (type: IType) => {
 
       setFormData({ content: "", images: [] });
 
-      toast({
-        position: "top",
-        title: isThread ? t("post.threadPosted") : t("post.replyPosted"),
-        description: isThread
-          ? t("post.threadPostedDesc")
-          : t("post.replyPostedDesc"),
-        status: "success",
-        duration: 1500,
-        isClosable: true,
-      });
+      // Sengaja tanpa toast sukses: thread/balasan baru langsung muncul di
+      // daftar, dan itu sudah cukup sebagai tanda berhasil.
 
       fetchThreadAuth();
       fetchDetailAuth();
